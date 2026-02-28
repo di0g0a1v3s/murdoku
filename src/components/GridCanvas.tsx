@@ -83,7 +83,7 @@ export function GridCanvas({ puzzle, showSolution, cellSize }: GridCanvasProps) 
             position: 'absolute' as const,
             left: col * cellSize + 4,
             top: row * cellSize + 3,
-            fontSize: cellSize * 0.13,
+            fontSize: cellSize * 0.155,
             fontWeight: 700,
             color: 'rgba(0,0,0,0.45)',
             textTransform: 'uppercase',

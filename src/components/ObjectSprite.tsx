@@ -80,7 +80,7 @@ export function ObjectSprite({ object, cellSize }: ObjectSpriteProps) {
     <div style={style}>
       <Icon size={iconSize} strokeWidth={1.5} color={iconColor} />
       <span style={{
-        fontSize: Math.round(cellSize * 0.105),
+        fontSize: Math.round(cellSize * 0.126),
         color: isOccupiable ? 'rgba(0,0,0,0.45)' : 'rgba(0,0,0,0.3)',
         fontWeight: 600,
         letterSpacing: '0.02em',

@@ -36,10 +36,10 @@ export function MurdererReveal({ murderer, victim, murderRoom, onClose }: Murder
         onClick={e => e.stopPropagation()}
       >
         <div style={{ fontSize: 48, marginBottom: 8 }}>🔪</div>
-        <h2 style={{ margin: '0 0 4px 0', fontSize: 20, fontWeight: 800, letterSpacing: '-0.01em' }}>
+        <h2 style={{ margin: '0 0 4px 0', fontSize: 24, fontWeight: 800, letterSpacing: '-0.01em' }}>
           Case Solved!
         </h2>
-        <p style={{ margin: '0 0 24px 0', fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>
+        <p style={{ margin: '0 0 24px 0', fontSize: 15, color: 'rgba(255,255,255,0.5)' }}>
           The investigation is complete
         </p>
 
@@ -50,14 +50,14 @@ export function MurdererReveal({ murderer, victim, murderRoom, onClose }: Murder
           marginBottom: 16,
         }}>
           <div style={{ fontSize: 36, marginBottom: 6 }}>{murderer.avatarEmoji ?? '👤'}</div>
-          <p style={{ margin: 0, fontSize: 11, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+          <p style={{ margin: 0, fontSize: 15, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             The murderer
           </p>
-          <p style={{ margin: '4px 0 0', fontSize: 22, fontWeight: 800 }}>
+          <p style={{ margin: '4px 0 0', fontSize: 26, fontWeight: 800 }}>
             {murderer.name}
           </p>
           {murderRoom && (
-            <p style={{ margin: '6px 0 0', fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>
+            <p style={{ margin: '6px 0 0', fontSize: 15, color: 'rgba(255,255,255,0.55)' }}>
               committed the crime in the {murderRoom.name}
             </p>
           )}
@@ -68,7 +68,7 @@ export function MurdererReveal({ murderer, victim, murderRoom, onClose }: Murder
           alignItems: 'center',
           gap: 8,
           justifyContent: 'center',
-          fontSize: 13,
+          fontSize: 15,
           color: 'rgba(255,255,255,0.45)',
           marginBottom: 24,
         }}>
@@ -84,7 +84,7 @@ export function MurdererReveal({ murderer, victim, murderRoom, onClose }: Murder
             border: 'none',
             borderRadius: 8,
             padding: '10px 24px',
-            fontSize: 14,
+            fontSize: 17,
             fontWeight: 700,
             cursor: 'pointer',
             width: '100%',

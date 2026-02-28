@@ -28,7 +28,7 @@ export function PuzzleSelector({ puzzles, selectedId, onSelect }: PuzzleSelector
             borderColor: puzzle.id === selectedId ? '#7c3aed' : 'rgba(0,0,0,0.15)',
             background: puzzle.id === selectedId ? '#7c3aed' : 'white',
             color: puzzle.id === selectedId ? 'white' : '#333',
-            fontSize: 13,
+            fontSize: 15,
             fontWeight: 600,
             cursor: 'pointer',
             transition: 'all 0.15s ease',

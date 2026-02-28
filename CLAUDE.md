@@ -75,7 +75,7 @@ murdoku/
 │   └── components/
 │       ├── GridCanvas.tsx     # Layered CSS Grid: rooms→objects→cells→tokens
 │       ├── Cell.tsx           # Single cell with room-boundary borders
-│       ├── ObjectSprite.tsx   # Emoji icon spanning grid cells
+│       ├── ObjectSprite.tsx   # Lucide icon spanning grid cells
 │       ├── PersonToken.tsx    # Suspect/victim token (shown on reveal)
 │       ├── CluesPanel.tsx     # Scrollable evidence list
 │       ├── ClueItem.tsx       # Single clue with kind icon + text
@@ -128,7 +128,7 @@ GEMINI_API_KEY=your_key npm run generate # Generate a new puzzle
             if none: LLM produced contradictory clues → regenerate (up to 3x)
             if multiple: add discriminating facts — facts violated by the
             alternative solution — until unique (up to 5 augmentations)
-7. Y/N prompt → append to src/puzzles/puzzles.json
+7. Auto-save → append to src/puzzles/puzzles.json
 ```
 
 **Key design principle:** LLM handles creative content only (theme, prose). All constraint values come from pre-computed facts; all satisfaction checking is algorithmic.
@@ -170,7 +170,7 @@ Grid uses **layered CSS Grid** (not SVG/Canvas):
 1. Room background fills (color at ~33% opacity)
 2. Room name labels (top-left of each room's bounding box)
 3. Cell borders (thick = room boundary, thin = intra-room)
-4. Object sprites (emoji icon + label, spanning correct grid cells)
+4. Object sprites (Lucide icon + label, spanning correct grid cells)
 5. Person tokens (shown only when `showSolution=true`)
 
 Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.

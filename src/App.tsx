@@ -19,7 +19,6 @@ export function App() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontFamily: 'Georgia, serif',
         color: '#1a1a2e',
         flexDirection: 'column',
         gap: 16,
@@ -27,8 +26,8 @@ export function App() {
         textAlign: 'center',
       }}>
         <div style={{ fontSize: 48 }}>🕵️</div>
-        <h1 style={{ margin: 0, fontSize: 28, fontWeight: 800 }}>Murdoku</h1>
-        <p style={{ margin: 0, color: 'rgba(0,0,0,0.5)', fontSize: 16 }}>
+        <h1 style={{ margin: 0, fontSize: 33, fontWeight: 800 }}>Murdoku</h1>
+        <p style={{ margin: 0, color: 'rgba(0,0,0,0.5)', fontSize: 19 }}>
           No puzzles yet. Run{' '}
           <code style={{ background: '#f1f5f9', padding: '2px 6px', borderRadius: 4, fontFamily: 'monospace' }}>
             npm run generate
@@ -42,7 +41,6 @@ export function App() {
   return (
     <div style={{
       minHeight: '100vh',
-      fontFamily: 'Georgia, "Times New Roman", serif',
       background: '#f8f6f0',
       color: '#1a1a2e',
     }}>
@@ -55,9 +53,9 @@ export function App() {
         alignItems: 'center',
         gap: 10,
       }}>
-        <span style={{ fontSize: 22 }}>🕵️</span>
-        <span style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.01em' }}>Murdoku</span>
-        <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', fontStyle: 'italic', marginLeft: 4 }}>
+        <span style={{ fontSize: 26 }}>🕵️</span>
+        <span style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-0.01em' }}>Murdoku</span>
+        <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', fontStyle: 'italic', marginLeft: 4 }}>
           Murder Mystery Logic Puzzles
         </span>
       </div>

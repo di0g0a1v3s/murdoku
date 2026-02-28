@@ -54,7 +54,7 @@ export function CluesPanel({ clues, people }: CluesPanelProps) {
     }}>
       <h3 style={{
         margin: 0,
-        fontSize: 14,
+        fontSize: 17,
         fontWeight: 700,
         textTransform: 'uppercase',
         letterSpacing: '0.08em',
@@ -73,9 +73,9 @@ export function CluesPanel({ clues, people }: CluesPanelProps) {
           }}>
             {section.person ? (
               <>
-                <span style={{ fontSize: 16 }}>{section.person.avatarEmoji}</span>
+                <span style={{ fontSize: 19 }}>{section.person.avatarEmoji}</span>
                 <span style={{
-                  fontSize: 12,
+                  fontSize: 14,
                   fontWeight: 700,
                   textTransform: 'uppercase',
                   letterSpacing: '0.06em',
@@ -84,12 +84,12 @@ export function CluesPanel({ clues, people }: CluesPanelProps) {
                   {section.person.name}
                 </span>
                 {section.person.role === 'victim' && (
-                  <span style={{ fontSize: 11, color: 'rgba(220,38,38,0.6)', fontWeight: 600 }}>· victim</span>
+                  <span style={{ fontSize: 13, color: 'rgba(220,38,38,0.6)', fontWeight: 600 }}>· victim</span>
                 )}
               </>
             ) : (
               <span style={{
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: 700,
                 textTransform: 'uppercase',
                 letterSpacing: '0.06em',

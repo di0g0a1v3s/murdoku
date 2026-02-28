@@ -1,4 +1,3 @@
-import * as readline from 'readline'
 import { randomInt } from 'crypto'
 import type { Clue, ObjectKind, Puzzle } from '../shared/types.js'
 import { solve } from '../shared/solver.js'
@@ -20,15 +19,6 @@ const MAX_CLUE_AUGMENT_RETRIES = 5
 
 // ─── CLI helpers ──────────────────────────────────────────────────────────────
 
-function ask(prompt: string): Promise<string> {
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
-  return new Promise(resolve => {
-    rl.question(prompt, answer => {
-      rl.close()
-      resolve(answer.trim())
-    })
-  })
-}
 
 function printPuzzleSummary(puzzle: Puzzle): void {
   console.log('\n' + '═'.repeat(60))
@@ -309,21 +299,13 @@ async function main(): Promise<void> {
       printPuzzleSummary(puzzle)
       printCostSummary()
 
-      const answer = await ask('\n💾 Save this puzzle? [Y/n]: ')
-      if (answer.toLowerCase() !== 'n') {
-        appendPuzzle(puzzle, OUTPUT_PATH)
-        console.log(`✅ Puzzle saved to ${OUTPUT_PATH}`)
-      } else {
-        console.log('⏭️  Puzzle discarded.')
-      }
-
-      const another = await ask('\n🎲 Generate another puzzle? [y/N]: ')
-      keepGoing = another.toLowerCase() === 'y'
+      appendPuzzle(puzzle, OUTPUT_PATH)
+      console.log(`✅ Puzzle saved to ${OUTPUT_PATH}`)
+      keepGoing = false
     } catch (err) {
       console.error('❌ Error generating puzzle:', err)
       printCostSummary()
-      const retry = await ask('Try again? [y/N]: ')
-      keepGoing = retry.toLowerCase() === 'y'
+      keepGoing = false
     }
   }
 

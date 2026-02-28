@@ -58,7 +58,7 @@ export function PuzzleView({ puzzle }: PuzzleViewProps) {
       }}>
         <h1 style={{
           margin: '0 0 4px 0',
-          fontSize: isMobile ? 20 : 26,
+          fontSize: isMobile ? 24 : 31,
           fontWeight: 800,
           color: '#1a1a2e',
           letterSpacing: '-0.02em',
@@ -69,7 +69,7 @@ export function PuzzleView({ puzzle }: PuzzleViewProps) {
         {puzzle.subtitle && (
           <p style={{
             margin: '0 0 16px 0',
-            fontSize: 14,
+            fontSize: 17,
             color: 'rgba(0,0,0,0.45)',
             fontStyle: 'italic',
           }}>
@@ -94,7 +94,7 @@ export function PuzzleView({ puzzle }: PuzzleViewProps) {
               borderRadius: 20,
               background: person.role === 'victim' ? '#fee2e2' : '#f1f5f9',
               border: `1px solid ${person.role === 'victim' ? '#fca5a5' : 'rgba(0,0,0,0.1)'}`,
-              fontSize: 12,
+              fontSize: 14,
               fontWeight: 600,
               color: person.role === 'victim' ? '#dc2626' : '#334155',
             }}>
@@ -141,7 +141,7 @@ export function PuzzleView({ puzzle }: PuzzleViewProps) {
           <div style={{
             display: 'flex',
             gap: 16,
-            fontSize: 11,
+            fontSize: 13,
             color: 'rgba(0,0,0,0.45)',
             fontWeight: 600,
             textTransform: 'uppercase',
@@ -162,7 +162,7 @@ export function PuzzleView({ puzzle }: PuzzleViewProps) {
                 color: 'white',
                 border: 'none',
                 borderRadius: 8,
-                fontSize: 14,
+                fontSize: 17,
                 fontWeight: 700,
                 cursor: 'pointer',
                 boxShadow: '0 4px 12px rgba(124,58,237,0.4)',
@@ -179,7 +179,7 @@ export function PuzzleView({ puzzle }: PuzzleViewProps) {
                 color: '#7c3aed',
                 border: '2px solid #7c3aed',
                 borderRadius: 8,
-                fontSize: 14,
+                fontSize: 17,
                 fontWeight: 700,
                 cursor: 'pointer',
               }}

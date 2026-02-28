@@ -44,7 +44,7 @@ export function PersonToken({ person, col, row, cellSize, isVictim, isMurderer }
         <User size={iconSize} strokeWidth={2} color="white" />
       </div>
       <div style={{
-        fontSize: cellSize * 0.1,
+        fontSize: cellSize * 0.12,
         fontWeight: 700,
         color: bgColor,
         textAlign: 'center',

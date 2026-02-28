@@ -28,10 +28,10 @@ export function ClueItem({ clue }: ClueItemProps) {
       background: 'rgba(0,0,0,0.03)',
       borderLeft: '3px solid rgba(0,0,0,0.12)',
     }}>
-      <span style={{ fontSize: 16, lineHeight: 1.4, flexShrink: 0 }}>{CLUE_ICONS[clue.kind]}</span>
+      <span style={{ fontSize: 19, lineHeight: 1.4, flexShrink: 0 }}>{CLUE_ICONS[clue.kind]}</span>
       <p style={{
         margin: 0,
-        fontSize: 13,
+        fontSize: 15,
         lineHeight: 1.5,
         color: '#1a1a2e',
       }}>
