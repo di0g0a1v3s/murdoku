@@ -60,7 +60,7 @@ export function GridCanvas({ puzzle, showSolution, cellSize }: GridCanvasProps) 
 
   return (
     <div style={gridStyle}>
-      {/* Layer 1: Room background fills */}
+      {/* Layer 1: Room background fills — regular grid items (no position:absolute to avoid double-offset) */}
       {rooms.map(room =>
         room.cells.map(cell => (
           <div
@@ -68,25 +68,18 @@ export function GridCanvas({ puzzle, showSolution, cellSize }: GridCanvasProps) 
             style={{
               gridColumn: cell.col + 1,
               gridRow: cell.row + 1,
-              background: room.color + '55', // 33% opacity
-              position: 'absolute' as const,
-              width: cellSize,
-              height: cellSize,
-              left: cell.col * cellSize,
-              top: cell.row * cellSize,
+              background: room.color + '55',
               zIndex: 0,
             }}
           />
         ))
       )}
 
-      {/* Layer 2: Room labels */}
+      {/* Layer 2: Room labels — position:absolute only (no gridColumn/gridRow to avoid double-offset) */}
       {roomLabels.map(({ room, row, col }) => (
         <div
           key={`label-${room.id}`}
           style={{
-            gridColumn: col + 1,
-            gridRow: row + 1,
             position: 'absolute' as const,
             left: col * cellSize + 4,
             top: row * cellSize + 3,
