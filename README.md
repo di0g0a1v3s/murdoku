@@ -1,73 +1,127 @@
-# React + TypeScript + Vite
+# 🕵️ Murdoku
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Murder Mystery Logic Puzzles** — a logic puzzle game combining the deduction of murder mysteries with the grid constraints of Sudoku.
 
-Currently, two official plugins are available:
+> Place every suspect on the grid. Find who was alone with the victim. Solve the case.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**[▶ Play online](https://di0g0a1v3s.github.io/murdoku/)**
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## How to Play
 
-## Expanding the ESLint configuration
+Murdoku presents you with a grid divided into rooms. Your goal is to place all suspects (and the victim) on the grid using the clues provided.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+**Rules:**
+- One person per row, one per column (like Sudoku)
+- People cannot occupy cells blocked by non-occupiable objects (tables, plants, etc.)
+- The **murderer** is the suspect who ends up **alone in the same room as the victim**
+- The clues always yield exactly one valid solution
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+**Clue types:**
+- Directional — *"A is north of B"*, *"A is 2 columns east of B"*
+- Object-relative — *"A is beside a chair"*, *"A is sitting at the desk"*
+- Room-based — *"A is in the library"*, *"A is in the same room as B"*, *"A is alone in their room"*
+- General — *"Exactly one chair is occupied"*
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Project Structure
+
+```
+murdoku/
+├── shared/               # Types and logic shared by CLI + frontend
+│   ├── types.ts          # Canonical data model (Puzzle, Room, Clue, etc.)
+│   ├── solver.ts         # Backtracking solver (uniqueness verification)
+│   └── clue-evaluator.ts # Per-clue-kind constraint evaluators
+│
+├── cli/                  # Developer tool — puzzle generator
+│   ├── generate.ts       # Entry point: npm run generate
+│   ├── llm-client.ts     # Vercel AI SDK + Gemini (theme & clue generation)
+│   ├── layout-builder.ts # Room partitioning + object placement
+│   ├── placer.ts         # Latin-square backtracking placer
+│   ├── clue-generator.ts # Derives all true facts from a placement
+│   └── output.ts         # Reads/writes src/puzzles/puzzles.json
+│
+└── src/                  # React frontend
+    ├── App.tsx
+    ├── puzzles/
+    │   └── puzzles.json  # Generated puzzles (bundled into the build)
+    └── components/
+        ├── GridCanvas.tsx
+        ├── CluesPanel.tsx
+        ├── PuzzleView.tsx
+        └── ...
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Tech Stack
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Layer | Technology |
+|---|---|
+| Frontend | React + TypeScript |
+| Bundler | Vite + `vite-plugin-singlefile` (outputs a single `index.html`) |
+| Hosting | GitHub Pages |
+| CLI | TypeScript via `tsx` |
+| LLM | Vercel AI SDK + Google Gemini |
+| Structured output | Zod |
+
+---
+
+## Generating Puzzles
+
+Puzzles are generated locally by the developer and committed to the repo. The frontend has them hardcoded at build time.
+
+**Prerequisites:** a [Google Gemini API key](https://aistudio.google.com/app/apikey).
+
+```bash
+# Install dependencies
+npm install
+
+# Run the generator
+GEMINI_API_KEY=your_key_here npm run generate
 ```
+
+The generator will:
+1. Call Gemini to create a theme (title, rooms, characters, atmosphere)
+2. Algorithmically build the grid layout and place all people
+3. Call Gemini to write atmospheric clue text from the derived facts
+4. Verify the puzzle has a unique solution
+5. Print a summary and prompt **Y/N** before saving to `src/puzzles/puzzles.json`
+
+After generating, commit and push — GitHub Actions will rebuild and redeploy automatically.
+
+---
+
+## Development
+
+```bash
+npm run dev      # Start local dev server
+npm run build    # Build single-file dist/index.html
+npm run preview  # Preview the production build
+```
+
+---
+
+## Puzzle Generation Pipeline
+
+```
+LLM → theme (title, rooms, characters)
+  ↓
+Algorithm → grid layout (Voronoi BFS room partitioning + object placement)
+  ↓
+Algorithm → valid placement (backtracking Latin-square solver)
+            enforces: 1 person/row, 1 person/col, murder room = exactly 2 people
+  ↓
+Algorithm → derive ALL true facts from the placement
+  ↓
+LLM → select minimal clue subset + write atmospheric mystery text
+  ↓
+Solver → verify unique solution (backtrack with limit=2)
+         if not unique → add programmatic clues, retry
+  ↓
+Y/N prompt → save to puzzles.json
+```
+
+The LLM is only trusted for **creative content** (names, atmosphere, clue prose). All constraint satisfaction is handled algorithmically.
