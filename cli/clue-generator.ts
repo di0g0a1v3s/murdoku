@@ -1,6 +1,10 @@
-import type { Direction, ObjectKind, PlacedPerson, Puzzle, Room } from '../shared/types.js'
+import type { Clue, Direction, ObjectKind, PlacedPerson, Puzzle, Room } from '../shared/types.js'
 import { getObjectsAdjacentInRoom, getObjectsAtCoord, directionFromAToB } from '../shared/clue-evaluator.js'
-import type { DerivableFact } from './llm-client.js'
+
+export interface DerivableFact {
+  description: string
+  clue: Clue
+}
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -21,7 +25,6 @@ function getRoomForPerson(personId: string, placements: PlacedPerson[], puzzle: 
 }
 
 const VALID_DIRECTIONS = new Set(['N', 'S', 'E', 'W', 'NE', 'NW', 'SE', 'SW'])
-const CARDINAL_DIRECTIONS = new Set(['N', 'S', 'E', 'W'])
 
 // ─── Derivable facts computation ──────────────────────────────────────────────
 
@@ -93,21 +96,19 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
       })
     }
 
-    // Exact column distance (same row)
-    if (cA.row === cB.row) {
-      const colDiff = cA.col - cB.col
+    // Column distance (E/W) — how many columns apart, any row
+    const colDiff = cA.col - cB.col
+    if (colDiff !== 0) {
       const dir: Direction = colDiff > 0 ? 'E' : 'W'
-      if (CARDINAL_DIRECTIONS.has(dir)) {
-        facts.push({
-          description: `${nameA} is exactly ${Math.abs(colDiff)} column(s) ${dir === 'E' ? 'east' : 'west'} of ${nameB}`,
-          clue: { kind: 'person-distance', personA: pA.personId, direction: dir, personB: pB.personId, distance: Math.abs(colDiff), axis: 'col', text: '' },
-        })
-      }
+      facts.push({
+        description: `${nameA} is exactly ${Math.abs(colDiff)} column(s) ${dir === 'E' ? 'east' : 'west'} of ${nameB}`,
+        clue: { kind: 'person-distance', personA: pA.personId, direction: dir, personB: pB.personId, distance: Math.abs(colDiff), axis: 'col', text: '' },
+      })
     }
 
-    // Exact row distance (same column)
-    if (cA.col === cB.col) {
-      const rowDiff = cA.row - cB.row
+    // Row distance (N/S) — how many rows apart, any column
+    const rowDiff = cA.row - cB.row
+    if (rowDiff !== 0) {
       const dir: Direction = rowDiff > 0 ? 'S' : 'N'
       facts.push({
         description: `${nameA} is exactly ${Math.abs(rowDiff)} row(s) ${dir === 'S' ? 'south' : 'north'} of ${nameB}`,

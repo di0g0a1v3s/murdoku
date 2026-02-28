@@ -86,10 +86,11 @@ GEMINI_API_KEY=your_key_here npm run generate
 The generator will:
 1. Call Gemini to create a theme (title, rooms, characters, atmosphere)
 2. Algorithmically build the grid layout and place all people
-3. Call Gemini to select which facts to use as clues
-4. Verify the puzzle has a unique solution; remove any redundant clues
-5. Call Gemini to write one summary sentence per suspect
-6. Automatically save to `src/puzzles/puzzles.json`
+3. Algorithmically derive every possible true fact from the placement
+4. Remove any clues that would let a player trivially pin a suspect without cross-suspect reasoning
+5. Minimize the clue set — greedily remove redundant clues while keeping a unique solution
+6. Call Gemini to write one summary sentence per suspect
+7. Automatically save to `src/puzzles/puzzles.json`
 
 Add `--debug` to print all LLM prompts and responses:
 
@@ -121,21 +122,17 @@ Algorithm → grid layout (Voronoi BFS room partitioning + object placement)
 Algorithm → valid placement (backtracking Latin-square solver)
             enforces: 1 person/row, 1 person/col, murder room = exactly 2 people
   ↓
-Algorithm → derive ALL true facts from the placement
+Algorithm → derive ALL true facts from the placement (shuffled for variety)
   ↓
-LLM → select fact indices (no text generated yet)
+Algorithm → de-pin: remove clues that let a player trivially locate a suspect
+            without any cross-suspect reasoning
   ↓
-Algorithm → ensure every suspect has ≥1 clue (adds programmatic clues if needed)
-  ↓
-Solver → verify unique solution (backtrack with limit=2)
-         if none: regenerate clues (up to 3×)
-         if multiple: add discriminating facts until unique (up to 5×)
-  ↓
-Algorithm → minimize clue set (remove redundant clues one by one)
+Algorithm → minimize: greedily remove redundant clues while keeping
+            (a) unique solution and (b) ≥1 clue per suspect
   ↓
 LLM → write one summary sentence per suspect (covering all their clues)
   ↓
 Auto-save → puzzles.json
 ```
 
-The LLM is only trusted for **creative content** (names, atmosphere, clue prose). All constraint satisfaction is handled algorithmically.
+The LLM is only used for **creative content** (theme, suspect summaries). All clue selection and constraint satisfaction is handled algorithmically.

@@ -1,7 +1,7 @@
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { generateObject } from 'ai'
 import { z } from 'zod'
-import type { Clue, Person, Room } from '../shared/types.js'
+import type { Person, Room } from '../shared/types.js'
 import { trackUsage } from './cost-tracker.js'
 
 const google = createGoogleGenerativeAI({
@@ -50,7 +50,8 @@ export async function generateTheme(): Promise<PuzzleTheme> {
 Create a unique and atmospheric theme for a 6-person puzzle set in an interesting location.
 
 Requirements:
-- Title should be dramatic and evocative
+- Title should be dramatic and specific to the setting — avoid generic dark words like "Obsidian", "Shadow", "Blood", "Crimson", "Midnight", "Dark", "Black"
+  Good examples: "Death on the Orient Express", "The Vanishing at Thornfield", "Poisoned at the Grand Prix", "A Fatal Evening at Café Lumière"
 - Setting can be any interesting location (manor, ship, library, theatre, casino, monastery, etc.)
 - Room names should fit the setting naturally
 - Room colors should be distinct and evoke the mood (hex codes)
@@ -66,7 +67,7 @@ Requirements:
 
 Make it creative and varied — avoid clichés.`
 
-  const { object, usage } = await generateObject({ model, schema: ThemeSchema, prompt })
+  const { object, usage } = await generateObject({ model, schema: ThemeSchema, prompt, temperature: 1.5 })
 
   trackUsage('Theme generation', usage)
   debugLog('generateTheme', prompt, object)
@@ -100,67 +101,6 @@ Make it creative and varied — avoid clichés.`
   }
 }
 
-// ─── Clue Generation ──────────────────────────────────────────────────────────
-
-export interface DerivableFact {
-  description: string
-  clue: Clue
-}
-
-// LLM only selects fact indices — text is generated separately per suspect
-const ClueSelectionSchema = z.array(z.object({
-  factIndex: z.number().int().min(0).describe('0-based index into the facts array'),
-}))
-
-export async function generateClues(
-  theme: PuzzleTheme,
-  facts: DerivableFact[],
-  targetCount: number = 10,
-): Promise<Clue[]> {
-  const factsText = facts.map((f, i) => `${i} (${f.clue.kind}): ${f.description}`).join('\n')
-
-  const prompt = `You are selecting clues for a Murdoku puzzle (murder mystery + logic grid).
-
-SETTING: ${theme.title}
-${theme.setting}
-
-PUZZLE SOLUTION FACTS (indexed 0 to ${facts.length - 1}):
-${factsText}
-
-TASK: Select exactly ${targetCount} fact indices from the list above that, together, uniquely identify where every person is located.
-
-Rules:
-1. Output exactly ${targetCount} selections, each with a valid factIndex (0 to ${facts.length - 1})
-2. Do NOT repeat the same factIndex twice
-3. Each suspect should appear in at least one selected fact
-4. Vary the fact types — pick a mix of direction, room, object, and population facts`
-
-  const { object, usage } = await generateObject({
-    model,
-    schema: z.object({ selections: ClueSelectionSchema }),
-    prompt,
-  })
-
-  trackUsage('Clue generation', usage)
-  debugLog('generateClues', prompt, object)
-
-  // Construct clues from pre-computed facts — LLM never touches constraint values
-  return object.selections
-    .filter(s => s.factIndex >= 0 && s.factIndex < facts.length)
-    .filter((s, i, arr) => arr.findIndex(x => x.factIndex === s.factIndex) === i) // deduplicate
-    .map(s => ({ ...facts[s.factIndex]!.clue, text: facts[s.factIndex]!.description }))
-}
-
-// ─── Additional clue (programmatic — no LLM call needed) ─────────────────────
-
-export function generateAdditionalClue(
-  candidateFacts: DerivableFact[],
-): Clue | null {
-  if (candidateFacts.length === 0) return null
-  const fact = candidateFacts[0]!
-  return { ...fact.clue, text: fact.description } as Clue
-}
-
 // ─── One-sentence suspect summary ─────────────────────────────────────────────
 
 export async function generateSuspectText(
@@ -174,13 +114,14 @@ Suspect: ${suspectName}
 Facts about this suspect:
 ${factDescriptions.map((d, i) => `${i + 1}. ${d}`).join('\n')}
 
-Write exactly ONE sentence that conveys all of the above facts about ${suspectName}. No mystery prose, no metaphors
-Example: "${suspectName} is in the Library, north of Blake, sitting at a desk."`
+Write exactly ONE grammatically natural sentence that conveys all of the above facts about ${suspectName}. No mystery prose, no metaphors. Use natural English word order — for example, write "alone in the Library" not "in the Library and alone", "sitting at a desk in the Library" not "in the Library, at a desk".
+Example: "${suspectName} is alone in the Library, 2 columns east of Blake, sitting at a desk."`
 
   const { object, usage } = await generateObject({
     model,
     schema: z.object({ text: z.string() }),
     prompt,
+    temperature: 0.4,
   })
 
   trackUsage('Suspect text', usage)

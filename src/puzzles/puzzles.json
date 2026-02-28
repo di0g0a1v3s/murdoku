@@ -2,111 +2,41 @@
   "version": "1.0.0",
   "puzzles": [
     {
-      "id": "the-obsidian-labyrinth-mm6ol4t9",
-      "title": "The Obsidian Labyrinth",
-      "subtitle": "A murder amidst the mirrored halls of a forgotten observatory.",
+      "id": "the-last-recital-at-blackwood-conservato-mm6qwwbe",
+      "title": "The Last Recital at Blackwood Conservatory",
+      "subtitle": "A crescendo of chaos, a diminuendo of life.",
       "gridSize": {
         "rows": 6,
         "cols": 6
       },
       "rooms": [
         {
-          "id": "the-celestial-sphere",
-          "name": "The Celestial Sphere",
-          "color": "#283744",
+          "id": "music-room",
+          "name": "Music Room",
+          "color": "#4A3F35",
           "cells": [
             {
-              "row": 3,
-              "col": 3
-            },
-            {
-              "row": 4,
-              "col": 3
-            },
-            {
-              "row": 4,
-              "col": 4
-            },
-            {
-              "row": 4,
+              "row": 1,
               "col": 5
             },
             {
-              "row": 5,
+              "row": 2,
               "col": 3
             },
             {
-              "row": 5,
+              "row": 2,
               "col": 4
             },
             {
-              "row": 5,
+              "row": 2,
               "col": 5
             }
           ]
         },
         {
-          "id": "the-refracting-chamber",
-          "name": "The Refracting Chamber",
-          "color": "#4A235A",
-          "cells": [
-            {
-              "row": 1,
-              "col": 0
-            },
-            {
-              "row": 1,
-              "col": 1
-            },
-            {
-              "row": 1,
-              "col": 2
-            },
-            {
-              "row": 2,
-              "col": 0
-            },
-            {
-              "row": 2,
-              "col": 1
-            },
-            {
-              "row": 2,
-              "col": 2
-            },
-            {
-              "row": 3,
-              "col": 0
-            },
-            {
-              "row": 3,
-              "col": 1
-            },
-            {
-              "row": 3,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "the-lunar-gallery",
-          "name": "The Lunar Gallery",
-          "color": "#7B241C",
-          "cells": [
-            {
-              "row": 3,
-              "col": 4
-            },
-            {
-              "row": 3,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "the-zodiac-atrium",
-          "name": "The Zodiac Atrium",
-          "color": "#1B4F72",
+          "id": "library",
+          "name": "Library",
+          "color": "#A38A62",
           "cells": [
             {
               "row": 0,
@@ -134,64 +64,134 @@
             },
             {
               "row": 1,
+              "col": 2
+            },
+            {
+              "row": 1,
               "col": 3
             },
             {
               "row": 1,
               "col": 4
+            }
+          ]
+        },
+        {
+          "id": "ballroom",
+          "name": "Ballroom",
+          "color": "#875F51",
+          "cells": [
+            {
+              "row": 1,
+              "col": 0
             },
             {
               "row": 1,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 0
+            },
+            {
+              "row": 3,
+              "col": 1
+            },
+            {
+              "row": 3,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 4,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 1
+            },
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 5,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "green-room",
+          "name": "Green Room",
+          "color": "#678263",
+          "cells": [
+            {
+              "row": 4,
+              "col": 3
+            },
+            {
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 4,
               "col": 5
             }
           ]
         },
         {
-          "id": "the-orrery-workshop",
-          "name": "The Orrery Workshop",
-          "color": "#515A5A",
+          "id": "observatory",
+          "name": "Observatory",
+          "color": "#5B6988",
           "cells": [
             {
-              "row": 4,
-              "col": 0
-            },
-            {
-              "row": 4,
-              "col": 1
-            },
-            {
-              "row": 4,
-              "col": 2
+              "row": 5,
+              "col": 3
             },
             {
               "row": 5,
-              "col": 0
+              "col": 4
             },
             {
               "row": 5,
-              "col": 1
-            },
-            {
-              "row": 5,
-              "col": 2
+              "col": 5
             }
           ]
         },
         {
-          "id": "the-shadowed-study",
-          "name": "The Shadowed Study",
-          "color": "#34495E",
+          "id": "headmaster-s-office",
+          "name": "Headmaster's Office",
+          "color": "#736459",
           "cells": [
             {
-              "row": 2,
-              "col": 3
-            },
-            {
-              "row": 2,
+              "row": 3,
               "col": 4
             },
             {
-              "row": 2,
+              "row": 3,
               "col": 5
             }
           ]
@@ -199,302 +199,285 @@
       ],
       "objects": [
         {
-          "id": "wardrobe-the-celestial-sphere-1",
-          "kind": "wardrobe",
-          "occupiable": "non-occupiable",
+          "id": "chair-music-room-1",
+          "kind": "chair",
+          "occupiable": "occupiable",
           "cells": [
             {
-              "row": 5,
+              "row": 2,
               "col": 4
             }
           ]
         },
         {
-          "id": "bookshelf-the-celestial-sphere-2",
-          "kind": "bookshelf",
-          "occupiable": "non-occupiable",
+          "id": "chair-music-room-2",
+          "kind": "chair",
+          "occupiable": "occupiable",
           "cells": [
             {
-              "row": 3,
+              "row": 2,
               "col": 3
             }
           ]
         },
         {
-          "id": "plant-the-refracting-chamber-1",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "plant-the-lunar-gallery-1",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "chair-the-lunar-gallery-2",
+          "id": "chair-library-1",
           "kind": "chair",
           "occupiable": "occupiable",
           "cells": [
             {
-              "row": 3,
+              "row": 1,
               "col": 4
             }
           ]
         },
         {
-          "id": "sofa-the-zodiac-atrium-1",
-          "kind": "sofa",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 4
-            },
-            {
-              "row": 1,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "bed-the-zodiac-atrium-2",
-          "kind": "bed",
+          "id": "desk-library-2",
+          "kind": "desk",
           "occupiable": "occupiable",
           "cells": [
             {
               "row": 0,
-              "col": 3
-            },
-            {
-              "row": 1,
-              "col": 3
+              "col": 4
             }
           ]
         },
         {
-          "id": "chair-the-orrery-workshop-1",
-          "kind": "chair",
-          "occupiable": "occupiable",
+          "id": "wardrobe-ballroom-1",
+          "kind": "wardrobe",
+          "occupiable": "non-occupiable",
           "cells": [
             {
-              "row": 5,
+              "row": 2,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "fireplace-ballroom-2",
+          "kind": "fireplace",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 4,
               "col": 0
             }
           ]
         },
         {
-          "id": "wardrobe-the-orrery-workshop-2",
-          "kind": "wardrobe",
+          "id": "table-green-room-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 3
+            },
+            {
+              "row": 4,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "toilet-observatory-1",
+          "kind": "toilet",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "fireplace-observatory-2",
+          "kind": "fireplace",
           "occupiable": "non-occupiable",
           "cells": [
             {
               "row": 5,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "counter-the-shadowed-study-1",
-          "kind": "counter",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 2,
               "col": 4
-            },
-            {
-              "row": 2,
-              "col": 5
             }
           ]
         },
         {
-          "id": "bookshelf-the-shadowed-study-2",
-          "kind": "bookshelf",
+          "id": "plant-headmaster-s-office-1",
+          "kind": "plant",
           "occupiable": "non-occupiable",
           "cells": [
             {
-              "row": 2,
-              "col": 3
+              "row": 3,
+              "col": 5
             }
           ]
         }
       ],
       "people": [
         {
-          "id": "valerius-thorne",
-          "name": "Valerius Thorne",
+          "id": "victor-sinclair",
+          "name": "Victor Sinclair",
           "role": "victim",
-          "avatarEmoji": "🔭"
+          "avatarEmoji": "🎼"
         },
         {
-          "id": "alistair-blackwood",
-          "name": "Alistair Blackwood",
+          "id": "alistair-finch",
+          "name": "Alistair Finch",
           "role": "suspect",
-          "avatarEmoji": "📜"
+          "avatarEmoji": "🎻"
         },
         {
-          "id": "beatrice-bellweather",
-          "name": "Beatrice Bellweather",
+          "id": "beatrix-thorne",
+          "name": "Beatrix Thorne",
           "role": "suspect",
-          "avatarEmoji": "🗝️"
+          "avatarEmoji": "🎤"
         },
         {
-          "id": "cassian-finch",
-          "name": "Cassian Finch",
+          "id": "clarence-ives",
+          "name": "Clarence Ives",
           "role": "suspect",
-          "avatarEmoji": "🖋️"
+          "avatarEmoji": "🎹"
         },
         {
-          "id": "drusilla-nightshade",
-          "name": "Drusilla Nightshade",
+          "id": "dorothea-bell",
+          "name": "Dorothea Bell",
           "role": "suspect",
-          "avatarEmoji": "🔮"
+          "avatarEmoji": "🎭"
         },
         {
-          "id": "elias-croft",
-          "name": "Elias Croft",
+          "id": "ernest-holt",
+          "name": "Ernest Holt",
           "role": "suspect",
-          "avatarEmoji": "⚙️"
+          "avatarEmoji": "🎺"
         }
       ],
       "clues": [
         {
-          "kind": "person-direction",
-          "personA": "beatrice-bellweather",
-          "direction": "NE",
-          "personB": "valerius-thorne",
-          "text": "Beatrice Bellweather is NE of Valerius Thorne"
-        },
-        {
-          "kind": "person-direction",
-          "personA": "drusilla-nightshade",
-          "direction": "NW",
-          "personB": "valerius-thorne",
-          "text": "Drusilla Nightshade is NW of Valerius Thorne"
-        },
-        {
           "kind": "person-beside-object",
-          "person": "cassian-finch",
-          "objectKind": "wardrobe",
-          "text": "Cassian Finch is beside a wardrobe in the The Celestial Sphere"
+          "person": "ernest-holt",
+          "objectKind": "desk",
+          "text": "Ernest Holt is beside a desk in the Library"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "alistair-finch",
+          "direction": "E",
+          "personB": "clarence-ives",
+          "distance": 2,
+          "axis": "col",
+          "text": "Alistair Finch is exactly 2 column(s) east of Clarence Ives"
         },
         {
           "kind": "room-population",
-          "roomId": "the-zodiac-atrium",
+          "roomId": "observatory",
           "count": 1,
-          "text": "The The Zodiac Atrium has exactly 1 person(s)"
+          "text": "The Observatory has exactly 1 person(s)"
         },
         {
-          "kind": "person-in-room",
-          "person": "elias-croft",
-          "roomId": "the-refracting-chamber",
-          "text": "Elias Croft is in the The Refracting Chamber"
+          "kind": "person-distance",
+          "personA": "beatrix-thorne",
+          "direction": "W",
+          "personB": "clarence-ives",
+          "distance": 2,
+          "axis": "col",
+          "text": "Beatrix Thorne is exactly 2 column(s) west of Clarence Ives"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "clarence-ives",
+          "direction": "S",
+          "personB": "ernest-holt",
+          "distance": 1,
+          "axis": "row",
+          "text": "Clarence Ives is exactly 1 row(s) south of Ernest Holt"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "beatrix-thorne",
+          "direction": "S",
+          "personB": "clarence-ives",
+          "distance": 1,
+          "axis": "row",
+          "text": "Beatrix Thorne is exactly 1 row(s) south of Clarence Ives"
         },
         {
           "kind": "person-direction",
-          "personA": "cassian-finch",
-          "direction": "NE",
-          "personB": "valerius-thorne",
-          "text": "Cassian Finch is NE of Valerius Thorne"
-        },
-        {
-          "kind": "person-direction",
-          "personA": "alistair-blackwood",
-          "direction": "SW",
-          "personB": "drusilla-nightshade",
-          "text": "Alistair Blackwood is SW of Drusilla Nightshade"
-        },
-        {
-          "kind": "person-direction",
-          "personA": "alistair-blackwood",
-          "direction": "NW",
-          "personB": "elias-croft",
-          "text": "Alistair Blackwood is NW of Elias Croft"
+          "personA": "dorothea-bell",
+          "direction": "SE",
+          "personB": "ernest-holt",
+          "text": "Dorothea Bell is SE of Ernest Holt"
         }
       ],
       "solution": {
         "placements": [
           {
-            "personId": "valerius-thorne",
+            "personId": "victor-sinclair",
             "coord": {
-              "row": 5,
-              "col": 3
+              "row": 4,
+              "col": 1
             }
           },
           {
-            "personId": "alistair-blackwood",
+            "personId": "alistair-finch",
+            "coord": {
+              "row": 3,
+              "col": 4
+            }
+          },
+          {
+            "personId": "beatrix-thorne",
             "coord": {
               "row": 2,
               "col": 0
             }
           },
           {
-            "personId": "beatrice-bellweather",
+            "personId": "clarence-ives",
             "coord": {
-              "row": 0,
+              "row": 1,
+              "col": 2
+            }
+          },
+          {
+            "personId": "dorothea-bell",
+            "coord": {
+              "row": 5,
               "col": 5
             }
           },
           {
-            "personId": "cassian-finch",
+            "personId": "ernest-holt",
             "coord": {
-              "row": 4,
-              "col": 4
-            }
-          },
-          {
-            "personId": "drusilla-nightshade",
-            "coord": {
-              "row": 1,
-              "col": 1
-            }
-          },
-          {
-            "personId": "elias-croft",
-            "coord": {
-              "row": 3,
-              "col": 2
+              "row": 0,
+              "col": 3
             }
           }
         ],
-        "murdererId": "cassian-finch",
-        "victimId": "valerius-thorne",
-        "murderRoom": "the-celestial-sphere"
+        "murdererId": "beatrix-thorne",
+        "victimId": "victor-sinclair",
+        "murderRoom": "ballroom"
       },
-      "generatedAt": "2026-02-28T18:55:10.881Z",
+      "generatedAt": "2026-02-28T20:00:19.242Z",
       "suspectSummaries": [
         {
-          "personId": "alistair-blackwood",
-          "text": "Alistair Blackwood is southwest of Drusilla Nightshade and northwest of Elias Croft."
+          "personId": "alistair-finch",
+          "text": "Alistair Finch is 2 columns east of Clarence Ives."
         },
         {
-          "personId": "beatrice-bellweather",
-          "text": "Beatrice Bellweather is northeast of Valerius Thorne."
+          "personId": "beatrix-thorne",
+          "text": "Beatrix Thorne is 2 columns west and 1 row south of Clarence Ives."
         },
         {
-          "personId": "cassian-finch",
-          "text": "Cassian Finch is in The Celestial Sphere beside a wardrobe and northeast of Valerius Thorne."
+          "personId": "clarence-ives",
+          "text": "Clarence Ives is exactly 1 row south of Ernest Holt."
         },
         {
-          "personId": "drusilla-nightshade",
-          "text": "Drusilla Nightshade is NW of Valerius Thorne."
+          "personId": "dorothea-bell",
+          "text": "Dorothea Bell is southeast of Ernest Holt."
         },
         {
-          "personId": "elias-croft",
-          "text": "Elias Croft is in the The Refracting Chamber."
+          "personId": "ernest-holt",
+          "text": "Ernest Holt is in the Library beside a desk."
         }
       ]
     }

@@ -1,8 +1,8 @@
 import { randomInt } from 'crypto'
-import type { Clue, ObjectKind, Puzzle } from '../shared/types.js'
+import type { Clue, Puzzle } from '../shared/types.js'
 import { solve } from '../shared/solver.js'
 import { evaluateClue } from '../shared/clue-evaluator.js'
-import { generateTheme, generateClues, generateAdditionalClue, generateSuspectText, setDebug } from './llm-client.js'
+import { generateTheme, generateSuspectText, setDebug } from './llm-client.js'
 import { buildLayout, hasEnoughOccupiableCells } from './layout-builder.js'
 import { placePeople } from './placer.js'
 import { computeAllFacts } from './clue-generator.js'
@@ -10,15 +10,21 @@ import { appendPuzzle } from './output.js'
 import { printCostSummary, resetCosts } from './cost-tracker.js'
 
 const OUTPUT_PATH = 'src/puzzles/puzzles.json'
-const MAX_CLUE_GEN_RETRIES = 3
 const GRID_ROWS = 6
 const GRID_COLS = 6
 const MAX_LAYOUT_RETRIES = 10
 const MAX_PLACEMENT_RETRIES = 10
-const MAX_CLUE_AUGMENT_RETRIES = 5
 
 // ─── CLI helpers ──────────────────────────────────────────────────────────────
 
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = randomInt(0, i + 1)
+    ;[a[i], a[j]] = [a[j]!, a[i]!]
+  }
+  return a
+}
 
 function printPuzzleSummary(puzzle: Puzzle): void {
   console.log('\n' + '═'.repeat(60))
@@ -157,35 +163,6 @@ async function generatePuzzle(): Promise<Puzzle> {
   const facts = computeAllFacts(partialPuzzle, placerResult.placements)
   console.log(`✅ Found ${facts.length} derivable facts`)
 
-  // Validate clues: filter out any whose IDs don't exist in the puzzle
-  function validateClues(raw: Clue[]): Clue[] {
-    const personIds = new Set(partialPuzzle.people.map(p => p.id))
-    const roomIds = new Set(partialPuzzle.rooms.map(r => r.id))
-    const objectKinds = new Set(partialPuzzle.objects.map(o => o.kind as ObjectKind))
-    return raw.filter(clue => {
-      switch (clue.kind) {
-        case 'person-direction':
-        case 'person-distance':
-          return personIds.has(clue.personA) && personIds.has(clue.personB)
-        case 'person-beside-object':
-        case 'person-on-object':
-          return personIds.has(clue.person) && objectKinds.has(clue.objectKind as ObjectKind)
-        case 'person-in-room':
-        case 'person-not-in-room':
-          return personIds.has(clue.person) && roomIds.has(clue.roomId)
-        case 'persons-same-room':
-        case 'persons-not-same-room':
-          return personIds.has(clue.personA) && personIds.has(clue.personB)
-        case 'person-alone-in-room':
-          return personIds.has(clue.person)
-        case 'room-population':
-          return roomIds.has(clue.roomId)
-        case 'object-occupancy':
-          return objectKinds.has(clue.objectKind as ObjectKind)
-      }
-    })
-  }
-
   // Verify that every clue is actually satisfied by the known solution
   function auditClues(label: string, cluesToCheck: Clue[]): void {
     const knownAssignment = new Map(
@@ -203,32 +180,12 @@ async function generatePuzzle(): Promise<Puzzle> {
     if (!anyViolated) console.log(`  ✅ All ${cluesToCheck.length} clues satisfy the known solution`)
   }
 
-  // Remove any facts about the victim — victim has a fixed hardcoded clue in the UI
+  // Strip facts about the victim — victim has a fixed hardcoded clue in the UI
   const victimId = partialPuzzle.solution.victimId
   const nonVictimFacts = facts.filter(f => {
     const c = f.clue as Record<string, unknown>
     return c['person'] !== victimId && c['personA'] !== victimId
   })
-
-  function filterVictimClues(raw: Clue[]): Clue[] {
-    return raw.filter(clue => {
-      switch (clue.kind) {
-        case 'person-direction':
-        case 'person-distance':
-        case 'persons-same-room':
-        case 'persons-not-same-room':
-          return clue.personA !== victimId
-        case 'person-beside-object':
-        case 'person-on-object':
-        case 'person-in-room':
-        case 'person-alone-in-room':
-        case 'person-not-in-room':
-          return clue.person !== victimId
-        default:
-          return true
-      }
-    })
-  }
 
   function getCluePersonId(clue: Clue): string | null {
     switch (clue.kind) {
@@ -248,120 +205,80 @@ async function generatePuzzle(): Promise<Puzzle> {
     }
   }
 
-  // Ensure every suspect has at least one clue — add programmatic clues if LLM missed any
-  function ensureSuspectCoverage(current: Clue[]): Clue[] {
-    const withoutText = (c: Record<string, unknown>) =>
-      JSON.stringify(Object.fromEntries(Object.entries(c).filter(([k]) => k !== 'text')))
-    const usedKeys = new Set(current.map(c => withoutText(c as Record<string, unknown>)))
-    const covered = new Set(current.map(c => getCluePersonId(c)).filter(Boolean))
-    const result = [...current]
-    for (const suspect of partialPuzzle.people.filter(p => p.role === 'suspect')) {
-      if (covered.has(suspect.id)) continue
-      const fact = nonVictimFacts.find(f => {
-        const fc = f.clue as Record<string, unknown>
-        return (fc['person'] === suspect.id || fc['personA'] === suspect.id) &&
-               !usedKeys.has(withoutText(f.clue as Record<string, unknown>))
-      })
-      if (fact) {
-        result.push({ ...fact.clue, text: fact.description } as Clue)
-        usedKeys.add(withoutText(fact.clue as Record<string, unknown>))
-        console.log(`  ➕ Added missing clue for ${suspect.name}: ${fact.description}`)
+  // Returns true if this suspect's clues alone (evaluated in isolation, no
+  // Latin-square reasoning) leave exactly one compatible cell.
+  function suspectIsPinned(suspectId: string, suspectClues: Clue[]): boolean {
+    if (suspectClues.length === 0) return false
+    const { rows, cols } = partialPuzzle.gridSize
+    let compatibleCount = 0
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const nonOccupiable = partialPuzzle.objects.some(obj =>
+          obj.occupiable === 'non-occupiable' &&
+          obj.cells.some(c => c.row === row && c.col === col)
+        )
+        if (nonOccupiable) continue
+        const assignment = new Map([[suspectId, { row, col }]])
+        const ok = suspectClues.every(c => evaluateClue(c, assignment, partialPuzzle) !== 'violated')
+        if (ok && ++compatibleCount > 1) return false
       }
     }
-    return result
+    return compatibleCount === 1
   }
 
-  // Step 5: Generate clues via LLM
-  console.log('\n✍️  Step 5: Generating clues via LLM...')
-  let clues = ensureSuspectCoverage(filterVictimClues(validateClues(await generateClues(theme, nonVictimFacts, 10))))
-  console.log(`✅ Validated ${clues.length} clues`)
-  auditClues('initial', clues)
+  // Step 5: Start from every derivable fact, shuffle for variety.
+  // (a) De-pin: while the pool is large, greedily remove any clue that pins a suspect
+  //     (evaluated in isolation). No uniqueness check here — we have many facts to spare.
+  // (b) Minimize: greedily remove redundant clues (uniqueness + coverage only).
+  console.log('\n✂️  Step 5: Minimizing clue set...')
+  let clues = shuffle(nonVictimFacts.map(f => ({ ...f.clue, text: f.description } as Clue)))
+  console.log(`  Starting with ${clues.length} candidate clues`)
+  auditClues('all facts', clues)
 
-  // Step 6: Verify uniqueness
-  // - status 'none'     → LLM produced contradictory clues; regenerate all clues
-  // - status 'multiple' → clues are valid but under-constrained; add programmatic clues
-  console.log('\n🔍 Step 6: Verifying unique solution...')
-  partialPuzzle.clues = clues
+  const suspectIds = new Set(partialPuzzle.people.filter(p => p.role === 'suspect').map(p => p.id))
 
-  let verifyResult = solve(partialPuzzle, clues, 2)
-  let clueGenRetries = 0
-  let augmentAttempts = 0
-
-  while (verifyResult.status !== 'unique') {
-    if (verifyResult.status === 'none') {
-      if (clueGenRetries >= MAX_CLUE_GEN_RETRIES) {
-        throw new Error(`Clues remain contradictory after ${MAX_CLUE_GEN_RETRIES} regeneration attempts`)
-      }
-      console.log(`  ⚠️  No valid solution — LLM clues contradictory. Regenerating (attempt ${clueGenRetries + 2})...`)
-      clueGenRetries++
-      clues = ensureSuspectCoverage(filterVictimClues(validateClues(await generateClues(theme, nonVictimFacts, 10))))
-      console.log(`  ↳ Regenerated ${clues.length} valid clues`)
-      auditClues(`retry ${clueGenRetries}`, clues)
-    } else {
-      // status === 'multiple'
-      if (augmentAttempts >= MAX_CLUE_AUGMENT_RETRIES) {
-        throw new Error(`Could not achieve unique solution after ${augmentAttempts} augmentation attempts`)
-      }
-
-      // Find unused facts (compare structural part only, ignoring LLM-generated text)
-      const withoutText = (c: Record<string, unknown>) =>
-        JSON.stringify(Object.fromEntries(Object.entries(c).filter(([k]) => k !== 'text')))
-      const usedKeys = new Set(clues.map(c => withoutText(c as Record<string, unknown>)))
-      const unusedFacts = nonVictimFacts.filter(f => !usedKeys.has(withoutText(f.clue as Record<string, unknown>)))
-
-      // Prefer facts that discriminate against the alternative solution
-      const altPlacements = verifyResult.solutions[1]
-      const altAssignment = altPlacements
-        ? new Map(altPlacements.map(p => [p.personId, p.coord]))
-        : null
-      const candidateFacts = altAssignment
-        ? unusedFacts.filter(f => evaluateClue(f.clue, altAssignment, partialPuzzle) === 'violated')
-        : unusedFacts
-
-      console.log(`  ⚠️  Multiple solutions exist. Adding constraining clue (attempt ${augmentAttempts + 1}) — ${candidateFacts.length} discriminating facts available...`)
-      const extra = generateAdditionalClue(candidateFacts.length > 0 ? candidateFacts : unusedFacts)
-      if (!extra) {
-        console.log('  ❌ No more facts to add!')
+  // (a) De-pin pass — remove over-constraining clues while the pool is still large
+  let pinChanged = true
+  while (pinChanged) {
+    pinChanged = false
+    for (const suspect of partialPuzzle.people.filter(p => p.role === 'suspect')) {
+      const suspectClues = clues.filter(c => getCluePersonId(c) === suspect.id)
+      if (!suspectIsPinned(suspect.id, suspectClues)) continue
+      for (let i = 0; i < clues.length; i++) {
+        if (getCluePersonId(clues[i]!) !== suspect.id) continue
+        const candidate = [...clues.slice(0, i), ...clues.slice(i + 1)]
+        const covered = new Set(candidate.map(c => getCluePersonId(c)).filter(Boolean))
+        if (!covered.has(suspect.id)) continue
+        if (suspectIsPinned(suspect.id, candidate.filter(c => getCluePersonId(c) === suspect.id))) continue
+        clues = candidate
+        pinChanged = true
         break
       }
-      clues = [...clues, extra]
-      augmentAttempts++
     }
-    partialPuzzle.clues = clues
-    verifyResult = solve(partialPuzzle, clues, 2)
   }
+  console.log(`  ${clues.length} clues after de-pinning`)
 
-  if (verifyResult.status !== 'unique') {
-    throw new Error(`Could not achieve unique solution. Status: ${verifyResult.status}`)
-  }
-  console.log('✅ Unique solution verified!')
-
-  // Step 7: Minimize clue set — remove any clue that's redundant while keeping:
-  //   (a) unique solution, (b) at least one clue per suspect
-  console.log('\n✂️  Step 7: Minimizing clue set...')
-  const suspectIds = new Set(partialPuzzle.people.filter(p => p.role === 'suspect').map(p => p.id))
+  // (b) Minimize pass — remove any clue redundant for uniqueness or coverage
+  partialPuzzle.clues = clues
   let changed = true
   while (changed) {
     changed = false
     for (let i = 0; i < clues.length; i++) {
       const candidate = [...clues.slice(0, i), ...clues.slice(i + 1)]
-      // Ensure every suspect still has at least one clue
       const covered = new Set(candidate.map(c => getCluePersonId(c)).filter(Boolean))
       if ([...suspectIds].some(id => !covered.has(id))) continue
-      // Check solution is still unique without this clue
-      if (solve(partialPuzzle, candidate, 2).status === 'unique') {
-        console.log(`  ✂️  Removed: ${clues[i]!.text}`)
-        clues = candidate
-        partialPuzzle.clues = clues
-        changed = true
-        break
-      }
+      if (solve(partialPuzzle, candidate, 2).status !== 'unique') continue
+      console.log(`  ✂️  Removed: ${clues[i]!.text}`)
+      clues = candidate
+      partialPuzzle.clues = clues
+      changed = true
+      break
     }
   }
   console.log(`✅ Minimized to ${clues.length} clues`)
 
-  // Step 8: Generate one-sentence summaries per suspect
-  console.log('\n✍️  Step 8: Generating suspect summaries...')
+  // Step 6: Generate one-sentence summaries per suspect
+  console.log('\n✍️  Step 6: Generating suspect summaries...')
 
   const suspectSummaries: { personId: string; text: string }[] = []
   for (const suspect of partialPuzzle.people.filter(p => p.role === 'suspect')) {
@@ -376,7 +293,7 @@ async function generatePuzzle(): Promise<Puzzle> {
     console.log(`  ✅ ${suspect.avatarEmoji} ${suspect.name}: "${text}"`)
   }
 
-  // Step 9: Build final puzzle
+  // Step 7: Build final puzzle
   const id = theme.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40) +
     '-' + Date.now().toString(36)
 

@@ -88,15 +88,11 @@ function evalPersonDistance(
   if (!a || !b) return 'unknown'
 
   if (clue.axis === 'col') {
-    const correctAxis = a.row === b.row
-    if (!correctAxis) return 'violated'
     const diff = a.col - b.col
     if (clue.direction === 'E' && diff === clue.distance) return 'satisfied'
     if (clue.direction === 'W' && diff === -clue.distance) return 'satisfied'
     return 'violated'
   } else {
-    const correctAxis = a.col === b.col
-    if (!correctAxis) return 'violated'
     const diff = a.row - b.row
     if (clue.direction === 'N' && diff === -clue.distance) return 'satisfied'
     if (clue.direction === 'S' && diff === clue.distance) return 'satisfied'

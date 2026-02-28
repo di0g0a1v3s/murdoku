@@ -27,7 +27,7 @@ A logic puzzle game combining murder mystery storytelling with Sudoku-style grid
 
 **Clue types:**
 - `person-direction` — "A is northwest of B"
-- `person-distance` — "A is exactly 2 columns east of B"
+- `person-distance` — "A is exactly 2 columns east of B" (column/row distance only, no row/col alignment required)
 - `person-beside-object` — "A is beside a table" (orthogonally adjacent, same room only)
 - `person-on-object` — "A is sitting at the desk"
 - `person-in-room` — "A is in the kitchen"
@@ -119,24 +119,25 @@ GEMINI_API_KEY=your_key npm run generate -- --debug  # Print all LLM prompts/res
 ```
 1. LLM  → theme (title, subtitle, room names, colors, character names/emojis)
            victim name starts with V; suspects start with A, B, C, D, E
+           temperature=1.5 for maximum variety
 2. Algo → grid layout (Voronoi BFS room partitioning + random object placement)
 3. Algo → valid placement (backtracking Latin-square placer)
            enforces: 1/row, 1/col, no non-occupiable cells,
            victim's room has exactly 2 people (victim + murderer)
 4. Algo → computeAllFacts() — exhaustive list of all true statements (victim facts excluded)
-5. LLM  → selects fact indices (0-based) — no text generated yet
-6. Algo → ensureSuspectCoverage() — adds programmatic clues for any uncovered suspects
-7. Solver → verify unique solution (backtrack limit=2)
-            if none: LLM produced contradictory clues → regenerate (up to 3×)
-            if multiple: add discriminating facts until unique (up to 5×)
-8. Algo → minimize clue set — greedily remove redundant clues while maintaining
+           shuffled for variety before processing
+5. Algo → de-pin pass — remove any clue whose removal still leaves the suspect
+           with ≥1 clue but no longer individually pinned to one cell
+           (no uniqueness check; pool is large enough to absorb removals)
+6. Algo → minimize pass — greedily remove redundant clues while maintaining
            (a) unique solution and (b) ≥1 clue per suspect
-9. LLM  → generateSuspectText() — one LLM call per suspect → one summary sentence
-           covering all their clues; victim clue is fixed ("alone with murderer")
-10. Auto-save → append to src/puzzles/puzzles.json
+7. LLM  → generateSuspectText() — one LLM call per suspect → one summary sentence
+           covering all their clues; temperature=0.4 for accurate factual prose
+           victim clue is fixed ("alone with murderer") and never stored
+8. Auto-save → append to src/puzzles/puzzles.json
 ```
 
-**Key design principle:** LLM handles creative content only (theme, suspect summaries). All constraint values come from pre-computed facts; all satisfaction checking is algorithmic.
+**Key design principle:** LLM handles creative content only (theme, suspect summaries). All clue selection and constraint satisfaction is fully algorithmic.
 
 ---
 
@@ -195,8 +196,9 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 
 ## Phase 2 Ideas (not started)
 
-- Interactive solving (click/drag to place suspects)
-- Hint system using the solver
 - Difficulty ratings
-- Puzzle timer
 - More clue types
+- More object types
+- Bigger grids
+- Interactive solving
+- Hint system using the solver
