@@ -1,6 +1,6 @@
 import * as readline from 'readline'
 import { randomInt } from 'crypto'
-import type { Puzzle } from '../shared/types.js'
+import type { Clue, ObjectKind, Puzzle } from '../shared/types.js'
 import { solve } from '../shared/solver.js'
 import { generateTheme, generateClues, generateAdditionalClue } from './llm-client.js'
 import { buildLayout, hasEnoughOccupiableCells } from './layout-builder.js'
@@ -10,6 +10,7 @@ import { appendPuzzle } from './output.js'
 import { printCostSummary, resetCosts } from './cost-tracker.js'
 
 const OUTPUT_PATH = 'src/puzzles/puzzles.json'
+const MAX_CLUE_GEN_RETRIES = 3
 const GRID_ROWS = 6
 const GRID_COLS = 6
 const MAX_LAYOUT_RETRIES = 10
@@ -165,38 +166,79 @@ async function generatePuzzle(): Promise<Puzzle> {
   const facts = computeAllFacts(partialPuzzle, placerResult.placements)
   console.log(`✅ Found ${facts.length} derivable facts`)
 
+  // Validate clues: filter out any whose IDs don't exist in the puzzle
+  function validateClues(raw: Clue[]): Clue[] {
+    const personIds = new Set(partialPuzzle.people.map(p => p.id))
+    const roomIds = new Set(partialPuzzle.rooms.map(r => r.id))
+    const objectKinds = new Set(partialPuzzle.objects.map(o => o.kind as ObjectKind))
+    return raw.filter(clue => {
+      switch (clue.kind) {
+        case 'person-direction':
+        case 'person-distance':
+          return personIds.has(clue.personA) && personIds.has(clue.personB)
+        case 'person-beside-object':
+        case 'person-on-object':
+          return personIds.has(clue.person) && objectKinds.has(clue.objectKind as ObjectKind)
+        case 'person-in-room':
+        case 'person-not-in-room':
+          return personIds.has(clue.person) && roomIds.has(clue.roomId)
+        case 'persons-same-room':
+        case 'persons-not-same-room':
+          return personIds.has(clue.personA) && personIds.has(clue.personB)
+        case 'person-alone-in-room':
+          return personIds.has(clue.person)
+        case 'room-population':
+          return roomIds.has(clue.roomId)
+        case 'object-occupancy':
+          return objectKinds.has(clue.objectKind as ObjectKind)
+      }
+    })
+  }
+
   // Step 5: Generate clues via LLM
   console.log('\n✍️  Step 5: Generating clues via LLM...')
-  let clues = await generateClues(theme, facts, 10)
-  console.log(`✅ Generated ${clues.length} clues`)
+  let clues = validateClues(await generateClues(theme, facts, 10))
+  console.log(`✅ Validated ${clues.length} clues`)
 
   // Step 6: Verify uniqueness
+  // - status 'none'     → LLM produced contradictory clues; regenerate all clues
+  // - status 'multiple' → clues are valid but under-constrained; add programmatic clues
   console.log('\n🔍 Step 6: Verifying unique solution...')
   partialPuzzle.clues = clues
 
   let verifyResult = solve(partialPuzzle, clues, 2)
+  let clueGenRetries = 0
   let augmentAttempts = 0
 
-  while (verifyResult.status !== 'unique' && augmentAttempts < MAX_CLUE_AUGMENT_RETRIES) {
+  while (verifyResult.status !== 'unique') {
     if (verifyResult.status === 'none') {
-      console.log('  ⚠️  No valid solution found — clues may be contradictory. Adding clarifying clue...')
+      if (clueGenRetries >= MAX_CLUE_GEN_RETRIES) {
+        throw new Error(`Clues remain contradictory after ${MAX_CLUE_GEN_RETRIES} regeneration attempts`)
+      }
+      console.log(`  ⚠️  No valid solution — LLM clues contradictory. Regenerating (attempt ${clueGenRetries + 2})...`)
+      clueGenRetries++
+      clues = validateClues(await generateClues(theme, facts, 10))
+      console.log(`  ↳ Regenerated ${clues.length} valid clues`)
     } else {
+      // status === 'multiple'
+      if (augmentAttempts >= MAX_CLUE_AUGMENT_RETRIES) {
+        throw new Error(`Could not achieve unique solution after ${augmentAttempts} augmentation attempts`)
+      }
       console.log(`  ⚠️  Multiple solutions exist. Adding constraining clue (attempt ${augmentAttempts + 1})...`)
+      const extra = await generateAdditionalClue(theme, facts, clues)
+      if (!extra) {
+        console.log('  ❌ No more facts to add!')
+        break
+      }
+      clues = [...clues, extra]
+      augmentAttempts++
     }
-
-    const extra = await generateAdditionalClue(theme, facts, clues)
-    if (!extra) {
-      console.log('  ❌ No more facts to add!')
-      break
-    }
-    clues = [...clues, extra]
     partialPuzzle.clues = clues
     verifyResult = solve(partialPuzzle, clues, 2)
-    augmentAttempts++
   }
 
   if (verifyResult.status !== 'unique') {
-    throw new Error(`Could not achieve unique solution after ${augmentAttempts} augmentation attempts. Status: ${verifyResult.status}`)
+    throw new Error(`Could not achieve unique solution. Status: ${verifyResult.status}`)
   }
   console.log('✅ Unique solution verified!')
 
