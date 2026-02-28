@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import type { Person } from '@shared/types'
+import { User } from 'lucide-react'
 
 interface PersonTokenProps {
   person: Person
@@ -25,6 +26,7 @@ export function PersonToken({ person, col, row, cellSize, isVictim, isMurderer }
 
   const tokenSize = cellSize * 0.55
   const bgColor = isVictim ? '#dc2626' : isMurderer ? '#7c3aed' : '#1d4ed8'
+  const iconSize = Math.round(tokenSize * 0.5)
 
   return (
     <div style={style}>
@@ -38,10 +40,8 @@ export function PersonToken({ person, col, row, cellSize, isVictim, isMurderer }
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontSize: tokenSize * 0.55,
-        lineHeight: 1,
       }}>
-        {person.avatarEmoji ?? '👤'}
+        <User size={iconSize} strokeWidth={2} color="white" />
       </div>
       <div style={{
         fontSize: cellSize * 0.1,

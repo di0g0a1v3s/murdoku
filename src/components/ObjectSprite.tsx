@@ -1,6 +1,35 @@
 import type { CSSProperties } from 'react'
-import type { GridObject } from '@shared/types'
-import { OBJECT_EMOJI } from '@shared/types'
+import type { GridObject, ObjectKind } from '@shared/types'
+import {
+  Armchair,
+  BedDouble,
+  Sofa,
+  Laptop,
+  Toilet,
+  Bath,
+  UtensilsCrossed,
+  Flower,
+  Library,
+  ChefHat,
+  Archive,
+  Flame,
+  type LucideIcon,
+} from 'lucide-react'
+
+const OBJECT_ICONS: Record<ObjectKind, LucideIcon> = {
+  chair: Armchair,
+  bed: BedDouble,
+  sofa: Sofa,
+  desk: Laptop,
+  toilet: Toilet,
+  bathtub: Bath,
+  table: UtensilsCrossed,
+  plant: Flower,
+  bookshelf: Library,
+  counter: ChefHat,
+  wardrobe: Archive,
+  fireplace: Flame,
+}
 
 interface ObjectSpriteProps {
   object: GridObject
@@ -23,24 +52,26 @@ export function ObjectSprite({ object, cellSize }: ObjectSpriteProps) {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: cellSize * 0.38,
     userSelect: 'none',
     pointerEvents: 'none',
-    opacity: object.occupiable === 'non-occupiable' ? 0.7 : 0.85,
+    opacity: object.occupiable === 'non-occupiable' ? 0.5 : 0.75,
     position: 'relative',
     zIndex: 2,
+    gap: 2,
   }
+
+  const Icon = OBJECT_ICONS[object.kind]
+  const iconSize = Math.round(cellSize * 0.38)
 
   return (
     <div style={style}>
-      <span style={{ lineHeight: 1 }}>{OBJECT_EMOJI[object.kind]}</span>
+      <Icon size={iconSize} strokeWidth={1.5} color="rgba(0,0,0,0.7)" />
       <span style={{
         fontSize: cellSize * 0.11,
-        color: 'rgba(0,0,0,0.5)',
+        color: 'rgba(0,0,0,0.45)',
         fontWeight: 600,
         letterSpacing: '0.02em',
         textTransform: 'uppercase',
-        marginTop: 2,
       }}>
         {object.kind}
       </span>
