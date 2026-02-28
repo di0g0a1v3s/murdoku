@@ -243,6 +243,7 @@ async function main(): Promise<void> {
       keepGoing = another.toLowerCase() === 'y'
     } catch (err) {
       console.error('❌ Error generating puzzle:', err)
+      printCostSummary()
       const retry = await ask('Try again? [y/N]: ')
       keepGoing = retry.toLowerCase() === 'y'
     }
