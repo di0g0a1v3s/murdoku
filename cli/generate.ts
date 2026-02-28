@@ -203,9 +203,36 @@ async function generatePuzzle(): Promise<Puzzle> {
     if (!anyViolated) console.log(`  ✅ All ${cluesToCheck.length} clues satisfy the known solution`)
   }
 
+  // Remove any facts about the victim — victim has a fixed hardcoded clue in the UI
+  const victimId = partialPuzzle.solution.victimId
+  const nonVictimFacts = facts.filter(f => {
+    const c = f.clue as Record<string, unknown>
+    return c['person'] !== victimId && c['personA'] !== victimId
+  })
+
+  function filterVictimClues(raw: Clue[]): Clue[] {
+    return raw.filter(clue => {
+      switch (clue.kind) {
+        case 'person-direction':
+        case 'person-distance':
+        case 'persons-same-room':
+        case 'persons-not-same-room':
+          return clue.personA !== victimId
+        case 'person-beside-object':
+        case 'person-on-object':
+        case 'person-in-room':
+        case 'person-alone-in-room':
+        case 'person-not-in-room':
+          return clue.person !== victimId
+        default:
+          return true
+      }
+    })
+  }
+
   // Step 5: Generate clues via LLM
   console.log('\n✍️  Step 5: Generating clues via LLM...')
-  let clues = validateClues(await generateClues(theme, facts, 10))
+  let clues = filterVictimClues(validateClues(await generateClues(theme, nonVictimFacts, 10)))
   console.log(`✅ Validated ${clues.length} clues`)
   auditClues('initial', clues)
 
@@ -226,7 +253,7 @@ async function generatePuzzle(): Promise<Puzzle> {
       }
       console.log(`  ⚠️  No valid solution — LLM clues contradictory. Regenerating (attempt ${clueGenRetries + 2})...`)
       clueGenRetries++
-      clues = validateClues(await generateClues(theme, facts, 10))
+      clues = filterVictimClues(validateClues(await generateClues(theme, nonVictimFacts, 10)))
       console.log(`  ↳ Regenerated ${clues.length} valid clues`)
       auditClues(`retry ${clueGenRetries}`, clues)
     } else {
@@ -239,7 +266,7 @@ async function generatePuzzle(): Promise<Puzzle> {
       const withoutText = (c: Record<string, unknown>) =>
         JSON.stringify(Object.fromEntries(Object.entries(c).filter(([k]) => k !== 'text')))
       const usedKeys = new Set(clues.map(c => withoutText(c as Record<string, unknown>)))
-      const unusedFacts = facts.filter(f => !usedKeys.has(withoutText(f.clue as Record<string, unknown>)))
+      const unusedFacts = nonVictimFacts.filter(f => !usedKeys.has(withoutText(f.clue as Record<string, unknown>)))
 
       // Prefer facts that discriminate against the alternative solution
       const altPlacements = verifyResult.solutions[1]

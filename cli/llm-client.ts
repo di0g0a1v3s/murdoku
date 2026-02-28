@@ -21,7 +21,7 @@ const ThemeSchema = z.object({
   people: z.array(z.object({
     name: z.string(),
     avatarEmoji: z.string().describe('A single emoji representing this person'),
-  })).length(6).describe('Exactly 6 people: the first is the VICTIM, the rest are suspects'),
+  })).length(6).describe('Exactly 6 people: index 0 is the VICTIM (name starts with V), index 1 is suspect A (name starts with A), index 2 is suspect B (name starts with B), index 3 is suspect C (name starts with C), index 4 is suspect D (name starts with D), index 5 is suspect E (name starts with E)'),
 })
 
 export interface PuzzleTheme {
@@ -44,7 +44,13 @@ Requirements:
 - Setting can be any interesting location (manor, ship, library, theatre, casino, monastery, etc.)
 - Room names should fit the setting naturally (6 rooms total)
 - Room colors should be muted, distinct pastels that evoke the mood (hex codes)
-- 6 people: first person is the VICTIM, others are suspects
+- 6 people with specific naming rules:
+  - Person 0 (VICTIM): name must start with V (e.g. Victor, Vivienne, Valentina)
+  - Person 1 (suspect A): name must start with A
+  - Person 2 (suspect B): name must start with B
+  - Person 3 (suspect C): name must start with C
+  - Person 4 (suspect D): name must start with D
+  - Person 5 (suspect E): name must start with E
 - Names should be memorable and fit the setting's era/style
 - Each person gets one emoji avatar
 
@@ -59,12 +65,19 @@ Make it creative and varied — avoid clichés.`,
     color: object.roomColors[i]!,
   }))
 
-  const people: Person[] = object.people.map((p, i) => ({
-    id: p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-    name: p.name,
-    role: i === 0 ? 'victim' : 'suspect',
-    avatarEmoji: p.avatarEmoji,
-  }))
+  const REQUIRED_INITIALS = ['V', 'A', 'B', 'C', 'D', 'E']
+  const FALLBACK_NAMES = ['Victor', 'Alex', 'Blake', 'Casey', 'Dana', 'Elliot']
+
+  const people: Person[] = object.people.map((p, i) => {
+    const required = REQUIRED_INITIALS[i]!
+    const name = p.name.startsWith(required) ? p.name : FALLBACK_NAMES[i]!
+    return {
+      id: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      name,
+      role: i === 0 ? 'victim' : 'suspect',
+      avatarEmoji: p.avatarEmoji,
+    }
+  })
 
   return {
     title: object.title,
@@ -114,7 +127,7 @@ Rules:
 3. Vary the clue types — pick a mix of direction, room, object, and population facts
 4. Write "text" as a clear, direct one-sentence statement of the fact. No mystery prose, no metaphors.
    Examples: "Rex is in the Library." / "Rex is north of Alice." / "Rex is beside the bookshelf." / "The Kitchen has 2 people."
-5. The victim's position should be deducible from the clues, but don't state it trivially
+5. Do NOT generate any clues about the victim (the person whose name starts with V) — the victim's only clue is always "The victim is alone with the murderer", which is shown automatically
 6. The murderer's identity should emerge from logic, not be stated directly
 7. Each suspect should be constrained by at least one clue`,
   })
