@@ -4,6 +4,7 @@ import { ClueItem } from './ClueItem'
 interface CluesPanelProps {
   clues: Clue[]
   people: Person[]
+  suspectSummaries: { personId: string; text: string }[]
 }
 
 function getPrimaryPersonId(clue: Clue): string | null {
@@ -25,22 +26,15 @@ function getPrimaryPersonId(clue: Clue): string | null {
   }
 }
 
-export function CluesPanel({ clues, people }: CluesPanelProps) {
+export function CluesPanel({ clues, people, suspectSummaries }: CluesPanelProps) {
   const victim = people.find(p => p.role === 'victim')!
-  const grouped = new Map<string | null, Clue[]>()
-  for (const clue of clues) {
-    const id = getPrimaryPersonId(clue)
-    if (!grouped.has(id)) grouped.set(id, [])
-    grouped.get(id)!.push(clue)
-  }
+  const summaryMap = new Map(suspectSummaries.map(s => [s.personId, s.text]))
+  const generalClues = clues.filter(c => getPrimaryPersonId(c) === null)
 
-  const suspectSections: { person: Person | null; clues: Clue[] }[] = [
-    ...people
-      .filter(p => p.role === 'suspect')
-      .map(p => ({ person: p, clues: grouped.get(p.id) ?? [] }))
-      .filter(s => s.clues.length > 0),
-    ...(grouped.get(null)?.length ? [{ person: null, clues: grouped.get(null)! }] : []),
-  ]
+  const suspectSections = people
+    .filter(p => p.role === 'suspect')
+    .map(p => ({ person: p, summary: summaryMap.get(p.id) }))
+    .filter((s): s is { person: Person; summary: string } => s.summary !== undefined)
 
   return (
     <div style={{
@@ -101,9 +95,9 @@ export function CluesPanel({ clues, people }: CluesPanelProps) {
         </div>
       </div>
 
-      {/* Suspect sections */}
-      {suspectSections.map(section => (
-        <div key={section.person?.id ?? 'general'} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      {/* Suspect sections — one summary sentence each */}
+      {suspectSections.map(({ person, summary }) => (
+        <div key={person.id} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -111,36 +105,54 @@ export function CluesPanel({ clues, people }: CluesPanelProps) {
             padding: '4px 0',
             borderBottom: '1px solid rgba(0,0,0,0.08)',
           }}>
-            {section.person ? (
-              <>
-                <span style={{ fontSize: 19 }}>{section.person.avatarEmoji}</span>
-                <span style={{
-                  fontSize: 14,
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.06em',
-                  color: '#334155',
-                }}>
-                  {section.person.name}
-                </span>
-              </>
-            ) : (
-              <span style={{
-                fontSize: 14,
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-                color: 'rgba(0,0,0,0.4)',
-              }}>
-                General
-              </span>
-            )}
+            <span style={{ fontSize: 19 }}>{person.avatarEmoji}</span>
+            <span style={{
+              fontSize: 14,
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+              color: '#334155',
+            }}>
+              {person.name}
+            </span>
           </div>
-          {section.clues.map((clue, i) => (
+          <div style={{
+            display: 'flex',
+            gap: 10,
+            padding: '8px 10px',
+            borderRadius: 8,
+            background: 'rgba(0,0,0,0.03)',
+            borderLeft: '3px solid rgba(0,0,0,0.12)',
+          }}>
+            <p style={{ margin: 0, fontSize: 15, lineHeight: 1.5, color: '#1a1a2e' }}>
+              {summary}
+            </p>
+          </div>
+        </div>
+      ))}
+
+      {/* General clues — shown individually */}
+      {generalClues.length > 0 && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div style={{
+            padding: '4px 0',
+            borderBottom: '1px solid rgba(0,0,0,0.08)',
+          }}>
+            <span style={{
+              fontSize: 14,
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+              color: 'rgba(0,0,0,0.4)',
+            }}>
+              General
+            </span>
+          </div>
+          {generalClues.map((clue, i) => (
             <ClueItem key={i} clue={clue} />
           ))}
         </div>
-      ))}
+      )}
     </div>
   )
 }

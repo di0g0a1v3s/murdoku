@@ -2,7 +2,7 @@ import { randomInt } from 'crypto'
 import type { Clue, ObjectKind, Puzzle } from '../shared/types.js'
 import { solve } from '../shared/solver.js'
 import { evaluateClue } from '../shared/clue-evaluator.js'
-import { generateTheme, generateClues, generateAdditionalClue } from './llm-client.js'
+import { generateTheme, generateClues, generateAdditionalClue, generateSuspectText, setDebug } from './llm-client.js'
 import { buildLayout, hasEnoughOccupiableCells } from './layout-builder.js'
 import { placePeople } from './placer.js'
 import { computeAllFacts } from './clue-generator.js'
@@ -105,7 +105,7 @@ async function generatePuzzle(): Promise<Puzzle> {
 
   // Step 2: Build grid layout
   let layout = null
-  let layoutSeed = randomInt(0, 1_000_000)
+  const layoutSeed = randomInt(0, 1_000_000)
   for (let attempt = 0; attempt < MAX_LAYOUT_RETRIES; attempt++) {
     console.log(`\n🏗️  Step 2: Building layout (attempt ${attempt + 1})...`)
     const candidate = buildLayout(theme, layoutSeed + attempt)
@@ -120,7 +120,7 @@ async function generatePuzzle(): Promise<Puzzle> {
 
   // Step 3: Place people
   let placerResult = null
-  let placementSeed = randomInt(0, 1_000_000)
+  const placementSeed = randomInt(0, 1_000_000)
   for (let attempt = 0; attempt < MAX_PLACEMENT_RETRIES; attempt++) {
     console.log(`\n👥 Step 3: Placing people (attempt ${attempt + 1})...`)
     const result = placePeople(theme.people, layout, GRID_ROWS, GRID_COLS, placementSeed + attempt * 100)
@@ -230,9 +230,50 @@ async function generatePuzzle(): Promise<Puzzle> {
     })
   }
 
+  function getCluePersonId(clue: Clue): string | null {
+    switch (clue.kind) {
+      case 'person-direction':
+      case 'person-distance':
+      case 'persons-same-room':
+      case 'persons-not-same-room':
+        return clue.personA
+      case 'person-beside-object':
+      case 'person-on-object':
+      case 'person-in-room':
+      case 'person-alone-in-room':
+      case 'person-not-in-room':
+        return clue.person
+      default:
+        return null
+    }
+  }
+
+  // Ensure every suspect has at least one clue — add programmatic clues if LLM missed any
+  function ensureSuspectCoverage(current: Clue[]): Clue[] {
+    const withoutText = (c: Record<string, unknown>) =>
+      JSON.stringify(Object.fromEntries(Object.entries(c).filter(([k]) => k !== 'text')))
+    const usedKeys = new Set(current.map(c => withoutText(c as Record<string, unknown>)))
+    const covered = new Set(current.map(c => getCluePersonId(c)).filter(Boolean))
+    const result = [...current]
+    for (const suspect of partialPuzzle.people.filter(p => p.role === 'suspect')) {
+      if (covered.has(suspect.id)) continue
+      const fact = nonVictimFacts.find(f => {
+        const fc = f.clue as Record<string, unknown>
+        return (fc['person'] === suspect.id || fc['personA'] === suspect.id) &&
+               !usedKeys.has(withoutText(f.clue as Record<string, unknown>))
+      })
+      if (fact) {
+        result.push({ ...fact.clue, text: fact.description } as Clue)
+        usedKeys.add(withoutText(fact.clue as Record<string, unknown>))
+        console.log(`  ➕ Added missing clue for ${suspect.name}: ${fact.description}`)
+      }
+    }
+    return result
+  }
+
   // Step 5: Generate clues via LLM
   console.log('\n✍️  Step 5: Generating clues via LLM...')
-  let clues = filterVictimClues(validateClues(await generateClues(theme, nonVictimFacts, 10)))
+  let clues = ensureSuspectCoverage(filterVictimClues(validateClues(await generateClues(theme, nonVictimFacts, 10))))
   console.log(`✅ Validated ${clues.length} clues`)
   auditClues('initial', clues)
 
@@ -253,7 +294,7 @@ async function generatePuzzle(): Promise<Puzzle> {
       }
       console.log(`  ⚠️  No valid solution — LLM clues contradictory. Regenerating (attempt ${clueGenRetries + 2})...`)
       clueGenRetries++
-      clues = filterVictimClues(validateClues(await generateClues(theme, nonVictimFacts, 10)))
+      clues = ensureSuspectCoverage(filterVictimClues(validateClues(await generateClues(theme, nonVictimFacts, 10))))
       console.log(`  ↳ Regenerated ${clues.length} valid clues`)
       auditClues(`retry ${clueGenRetries}`, clues)
     } else {
@@ -278,7 +319,7 @@ async function generatePuzzle(): Promise<Puzzle> {
         : unusedFacts
 
       console.log(`  ⚠️  Multiple solutions exist. Adding constraining clue (attempt ${augmentAttempts + 1}) — ${candidateFacts.length} discriminating facts available...`)
-      const extra = await generateAdditionalClue(candidateFacts.length > 0 ? candidateFacts : unusedFacts)
+      const extra = generateAdditionalClue(candidateFacts.length > 0 ? candidateFacts : unusedFacts)
       if (!extra) {
         console.log('  ❌ No more facts to add!')
         break
@@ -295,7 +336,47 @@ async function generatePuzzle(): Promise<Puzzle> {
   }
   console.log('✅ Unique solution verified!')
 
-  // Step 7: Build final puzzle
+  // Step 7: Minimize clue set — remove any clue that's redundant while keeping:
+  //   (a) unique solution, (b) at least one clue per suspect
+  console.log('\n✂️  Step 7: Minimizing clue set...')
+  const suspectIds = new Set(partialPuzzle.people.filter(p => p.role === 'suspect').map(p => p.id))
+  let changed = true
+  while (changed) {
+    changed = false
+    for (let i = 0; i < clues.length; i++) {
+      const candidate = [...clues.slice(0, i), ...clues.slice(i + 1)]
+      // Ensure every suspect still has at least one clue
+      const covered = new Set(candidate.map(c => getCluePersonId(c)).filter(Boolean))
+      if ([...suspectIds].some(id => !covered.has(id))) continue
+      // Check solution is still unique without this clue
+      if (solve(partialPuzzle, candidate, 2).status === 'unique') {
+        console.log(`  ✂️  Removed: ${clues[i]!.text}`)
+        clues = candidate
+        partialPuzzle.clues = clues
+        changed = true
+        break
+      }
+    }
+  }
+  console.log(`✅ Minimized to ${clues.length} clues`)
+
+  // Step 8: Generate one-sentence summaries per suspect
+  console.log('\n✍️  Step 8: Generating suspect summaries...')
+
+  const suspectSummaries: { personId: string; text: string }[] = []
+  for (const suspect of partialPuzzle.people.filter(p => p.role === 'suspect')) {
+    const suspectClues = clues.filter(c => getCluePersonId(c) === suspect.id)
+    if (suspectClues.length === 0) continue
+    const text = await generateSuspectText(
+      suspect.name,
+      suspect.avatarEmoji ?? '',
+      suspectClues.map(c => c.text),
+    )
+    suspectSummaries.push({ personId: suspect.id, text })
+    console.log(`  ✅ ${suspect.avatarEmoji} ${suspect.name}: "${text}"`)
+  }
+
+  // Step 9: Build final puzzle
   const id = theme.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40) +
     '-' + Date.now().toString(36)
 
@@ -303,6 +384,7 @@ async function generatePuzzle(): Promise<Puzzle> {
     ...partialPuzzle,
     id,
     clues,
+    suspectSummaries,
   }
 }
 
@@ -314,26 +396,26 @@ async function main(): Promise<void> {
     process.exit(1)
   }
 
+  if (process.argv.includes('--debug')) {
+    setDebug(true)
+    console.log('🐛 Debug mode enabled — LLM prompts and responses will be printed')
+  }
+
   console.log('🕵️  Murdoku Puzzle Generator')
   console.log('━'.repeat(40))
 
-  let keepGoing = true
-  while (keepGoing) {
-    resetCosts()
-    try {
-      const puzzle = await generatePuzzle()
-      printGrid(puzzle)
-      printPuzzleSummary(puzzle)
-      printCostSummary()
+  resetCosts()
+  try {
+    const puzzle = await generatePuzzle()
+    printGrid(puzzle)
+    printPuzzleSummary(puzzle)
+    printCostSummary()
 
-      appendPuzzle(puzzle, OUTPUT_PATH)
-      console.log(`✅ Puzzle saved to ${OUTPUT_PATH}`)
-      keepGoing = false
-    } catch (err) {
-      console.error('❌ Error generating puzzle:', err)
-      printCostSummary()
-      keepGoing = false
-    }
+    appendPuzzle(puzzle, OUTPUT_PATH)
+    console.log(`✅ Puzzle saved to ${OUTPUT_PATH}`)
+  } catch (err) {
+    console.error('❌ Error generating puzzle:', err)
+    printCostSummary()
   }
 
   console.log('\n👋 Done!')

@@ -86,9 +86,16 @@ GEMINI_API_KEY=your_key_here npm run generate
 The generator will:
 1. Call Gemini to create a theme (title, rooms, characters, atmosphere)
 2. Algorithmically build the grid layout and place all people
-3. Call Gemini to write clear, concise clue text from the derived facts
-4. Verify the puzzle has a unique solution
-5. Automatically save to `src/puzzles/puzzles.json`
+3. Call Gemini to select which facts to use as clues
+4. Verify the puzzle has a unique solution; remove any redundant clues
+5. Call Gemini to write one summary sentence per suspect
+6. Automatically save to `src/puzzles/puzzles.json`
+
+Add `--debug` to print all LLM prompts and responses:
+
+```bash
+GEMINI_API_KEY=your_key_here npm run generate -- --debug
+```
 
 After generating, commit and push — GitHub Actions will rebuild and redeploy automatically.
 
@@ -116,10 +123,17 @@ Algorithm → valid placement (backtracking Latin-square solver)
   ↓
 Algorithm → derive ALL true facts from the placement
   ↓
-LLM → select minimal clue subset + write atmospheric mystery text
+LLM → select fact indices (no text generated yet)
+  ↓
+Algorithm → ensure every suspect has ≥1 clue (adds programmatic clues if needed)
   ↓
 Solver → verify unique solution (backtrack with limit=2)
-         if not unique → add programmatic clues, retry
+         if none: regenerate clues (up to 3×)
+         if multiple: add discriminating facts until unique (up to 5×)
+  ↓
+Algorithm → minimize clue set (remove redundant clues one by one)
+  ↓
+LLM → write one summary sentence per suspect (covering all their clues)
   ↓
 Auto-save → puzzles.json
 ```

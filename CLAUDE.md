@@ -17,10 +17,10 @@ A logic puzzle game combining murder mystery storytelling with Sudoku-style grid
 - Objects can span multiple cells
 
 **People:**
-- N total = 1 victim + (N-1) suspects
+- N total = 1 victim + (N-1) suspects; Phase 1 uses 6 people (V + A/B/C/D/E)
+- Naming convention: victim name starts with V; suspects start with A, B, C, D, E
 - One person per row, one per column (Latin square constraint)
 - People cannot be placed on non-occupiable object cells
-- Multi-cell objects: if cells share a row or column → max 1 person; if 2×2 block → max 2 people in opposite corners
 
 **Win condition:**
 - The murderer is the suspect alone in the same room as the victim (exactly 2 people in that room)
@@ -106,9 +106,10 @@ murdoku/
 ## Key Commands
 
 ```bash
-npm run dev                              # Dev server
-npm run build                            # Build → dist/index.html (single file)
-GEMINI_API_KEY=your_key npm run generate # Generate a new puzzle
+npm run dev                                       # Dev server
+npm run build                                     # Build → dist/index.html (single file)
+GEMINI_API_KEY=your_key npm run generate          # Generate a new puzzle
+GEMINI_API_KEY=your_key npm run generate -- --debug  # Print all LLM prompts/responses
 ```
 
 ---
@@ -117,21 +118,25 @@ GEMINI_API_KEY=your_key npm run generate # Generate a new puzzle
 
 ```
 1. LLM  → theme (title, subtitle, room names, colors, character names/emojis)
+           victim name starts with V; suspects start with A, B, C, D, E
 2. Algo → grid layout (Voronoi BFS room partitioning + random object placement)
 3. Algo → valid placement (backtracking Latin-square placer)
            enforces: 1/row, 1/col, no non-occupiable cells,
            victim's room has exactly 2 people (victim + murderer)
-4. Algo → computeAllFacts() — exhaustive list of all true statements about the placement
-5. LLM  → selects fact indices (0-based) + writes atmospheric prose for each
-           (LLM never generates constraint values — only indices + text)
-6. Solver → verify unique solution (backtrack limit=2)
-            if none: LLM produced contradictory clues → regenerate (up to 3x)
-            if multiple: add discriminating facts — facts violated by the
-            alternative solution — until unique (up to 5 augmentations)
-7. Auto-save → append to src/puzzles/puzzles.json
+4. Algo → computeAllFacts() — exhaustive list of all true statements (victim facts excluded)
+5. LLM  → selects fact indices (0-based) — no text generated yet
+6. Algo → ensureSuspectCoverage() — adds programmatic clues for any uncovered suspects
+7. Solver → verify unique solution (backtrack limit=2)
+            if none: LLM produced contradictory clues → regenerate (up to 3×)
+            if multiple: add discriminating facts until unique (up to 5×)
+8. Algo → minimize clue set — greedily remove redundant clues while maintaining
+           (a) unique solution and (b) ≥1 clue per suspect
+9. LLM  → generateSuspectText() — one LLM call per suspect → one summary sentence
+           covering all their clues; victim clue is fixed ("alone with murderer")
+10. Auto-save → append to src/puzzles/puzzles.json
 ```
 
-**Key design principle:** LLM handles creative content only (theme, prose). All constraint values come from pre-computed facts; all satisfaction checking is algorithmic.
+**Key design principle:** LLM handles creative content only (theme, suspect summaries). All constraint values come from pre-computed facts; all satisfaction checking is algorithmic.
 
 ---
 
@@ -143,7 +148,9 @@ Puzzle {
   rooms: Room[]          // each room owns its cells + has a CSS color
   objects: GridObject[]  // kind, occupiable|non-occupiable, cells[]
   people: Person[]       // role: 'victim' | 'suspect', avatarEmoji
-  clues: Clue[]          // discriminated union, each variant has text: string
+  clues: Clue[]          // discriminated union; text = fact description (used by solver)
+  suspectSummaries: { personId: string; text: string }[]
+                         // one LLM-written sentence per suspect (used for display)
   solution: {
     placements: { personId, coord }[]
     murdererId, victimId, murderRoom
@@ -151,7 +158,7 @@ Puzzle {
 }
 ```
 
-Clues store pre-generated `text` (atmospheric prose written by LLM at generation time). The frontend just renders the string — no runtime string building.
+**Display vs solver split:** `clues[].text` holds the raw fact description and is used by the solver. `suspectSummaries` holds one LLM-generated sentence per suspect that combines all their facts for display in the UI. The victim clue is hardcoded in the UI ("The victim is alone in a room with the murderer.") and never stored in `clues`.
 
 ---
 

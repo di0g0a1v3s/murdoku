@@ -90,6 +90,7 @@ export interface Puzzle {
   objects: GridObject[]
   people: Person[]
   clues: Clue[]
+  suspectSummaries: { personId: string; text: string }[]
   solution: Solution
   generatedAt: string
 }

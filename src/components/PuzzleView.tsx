@@ -196,7 +196,7 @@ export function PuzzleView({ puzzle }: PuzzleViewProps) {
           width: isMobile ? '100%' : undefined,
           maxHeight: isMobile ? 'none' : cellSize * puzzle.gridSize.rows + 60,
         }}>
-          <CluesPanel clues={puzzle.clues} people={puzzle.people} />
+          <CluesPanel clues={puzzle.clues} people={puzzle.people} suspectSummaries={puzzle.suspectSummaries} />
         </div>
       </div>
 
