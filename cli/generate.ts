@@ -2,6 +2,7 @@ import * as readline from 'readline'
 import { randomInt } from 'crypto'
 import type { Clue, ObjectKind, Puzzle } from '../shared/types.js'
 import { solve } from '../shared/solver.js'
+import { evaluateClue } from '../shared/clue-evaluator.js'
 import { generateTheme, generateClues, generateAdditionalClue } from './llm-client.js'
 import { buildLayout, hasEnoughOccupiableCells } from './layout-builder.js'
 import { placePeople } from './placer.js'
@@ -195,10 +196,28 @@ async function generatePuzzle(): Promise<Puzzle> {
     })
   }
 
+  // Verify that every clue is actually satisfied by the known solution
+  function auditClues(label: string, cluesToCheck: Clue[]): void {
+    const knownAssignment = new Map(
+      partialPuzzle.solution.placements.map(p => [p.personId, p.coord])
+    )
+    let anyViolated = false
+    for (const clue of cluesToCheck) {
+      const result = evaluateClue(clue, knownAssignment, partialPuzzle)
+      if (result !== 'satisfied') {
+        if (!anyViolated) console.log(`\n🔎 Clue audit [${label}]:`)
+        anyViolated = true
+        console.log(`  ❌ ${result.toUpperCase()}: [${clue.kind}] ${JSON.stringify(clue)}`)
+      }
+    }
+    if (!anyViolated) console.log(`  ✅ All ${cluesToCheck.length} clues satisfy the known solution`)
+  }
+
   // Step 5: Generate clues via LLM
   console.log('\n✍️  Step 5: Generating clues via LLM...')
   let clues = validateClues(await generateClues(theme, facts, 10))
   console.log(`✅ Validated ${clues.length} clues`)
+  auditClues('initial', clues)
 
   // Step 6: Verify uniqueness
   // - status 'none'     → LLM produced contradictory clues; regenerate all clues
@@ -219,13 +238,30 @@ async function generatePuzzle(): Promise<Puzzle> {
       clueGenRetries++
       clues = validateClues(await generateClues(theme, facts, 10))
       console.log(`  ↳ Regenerated ${clues.length} valid clues`)
+      auditClues(`retry ${clueGenRetries}`, clues)
     } else {
       // status === 'multiple'
       if (augmentAttempts >= MAX_CLUE_AUGMENT_RETRIES) {
         throw new Error(`Could not achieve unique solution after ${augmentAttempts} augmentation attempts`)
       }
-      console.log(`  ⚠️  Multiple solutions exist. Adding constraining clue (attempt ${augmentAttempts + 1})...`)
-      const extra = await generateAdditionalClue(theme, facts, clues)
+
+      // Find unused facts (compare structural part only, ignoring LLM-generated text)
+      const withoutText = (c: Record<string, unknown>) =>
+        JSON.stringify(Object.fromEntries(Object.entries(c).filter(([k]) => k !== 'text')))
+      const usedKeys = new Set(clues.map(c => withoutText(c as Record<string, unknown>)))
+      const unusedFacts = facts.filter(f => !usedKeys.has(withoutText(f.clue as Record<string, unknown>)))
+
+      // Prefer facts that discriminate against the alternative solution
+      const altPlacements = verifyResult.solutions[1]
+      const altAssignment = altPlacements
+        ? new Map(altPlacements.map(p => [p.personId, p.coord]))
+        : null
+      const candidateFacts = altAssignment
+        ? unusedFacts.filter(f => evaluateClue(f.clue, altAssignment, partialPuzzle) === 'violated')
+        : unusedFacts
+
+      console.log(`  ⚠️  Multiple solutions exist. Adding constraining clue (attempt ${augmentAttempts + 1}) — ${candidateFacts.length} discriminating facts available...`)
+      const extra = await generateAdditionalClue(theme, candidateFacts.length > 0 ? candidateFacts : unusedFacts)
       if (!extra) {
         console.log('  ❌ No more facts to add!')
         break

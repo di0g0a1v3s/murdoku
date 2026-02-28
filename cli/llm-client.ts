@@ -77,78 +77,67 @@ Make it creative and varied — avoid clichés.`,
 
 // ─── Clue Generation ──────────────────────────────────────────────────────────
 
-const ClueOutputSchema = z.array(z.discriminatedUnion('kind', [
-  z.object({ kind: z.literal('person-direction'), personA: z.string(), direction: z.enum(['N', 'S', 'E', 'W', 'NE', 'NW', 'SE', 'SW']), personB: z.string(), text: z.string() }),
-  z.object({ kind: z.literal('person-distance'), personA: z.string(), direction: z.enum(['N', 'S', 'E', 'W']), personB: z.string(), distance: z.number().int().positive(), axis: z.enum(['row', 'col']), text: z.string() }),
-  z.object({ kind: z.literal('person-beside-object'), person: z.string(), objectKind: z.string(), text: z.string() }),
-  z.object({ kind: z.literal('person-on-object'), person: z.string(), objectKind: z.string(), text: z.string() }),
-  z.object({ kind: z.literal('person-in-room'), person: z.string(), roomId: z.string(), text: z.string() }),
-  z.object({ kind: z.literal('persons-same-room'), personA: z.string(), personB: z.string(), text: z.string() }),
-  z.object({ kind: z.literal('person-alone-in-room'), person: z.string(), text: z.string() }),
-  z.object({ kind: z.literal('room-population'), roomId: z.string(), count: z.number().int().positive(), text: z.string() }),
-  z.object({ kind: z.literal('object-occupancy'), objectKind: z.string(), count: z.number().int().min(0), text: z.string() }),
-  z.object({ kind: z.literal('person-not-in-room'), person: z.string(), roomId: z.string(), text: z.string() }),
-  z.object({ kind: z.literal('persons-not-same-room'), personA: z.string(), personB: z.string(), text: z.string() }),
-]))
-
 export interface DerivableFact {
   description: string
   clue: Clue
 }
+
+// LLM only selects fact indices and writes atmospheric text — never generates constraint values
+const ClueSelectionSchema = z.array(z.object({
+  factIndex: z.number().int().min(0).describe('0-based index into the facts array'),
+  text: z.string().describe('Atmospheric in-world mystery flavor text for this clue'),
+}))
 
 export async function generateClues(
   theme: PuzzleTheme,
   facts: DerivableFact[],
   targetCount: number = 10,
 ): Promise<Clue[]> {
-  const factsText = facts.map((f, i) => `${i + 1}. ${f.description}`).join('\n')
-  const factsJson = JSON.stringify(facts.map(f => f.clue), null, 2)
+  const factsText = facts.map((f, i) => `${i} (${f.clue.kind}): ${f.description}`).join('\n')
 
   const { object, usage } = await generateObject({
     model,
-    schema: z.object({ clues: ClueOutputSchema }),
+    schema: z.object({ selections: ClueSelectionSchema }),
     prompt: `You are writing clues for a Murdoku puzzle (murder mystery + logic grid).
 
 SETTING: ${theme.title}
 ${theme.setting}
 
-PUZZLE SOLUTION FACTS (these are ALL the true statements about this puzzle):
+PUZZLE SOLUTION FACTS (indexed 0 to ${facts.length - 1}):
 ${factsText}
 
-CORRESPONDING CLUE OBJECTS (use these exact values when writing clues):
-${factsJson}
-
-TASK: Select exactly ${targetCount} clues from the facts above that, together, uniquely identify where every person is located.
+TASK: Select exactly ${targetCount} facts from the list above that, together, uniquely identify where every person is located. For each selected fact, write one sentence of atmospheric mystery flavor text.
 
 Rules:
-1. Each clue must use EXACT values from the clue objects above (same personA/personB/roomId/etc.)
-2. Write atmospheric, story-flavored "text" for each clue that fits the setting: "${theme.setting}"
-3. Vary the clue types — don't use the same kind repeatedly
-4. The victim's position should be deducible, but NOT state it trivially (e.g., don't directly say "victim is in Room X")
-5. The murderer's identity should emerge from logic, not be stated
-6. Each suspect should be constrained by at least one clue
-7. Return exactly ${targetCount} clues
+1. Output exactly ${targetCount} selections, each with a valid factIndex (0 to ${facts.length - 1}) and a text string
+2. Do NOT repeat the same factIndex twice
+3. Vary the clue types — pick a mix of direction, room, object, and population facts
+4. Write "text" as an atmospheric in-world mystery clue (witness statement, investigation note, etc.)
+5. The victim's position should be deducible from the clues, but don't state it trivially
+6. The murderer's identity should emerge from logic, not be stated directly
+7. Each suspect should be constrained by at least one clue
 
-The "text" field is the human-readable mystery flavor text shown to the player. Make it atmospheric and in-world (e.g., "A witness reported seeing [name] near the fireplace in the library..." rather than just stating facts bluntly).`,
+Example text style: "A witness reported seeing [name] near the fireplace in the library..." rather than stating facts bluntly.`,
   })
 
   trackUsage('Clue generation', usage)
 
-  return object.clues as Clue[]
+  // Construct clues from pre-computed facts — LLM never touches constraint values
+  return object.selections
+    .filter(s => s.factIndex >= 0 && s.factIndex < facts.length)
+    .filter((s, i, arr) => arr.findIndex(x => x.factIndex === s.factIndex) === i) // deduplicate
+    .map(s => ({ ...facts[s.factIndex]!.clue, text: s.text }))
 }
 
-// ─── Minimal extra clues (programmatic fallback) ──────────────────────────────
+// ─── Text generation for a specific fact (programmatic fallback) ──────────────
 
 export async function generateAdditionalClue(
   theme: PuzzleTheme,
-  facts: DerivableFact[],
-  existingClues: Clue[],
+  candidateFacts: DerivableFact[],
 ): Promise<Clue | null> {
-  const existingDescriptions = new Set(existingClues.map(c => JSON.stringify(c)))
-  const unusedFacts = facts.filter(f => !existingDescriptions.has(JSON.stringify(f.clue)))
-  if (unusedFacts.length === 0) return null
+  if (candidateFacts.length === 0) return null
 
-  const fact = unusedFacts[0]!
+  const fact = candidateFacts[0]!
   const { object, usage } = await generateObject({
     model,
     schema: z.object({ text: z.string() }),

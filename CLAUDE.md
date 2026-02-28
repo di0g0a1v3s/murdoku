@@ -121,14 +121,17 @@ GEMINI_API_KEY=your_key npm run generate # Generate a new puzzle
 3. Algo → valid placement (backtracking Latin-square placer)
            enforces: 1/row, 1/col, no non-occupiable cells,
            victim's room has exactly 2 people (victim + murderer)
-4. Algo → computeAllFacts() — exhaustive list of all true statements
-5. LLM  → pick minimal clue subset, write atmospheric mystery prose for each
+4. Algo → computeAllFacts() — exhaustive list of all true statements about the placement
+5. LLM  → selects fact indices (0-based) + writes atmospheric prose for each
+           (LLM never generates constraint values — only indices + text)
 6. Solver → verify unique solution (backtrack limit=2)
-            if multiple solutions: add programmatic clues from unused facts
+            if none: LLM produced contradictory clues → regenerate (up to 3x)
+            if multiple: add discriminating facts — facts violated by the
+            alternative solution — until unique (up to 5 augmentations)
 7. Y/N prompt → append to src/puzzles/puzzles.json
 ```
 
-**Key design principle:** LLM handles creative content only. All constraint satisfaction (placement, uniqueness) is algorithmic.
+**Key design principle:** LLM handles creative content only (theme, prose). All constraint values come from pre-computed facts; all satisfaction checking is algorithmic.
 
 ---
 

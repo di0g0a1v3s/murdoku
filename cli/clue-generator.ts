@@ -77,18 +77,19 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
     const cB = pB.coord
 
     // Directional (general)
-    const dirAtoB = directionFromAToB(cA, cB)
-    if (dirAtoB && VALID_DIRECTIONS.has(dirAtoB)) {
+    // "A is [dir] of B" requires the direction of A as seen from B, i.e. directionFromAToB(cB, cA)
+    const dirArelB = directionFromAToB(cB, cA) // where A is, relative to B
+    if (dirArelB && VALID_DIRECTIONS.has(dirArelB)) {
       facts.push({
-        description: `${nameA} is ${dirAtoB} of ${nameB}`,
-        clue: { kind: 'person-direction', personA: pA.personId, direction: dirAtoB as Direction, personB: pB.personId, text: '' },
+        description: `${nameA} is ${dirArelB} of ${nameB}`,
+        clue: { kind: 'person-direction', personA: pA.personId, direction: dirArelB as Direction, personB: pB.personId, text: '' },
       })
     }
-    const dirBtoA = directionFromAToB(cB, cA)
-    if (dirBtoA && VALID_DIRECTIONS.has(dirBtoA)) {
+    const dirBrelA = directionFromAToB(cA, cB) // where B is, relative to A
+    if (dirBrelA && VALID_DIRECTIONS.has(dirBrelA)) {
       facts.push({
-        description: `${nameB} is ${dirBtoA} of ${nameA}`,
-        clue: { kind: 'person-direction', personA: pB.personId, direction: dirBtoA as Direction, personB: pA.personId, text: '' },
+        description: `${nameB} is ${dirBrelA} of ${nameA}`,
+        clue: { kind: 'person-direction', personA: pB.personId, direction: dirBrelA as Direction, personB: pA.personId, text: '' },
       })
     }
 
