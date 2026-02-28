@@ -2,18 +2,18 @@
   "version": "1.0.0",
   "puzzles": [
     {
-      "id": "the-last-recital-at-blackwood-conservato-mm6qwwbe",
-      "title": "The Last Recital at Blackwood Conservatory",
-      "subtitle": "A crescendo of chaos, a diminuendo of life.",
+      "id": "the-serpent-in-the-silk-a-shanghai-opium-mm6thse3",
+      "title": "The Serpent in the Silk: A Shanghai Opium Den Mystery",
+      "subtitle": "Secrets and Shadows in the Bund's Underbelly",
       "gridSize": {
         "rows": 6,
         "cols": 6
       },
       "rooms": [
         {
-          "id": "music-room",
-          "name": "Music Room",
-          "color": "#4A3F35",
+          "id": "jade-chamber",
+          "name": "Jade Chamber",
+          "color": "#4A777A",
           "cells": [
             {
               "row": 1,
@@ -21,65 +21,30 @@
             },
             {
               "row": 2,
-              "col": 3
-            },
-            {
-              "row": 2,
               "col": 4
             },
             {
               "row": 2,
               "col": 5
-            }
-          ]
-        },
-        {
-          "id": "library",
-          "name": "Library",
-          "color": "#A38A62",
-          "cells": [
-            {
-              "row": 0,
-              "col": 0
             },
             {
-              "row": 0,
-              "col": 1
-            },
-            {
-              "row": 0,
-              "col": 2
-            },
-            {
-              "row": 0,
+              "row": 3,
               "col": 3
             },
             {
-              "row": 0,
+              "row": 3,
               "col": 4
             },
             {
-              "row": 0,
+              "row": 3,
               "col": 5
-            },
-            {
-              "row": 1,
-              "col": 2
-            },
-            {
-              "row": 1,
-              "col": 3
-            },
-            {
-              "row": 1,
-              "col": 4
             }
           ]
         },
         {
-          "id": "ballroom",
-          "name": "Ballroom",
-          "color": "#875F51",
+          "id": "dragon-parlour",
+          "name": "Dragon Parlour",
+          "color": "#554236",
           "cells": [
             {
               "row": 1,
@@ -114,8 +79,566 @@
               "col": 2
             },
             {
+              "row": 4,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "mahjong-room",
+          "name": "Mahjong Room",
+          "color": "#884129",
+          "cells": [
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 4,
+              "col": 3
+            },
+            {
+              "row": 5,
+              "col": 2
+            },
+            {
+              "row": 5,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "whisper-gallery",
+          "name": "Whisper Gallery",
+          "color": "#C6A969",
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 0,
+              "col": 4
+            },
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 2
+            },
+            {
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "lotus-lounge",
+          "name": "Lotus Lounge",
+          "color": "#694D59",
+          "cells": [
+            {
+              "row": 5,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "shadow-alleys",
+          "name": "Shadow Alleys",
+          "color": "#2E3732",
+          "cells": [
+            {
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 5
+            },
+            {
+              "row": 5,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 5
+            }
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "sofa-jade-chamber-1",
+          "kind": "sofa",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "table-jade-chamber-2",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "wardrobe-dragon-parlour-1",
+          "kind": "wardrobe",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "toilet-dragon-parlour-2",
+          "kind": "toilet",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "fireplace-mahjong-room-1",
+          "kind": "fireplace",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "bed-mahjong-room-2",
+          "kind": "bed",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 5,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "plant-whisper-gallery-1",
+          "kind": "plant",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "table-whisper-gallery-2",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 0,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "wardrobe-lotus-lounge-1",
+          "kind": "wardrobe",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "toilet-lotus-lounge-2",
+          "kind": "toilet",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "plant-shadow-alleys-1",
+          "kind": "plant",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 5
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "id": "vivienne-sterling",
+          "name": "Vivienne Sterling",
+          "role": "victim",
+          "avatarEmoji": "🌹"
+        },
+        {
+          "id": "alistair-beaumont",
+          "name": "Alistair Beaumont",
+          "role": "suspect",
+          "avatarEmoji": "🧐"
+        },
+        {
+          "id": "bai-mei",
+          "name": "Bai Mei",
+          "role": "suspect",
+          "avatarEmoji": "🏮"
+        },
+        {
+          "id": "chen-wei",
+          "name": "Chen Wei",
+          "role": "suspect",
+          "avatarEmoji": "🐉"
+        },
+        {
+          "id": "dimitri-volkov",
+          "name": "Dimitri Volkov",
+          "role": "suspect",
+          "avatarEmoji": "🐻"
+        },
+        {
+          "id": "evelyn-hayes",
+          "name": "Evelyn Hayes",
+          "role": "suspect",
+          "avatarEmoji": "🍸"
+        }
+      ],
+      "clues": [
+        {
+          "kind": "person-distance",
+          "personA": "alistair-beaumont",
+          "direction": "S",
+          "personB": "chen-wei",
+          "distance": 3,
+          "axis": "row",
+          "text": "Alistair Beaumont is exactly 3 row(s) south of Chen Wei"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "bai-mei",
+          "direction": "W",
+          "personB": "dimitri-volkov",
+          "distance": 1,
+          "axis": "col",
+          "text": "Bai Mei is exactly 1 column(s) west of Dimitri Volkov"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "chen-wei",
+          "direction": "E",
+          "personB": "evelyn-hayes",
+          "text": "Chen Wei is east of Evelyn Hayes"
+        },
+        {
+          "kind": "person-beside-object",
+          "person": "chen-wei",
+          "objectKind": "table",
+          "text": "Chen Wei is beside a table"
+        },
+        {
+          "kind": "person-alone-in-room",
+          "person": "dimitri-volkov",
+          "roomId": "whisper-gallery",
+          "text": "Dimitri Volkov is alone in the Whisper Gallery"
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "evelyn-hayes",
+          "roomId": "dragon-parlour",
+          "text": "Evelyn Hayes is NOT in the Dragon Parlour"
+        },
+        {
+          "kind": "person-on-object",
+          "person": "alistair-beaumont",
+          "objectKind": "bed",
+          "text": "Alistair Beaumont is on/at a bed"
+        }
+      ],
+      "suspectSummaries": [
+        {
+          "personId": "alistair-beaumont",
+          "text": "Alistair Beaumont is on a bed and exactly three rows south of Chen Wei."
+        },
+        {
+          "personId": "bai-mei",
+          "text": "Bai Mei is exactly one column west of Dimitri Volkov."
+        },
+        {
+          "personId": "chen-wei",
+          "text": "Chen Wei is beside a table and east of Evelyn Hayes."
+        },
+        {
+          "personId": "dimitri-volkov",
+          "text": "Dimitri Volkov is alone in the Whisper Gallery."
+        },
+        {
+          "personId": "evelyn-hayes",
+          "text": "Evelyn Hayes is not in the Dragon Parlour."
+        }
+      ],
+      "solution": {
+        "placements": [
+          {
+            "personId": "vivienne-sterling",
+            "coord": {
               "row": 3,
               "col": 3
+            }
+          },
+          {
+            "personId": "alistair-beaumont",
+            "coord": {
+              "row": 5,
+              "col": 2
+            }
+          },
+          {
+            "personId": "bai-mei",
+            "coord": {
+              "row": 1,
+              "col": 0
+            }
+          },
+          {
+            "personId": "chen-wei",
+            "coord": {
+              "row": 2,
+              "col": 5
+            }
+          },
+          {
+            "personId": "dimitri-volkov",
+            "coord": {
+              "row": 0,
+              "col": 1
+            }
+          },
+          {
+            "personId": "evelyn-hayes",
+            "coord": {
+              "row": 4,
+              "col": 4
+            }
+          }
+        ],
+        "murdererId": "chen-wei",
+        "victimId": "vivienne-sterling",
+        "murderRoom": "jade-chamber"
+      },
+      "generatedAt": "2026-02-28T21:12:35.720Z"
+    },
+    {
+      "id": "the-serpent-in-the-speakeasy-mm6thwvl",
+      "title": "The Serpent in the Speakeasy",
+      "subtitle": "Secrets and Sin at the Velvet Vault",
+      "gridSize": {
+        "rows": 6,
+        "cols": 6
+      },
+      "rooms": [
+        {
+          "id": "back-room",
+          "name": "Back Room",
+          "color": "#A52A2A",
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 0,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "dance-floor",
+          "name": "Dance Floor",
+          "color": "#E6B8AF",
+          "cells": [
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 5
+            },
+            {
+              "row": 4,
+              "col": 3
+            },
+            {
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 5
+            },
+            {
+              "row": 5,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "kitchen",
+          "name": "Kitchen",
+          "color": "#6B8E23",
+          "cells": [
+            {
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "lounge",
+          "name": "Lounge",
+          "color": "#D2B48C",
+          "cells": [
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 1,
+              "col": 2
+            },
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "office",
+          "name": "Office",
+          "color": "#4682B4",
+          "cells": [
+            {
+              "row": 3,
+              "col": 0
+            },
+            {
+              "row": 3,
+              "col": 1
             },
             {
               "row": 4,
@@ -140,55 +663,503 @@
             {
               "row": 5,
               "col": 2
-            }
-          ]
-        },
-        {
-          "id": "green-room",
-          "name": "Green Room",
-          "color": "#678263",
-          "cells": [
-            {
-              "row": 4,
-              "col": 3
             },
-            {
-              "row": 4,
-              "col": 4
-            },
-            {
-              "row": 4,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "observatory",
-          "name": "Observatory",
-          "color": "#5B6988",
-          "cells": [
             {
               "row": 5,
               "col": 3
-            },
-            {
-              "row": 5,
-              "col": 4
-            },
-            {
-              "row": 5,
-              "col": 5
             }
           ]
         },
         {
-          "id": "headmaster-s-office",
-          "name": "Headmaster's Office",
-          "color": "#736459",
+          "id": "card-room",
+          "name": "Card Room",
+          "color": "#90EE90",
+          "cells": [
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 5
+            },
+            {
+              "row": 2,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 5
+            }
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "fireplace-back-room-1",
+          "kind": "fireplace",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "chair-back-room-2",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "wardrobe-dance-floor-1",
+          "kind": "wardrobe",
+          "occupiable": "non-occupiable",
           "cells": [
             {
               "row": 3,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-dance-floor-2",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 4,
               "col": 4
+            }
+          ]
+        },
+        {
+          "id": "fireplace-kitchen-1",
+          "kind": "fireplace",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-lounge-1",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "sofa-lounge-2",
+          "kind": "sofa",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 1,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "chair-office-1",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "plant-office-2",
+          "kind": "plant",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-card-room-1",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 5
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "id": "valentina-rossi",
+          "name": "Valentina Rossi",
+          "role": "victim",
+          "avatarEmoji": "💃"
+        },
+        {
+          "id": "anthony-costello",
+          "name": "Anthony Costello",
+          "role": "suspect",
+          "avatarEmoji": "🎩"
+        },
+        {
+          "id": "beatrice-moretti",
+          "name": "Beatrice Moretti",
+          "role": "suspect",
+          "avatarEmoji": "🎤"
+        },
+        {
+          "id": "charles-lucky-luciano",
+          "name": "Charles \"Lucky\" Luciano",
+          "role": "suspect",
+          "avatarEmoji": "🎲"
+        },
+        {
+          "id": "dolores-o-malley",
+          "name": "Dolores O'Malley",
+          "role": "suspect",
+          "avatarEmoji": "🍸"
+        },
+        {
+          "id": "enrico-the-eel-esposito",
+          "name": "Enrico \"The Eel\" Esposito",
+          "role": "suspect",
+          "avatarEmoji": "🎷"
+        }
+      ],
+      "clues": [
+        {
+          "kind": "person-distance",
+          "personA": "anthony-costello",
+          "direction": "S",
+          "personB": "charles-lucky-luciano",
+          "distance": 3,
+          "axis": "row",
+          "text": "Anthony Costello is exactly 3 row(s) south of Charles \"Lucky\" Luciano"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "charles-lucky-luciano",
+          "direction": "W",
+          "personB": "enrico-the-eel-esposito",
+          "distance": 3,
+          "axis": "col",
+          "text": "Charles \"Lucky\" Luciano is exactly 3 column(s) west of Enrico \"The Eel\" Esposito"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "dolores-o-malley",
+          "direction": "SE",
+          "personB": "enrico-the-eel-esposito",
+          "text": "Dolores O'Malley is southeast of Enrico \"The Eel\" Esposito"
+        },
+        {
+          "kind": "object-occupancy",
+          "objectKind": "chair",
+          "count": 1,
+          "text": "Exactly one chair is occupied."
+        },
+        {
+          "kind": "person-beside-object",
+          "person": "dolores-o-malley",
+          "objectKind": "wardrobe",
+          "text": "Dolores O'Malley is beside a wardrobe"
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "enrico-the-eel-esposito",
+          "roomId": "office",
+          "text": "Enrico \"The Eel\" Esposito is NOT in the Office"
+        },
+        {
+          "kind": "person-in-room",
+          "person": "beatrice-moretti",
+          "roomId": "back-room",
+          "text": "Beatrice Moretti is in the Back Room"
+        }
+      ],
+      "suspectSummaries": [
+        {
+          "personId": "anthony-costello",
+          "text": "Anthony Costello is exactly three rows south of Charles \"Lucky\" Luciano."
+        },
+        {
+          "personId": "beatrice-moretti",
+          "text": "Beatrice Moretti is in the Back Room."
+        },
+        {
+          "personId": "charles-lucky-luciano",
+          "text": "Charles \"Lucky\" Luciano is exactly three columns west of Enrico \"The Eel\" Esposito."
+        },
+        {
+          "personId": "dolores-o-malley",
+          "text": "Dolores O'Malley is southeast of Enrico \"The Eel\" Esposito and beside a wardrobe."
+        },
+        {
+          "personId": "enrico-the-eel-esposito",
+          "text": "Enrico \"The Eel\" Esposito is not in the Office."
+        }
+      ],
+      "solution": {
+        "placements": [
+          {
+            "personId": "valentina-rossi",
+            "coord": {
+              "row": 1,
+              "col": 2
+            }
+          },
+          {
+            "personId": "anthony-costello",
+            "coord": {
+              "row": 5,
+              "col": 0
+            }
+          },
+          {
+            "personId": "beatrice-moretti",
+            "coord": {
+              "row": 0,
+              "col": 3
+            }
+          },
+          {
+            "personId": "charles-lucky-luciano",
+            "coord": {
+              "row": 2,
+              "col": 1
+            }
+          },
+          {
+            "personId": "dolores-o-malley",
+            "coord": {
+              "row": 4,
+              "col": 5
+            }
+          },
+          {
+            "personId": "enrico-the-eel-esposito",
+            "coord": {
+              "row": 3,
+              "col": 4
+            }
+          }
+        ],
+        "murdererId": "charles-lucky-luciano",
+        "victimId": "valentina-rossi",
+        "murderRoom": "lounge"
+      },
+      "generatedAt": "2026-02-28T21:12:40.725Z"
+    },
+    {
+      "id": "the-silent-symphony-at-the-san-sebastian-mm6ti0o2",
+      "title": "The Silent Symphony at the San Sebastian Casino",
+      "subtitle": "A night of high stakes and hidden daggers.",
+      "gridSize": {
+        "rows": 6,
+        "cols": 6
+      },
+      "rooms": [
+        {
+          "id": "the-grand-ballroom",
+          "name": "The Grand Ballroom",
+          "color": "#B8860B",
+          "cells": [
+            {
+              "row": 3,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 1
+            },
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 4,
+              "col": 3
+            },
+            {
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 5
+            },
+            {
+              "row": 5,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 2
+            },
+            {
+              "row": 5,
+              "col": 3
+            },
+            {
+              "row": 5,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "the-velvet-lounge",
+          "name": "The Velvet Lounge",
+          "color": "#8B0000",
+          "cells": [
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 1,
+              "col": 2
+            },
+            {
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "the-high-rollers-suite",
+          "name": "The High Rollers' Suite",
+          "color": "#2F4F4F",
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 3,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "the-secret-garden-terrace",
+          "name": "The Secret Garden Terrace",
+          "color": "#228B22",
+          "cells": [
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 0,
+              "col": 4
+            },
+            {
+              "row": 1,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "valentina-s-private-studio",
+          "name": "Valentina's Private Studio",
+          "color": "#4682B4",
+          "cells": [
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "the-casino-vault",
+          "name": "The Casino Vault",
+          "color": "#808000",
+          "cells": [
+            {
+              "row": 2,
+              "col": 3
+            },
+            {
+              "row": 2,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 5
             },
             {
               "row": 3,
@@ -199,62 +1170,44 @@
       ],
       "objects": [
         {
-          "id": "chair-music-room-1",
-          "kind": "chair",
-          "occupiable": "occupiable",
+          "id": "plant-the-grand-ballroom-1",
+          "kind": "plant",
+          "occupiable": "non-occupiable",
           "cells": [
             {
-              "row": 2,
+              "row": 3,
               "col": 4
             }
           ]
         },
         {
-          "id": "chair-music-room-2",
-          "kind": "chair",
+          "id": "toilet-the-velvet-lounge-1",
+          "kind": "toilet",
           "occupiable": "occupiable",
           "cells": [
             {
               "row": 2,
-              "col": 3
+              "col": 1
             }
           ]
         },
         {
-          "id": "chair-library-1",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 4
-            }
-          ]
-        },
-        {
-          "id": "desk-library-2",
-          "kind": "desk",
+          "id": "bed-the-velvet-lounge-2",
+          "kind": "bed",
           "occupiable": "occupiable",
           "cells": [
             {
               "row": 0,
-              "col": 4
-            }
-          ]
-        },
-        {
-          "id": "wardrobe-ballroom-1",
-          "kind": "wardrobe",
-          "occupiable": "non-occupiable",
-          "cells": [
+              "col": 2
+            },
             {
-              "row": 2,
+              "row": 1,
               "col": 2
             }
           ]
         },
         {
-          "id": "fireplace-ballroom-2",
+          "id": "fireplace-the-high-rollers-suite-1",
           "kind": "fireplace",
           "occupiable": "non-occupiable",
           "cells": [
@@ -265,221 +1218,1118 @@
           ]
         },
         {
-          "id": "table-green-room-1",
+          "id": "table-the-secret-garden-terrace-1",
           "kind": "table",
           "occupiable": "non-occupiable",
           "cells": [
             {
-              "row": 4,
+              "row": 0,
               "col": 3
             },
             {
-              "row": 4,
+              "row": 0,
               "col": 4
             }
           ]
         },
         {
-          "id": "toilet-observatory-1",
+          "id": "bookshelf-the-secret-garden-terrace-2",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "wardrobe-valentina-s-private-studio-1",
+          "kind": "wardrobe",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "toilet-the-casino-vault-1",
           "kind": "toilet",
           "occupiable": "occupiable",
           "cells": [
             {
-              "row": 5,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "fireplace-observatory-2",
-          "kind": "fireplace",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 5,
+              "row": 2,
               "col": 4
-            }
-          ]
-        },
-        {
-          "id": "plant-headmaster-s-office-1",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 5
             }
           ]
         }
       ],
       "people": [
         {
-          "id": "victor-sinclair",
-          "name": "Victor Sinclair",
+          "id": "valentina-rossi",
+          "name": "Valentina Rossi",
           "role": "victim",
           "avatarEmoji": "🎼"
         },
         {
-          "id": "alistair-finch",
-          "name": "Alistair Finch",
+          "id": "antonio-moretti",
+          "name": "Antonio Moretti",
           "role": "suspect",
-          "avatarEmoji": "🎻"
+          "avatarEmoji": "👨‍💼"
         },
         {
-          "id": "beatrix-thorne",
-          "name": "Beatrix Thorne",
+          "id": "bianca-capello",
+          "name": "Bianca Capello",
           "role": "suspect",
-          "avatarEmoji": "🎤"
+          "avatarEmoji": "💃"
         },
         {
-          "id": "clarence-ives",
-          "name": "Clarence Ives",
+          "id": "carlo-de-medici",
+          "name": "Carlo de Medici",
           "role": "suspect",
-          "avatarEmoji": "🎹"
+          "avatarEmoji": "🤵"
         },
         {
-          "id": "dorothea-bell",
-          "name": "Dorothea Bell",
+          "id": "daria-visconti",
+          "name": "Daria Visconti",
           "role": "suspect",
-          "avatarEmoji": "🎭"
+          "avatarEmoji": "👩‍🎤"
         },
         {
-          "id": "ernest-holt",
-          "name": "Ernest Holt",
+          "id": "enrico-rizzo",
+          "name": "Enrico Rizzo",
           "role": "suspect",
-          "avatarEmoji": "🎺"
+          "avatarEmoji": "👨‍🍳"
         }
       ],
       "clues": [
         {
-          "kind": "person-beside-object",
-          "person": "ernest-holt",
-          "objectKind": "desk",
-          "text": "Ernest Holt is beside a desk in the Library"
-        },
-        {
-          "kind": "person-distance",
-          "personA": "alistair-finch",
-          "direction": "E",
-          "personB": "clarence-ives",
-          "distance": 2,
-          "axis": "col",
-          "text": "Alistair Finch is exactly 2 column(s) east of Clarence Ives"
-        },
-        {
-          "kind": "room-population",
-          "roomId": "observatory",
-          "count": 1,
-          "text": "The Observatory has exactly 1 person(s)"
-        },
-        {
-          "kind": "person-distance",
-          "personA": "beatrix-thorne",
-          "direction": "W",
-          "personB": "clarence-ives",
-          "distance": 2,
-          "axis": "col",
-          "text": "Beatrix Thorne is exactly 2 column(s) west of Clarence Ives"
-        },
-        {
-          "kind": "person-distance",
-          "personA": "clarence-ives",
-          "direction": "S",
-          "personB": "ernest-holt",
-          "distance": 1,
-          "axis": "row",
-          "text": "Clarence Ives is exactly 1 row(s) south of Ernest Holt"
-        },
-        {
-          "kind": "person-distance",
-          "personA": "beatrix-thorne",
-          "direction": "S",
-          "personB": "clarence-ives",
-          "distance": 1,
-          "axis": "row",
-          "text": "Beatrix Thorne is exactly 1 row(s) south of Clarence Ives"
+          "kind": "person-direction",
+          "personA": "carlo-de-medici",
+          "direction": "NE",
+          "personB": "valentina-rossi",
+          "text": "Carlo de Medici is northeast of Valentina Rossi"
         },
         {
           "kind": "person-direction",
-          "personA": "dorothea-bell",
-          "direction": "SE",
-          "personB": "ernest-holt",
-          "text": "Dorothea Bell is SE of Ernest Holt"
+          "personA": "bianca-capello",
+          "direction": "SW",
+          "personB": "valentina-rossi",
+          "text": "Bianca Capello is southwest of Valentina Rossi"
+        },
+        {
+          "kind": "person-beside-object",
+          "person": "daria-visconti",
+          "objectKind": "plant",
+          "text": "Daria Visconti is beside a plant"
+        },
+        {
+          "kind": "person-beside-object",
+          "person": "carlo-de-medici",
+          "objectKind": "bed",
+          "text": "Carlo de Medici is beside a bed"
+        },
+        {
+          "kind": "persons-not-same-room",
+          "personA": "antonio-moretti",
+          "personB": "daria-visconti",
+          "text": "Antonio Moretti and Daria Visconti are NOT in the same room"
+        },
+        {
+          "kind": "person-in-room",
+          "person": "enrico-rizzo",
+          "roomId": "the-velvet-lounge",
+          "text": "Enrico Rizzo is in the The Velvet Lounge"
+        }
+      ],
+      "suspectSummaries": [
+        {
+          "personId": "antonio-moretti",
+          "text": "Antonio Moretti is not in the same room as Daria Visconti."
+        },
+        {
+          "personId": "bianca-capello",
+          "text": "Bianca Capello is southwest of Valentina Rossi."
+        },
+        {
+          "personId": "carlo-de-medici",
+          "text": "Carlo de Medici is northeast of Valentina Rossi and beside a bed."
+        },
+        {
+          "personId": "daria-visconti",
+          "text": "Daria Visconti is beside a plant."
+        },
+        {
+          "personId": "enrico-rizzo",
+          "text": "Enrico Rizzo is in The Velvet Lounge."
         }
       ],
       "solution": {
         "placements": [
           {
-            "personId": "victor-sinclair",
+            "personId": "valentina-rossi",
             "coord": {
-              "row": 4,
-              "col": 1
+              "row": 3,
+              "col": 2
             }
           },
           {
-            "personId": "alistair-finch",
+            "personId": "antonio-moretti",
+            "coord": {
+              "row": 2,
+              "col": 5
+            }
+          },
+          {
+            "personId": "bianca-capello",
+            "coord": {
+              "row": 5,
+              "col": 0
+            }
+          },
+          {
+            "personId": "carlo-de-medici",
+            "coord": {
+              "row": 1,
+              "col": 3
+            }
+          },
+          {
+            "personId": "daria-visconti",
+            "coord": {
+              "row": 4,
+              "col": 4
+            }
+          },
+          {
+            "personId": "enrico-rizzo",
+            "coord": {
+              "row": 0,
+              "col": 1
+            }
+          }
+        ],
+        "murdererId": "daria-visconti",
+        "victimId": "valentina-rossi",
+        "murderRoom": "the-grand-ballroom"
+      },
+      "generatedAt": "2026-02-28T21:12:46.326Z"
+    },
+    {
+      "id": "the-serpent-in-the-silk-a-shanghai-consp-mm6ti72f",
+      "title": "The Serpent in the Silk: A Shanghai Conspiracy",
+      "subtitle": "Intrigue and betrayal at the Bund's most decadent nightclub.",
+      "gridSize": {
+        "rows": 6,
+        "cols": 6
+      },
+      "rooms": [
+        {
+          "id": "the-jade-lounge",
+          "name": "The Jade Lounge",
+          "color": "#4CAF50",
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 3,
+              "col": 0
+            },
+            {
+              "row": 3,
+              "col": 1
+            },
+            {
+              "row": 4,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "the-opium-den",
+          "name": "The Opium Den",
+          "color": "#795548",
+          "cells": [
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 0,
+              "col": 4
+            },
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "the-dragon-s-breath-bar",
+          "name": "The Dragon's Breath Bar",
+          "color": "#FFC107",
+          "cells": [
+            {
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 2,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 4,
+              "col": 3
+            },
+            {
+              "row": 5,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "the-pearl-courtyard",
+          "name": "The Pearl Courtyard",
+          "color": "#E1BEE7",
+          "cells": [
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 5
+            },
+            {
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 5
+            },
+            {
+              "row": 5,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "the-back-alley",
+          "name": "The Back Alley",
+          "color": "#607D8B",
+          "cells": [
+            {
+              "row": 1,
+              "col": 2
+            },
+            {
+              "row": 2,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 2
+            },
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 5,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "sterling-s-office",
+          "name": "Sterling's Office",
+          "color": "#9E9E9E",
+          "cells": [
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 5
+            }
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "counter-the-jade-lounge-1",
+          "kind": "counter",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "sofa-the-opium-den-1",
+          "kind": "sofa",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 4
+            },
+            {
+              "row": 0,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "bed-the-dragon-s-breath-bar-1",
+          "kind": "bed",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 2,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "sofa-the-pearl-courtyard-1",
+          "kind": "sofa",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-the-back-alley-1",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "toilet-the-back-alley-2",
+          "kind": "toilet",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 3,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "chair-sterling-s-office-1",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 4
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "id": "victor-sterling",
+          "name": "Victor Sterling",
+          "role": "victim",
+          "avatarEmoji": "💀"
+        },
+        {
+          "id": "alistair-finch",
+          "name": "Alistair Finch",
+          "role": "suspect",
+          "avatarEmoji": "🤵"
+        },
+        {
+          "id": "beatrice-moreau",
+          "name": "Beatrice Moreau",
+          "role": "suspect",
+          "avatarEmoji": "💃"
+        },
+        {
+          "id": "chang-wei",
+          "name": "Chang Wei",
+          "role": "suspect",
+          "avatarEmoji": "👲"
+        },
+        {
+          "id": "delphine-dubois",
+          "name": "Delphine Dubois",
+          "role": "suspect",
+          "avatarEmoji": "👩"
+        },
+        {
+          "id": "emilio-rossi",
+          "name": "Emilio Rossi",
+          "role": "suspect",
+          "avatarEmoji": "👨"
+        }
+      ],
+      "clues": [
+        {
+          "kind": "person-distance",
+          "personA": "beatrice-moreau",
+          "direction": "E",
+          "personB": "emilio-rossi",
+          "distance": 5,
+          "axis": "col",
+          "text": "Beatrice Moreau is exactly 5 column(s) east of Emilio Rossi"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "delphine-dubois",
+          "direction": "NE",
+          "personB": "emilio-rossi",
+          "text": "Delphine Dubois is northeast of Emilio Rossi"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "beatrice-moreau",
+          "direction": "S",
+          "personB": "emilio-rossi",
+          "distance": 2,
+          "axis": "row",
+          "text": "Beatrice Moreau is exactly 2 row(s) south of Emilio Rossi"
+        },
+        {
+          "kind": "object-occupancy",
+          "objectKind": "sofa",
+          "count": 1,
+          "text": "Exactly one sofa is occupied."
+        },
+        {
+          "kind": "person-beside-object",
+          "person": "delphine-dubois",
+          "objectKind": "bed",
+          "text": "Delphine Dubois is beside a bed"
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "emilio-rossi",
+          "roomId": "the-pearl-courtyard",
+          "text": "Emilio Rossi is NOT in the The Pearl Courtyard"
+        },
+        {
+          "kind": "persons-not-same-room",
+          "personA": "alistair-finch",
+          "personB": "beatrice-moreau",
+          "text": "Alistair Finch and Beatrice Moreau are NOT in the same room"
+        },
+        {
+          "kind": "person-beside-object",
+          "person": "chang-wei",
+          "objectKind": "counter",
+          "text": "Chang Wei is beside a counter"
+        }
+      ],
+      "suspectSummaries": [
+        {
+          "personId": "alistair-finch",
+          "text": "Alistair Finch is not in the same room as Beatrice Moreau."
+        },
+        {
+          "personId": "beatrice-moreau",
+          "text": "Beatrice Moreau is five columns east and two rows south of Emilio Rossi."
+        },
+        {
+          "personId": "chang-wei",
+          "text": "Chang Wei is beside a counter."
+        },
+        {
+          "personId": "delphine-dubois",
+          "text": "Delphine Dubois is northeast of Emilio Rossi and beside a bed."
+        },
+        {
+          "personId": "emilio-rossi",
+          "text": "Emilio Rossi is not in the The Pearl Courtyard."
+        }
+      ],
+      "solution": {
+        "placements": [
+          {
+            "personId": "victor-sterling",
             "coord": {
               "row": 3,
               "col": 4
             }
           },
           {
-            "personId": "beatrix-thorne",
+            "personId": "alistair-finch",
             "coord": {
-              "row": 2,
-              "col": 0
-            }
-          },
-          {
-            "personId": "clarence-ives",
-            "coord": {
-              "row": 1,
+              "row": 0,
               "col": 2
             }
           },
           {
-            "personId": "dorothea-bell",
+            "personId": "beatrice-moreau",
             "coord": {
-              "row": 5,
+              "row": 4,
               "col": 5
             }
           },
           {
-            "personId": "ernest-holt",
+            "personId": "chang-wei",
             "coord": {
-              "row": 0,
+              "row": 5,
+              "col": 1
+            }
+          },
+          {
+            "personId": "delphine-dubois",
+            "coord": {
+              "row": 1,
               "col": 3
+            }
+          },
+          {
+            "personId": "emilio-rossi",
+            "coord": {
+              "row": 2,
+              "col": 0
             }
           }
         ],
-        "murdererId": "beatrix-thorne",
-        "victimId": "victor-sinclair",
-        "murderRoom": "ballroom"
+        "murdererId": "beatrice-moreau",
+        "victimId": "victor-sterling",
+        "murderRoom": "the-pearl-courtyard"
       },
-      "generatedAt": "2026-02-28T20:00:19.242Z",
+      "generatedAt": "2026-02-28T21:12:51.419Z"
+    },
+    {
+      "id": "strangled-in-the-stacks-a-library-noir-mm6tibc2",
+      "title": "Strangled in the Stacks: A Library Noir",
+      "subtitle": "Dust, whispers, and deadly secrets.",
+      "gridSize": {
+        "rows": 6,
+        "cols": 6
+      },
+      "rooms": [
+        {
+          "id": "rare-books-vault",
+          "name": "Rare Books Vault",
+          "color": "#4A3728",
+          "cells": [
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 0,
+              "col": 4
+            },
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 2
+            },
+            {
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 1,
+              "col": 5
+            },
+            {
+              "row": 2,
+              "col": 3
+            },
+            {
+              "row": 2,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "reading-room",
+          "name": "Reading Room",
+          "color": "#A7906F",
+          "cells": [
+            {
+              "row": 2,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 4,
+              "col": 3
+            },
+            {
+              "row": 5,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "map-room",
+          "name": "Map Room",
+          "color": "#847A6C",
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 3,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "librarian-s-office",
+          "name": "Librarian's Office",
+          "color": "#5C4A39",
+          "cells": [
+            {
+              "row": 2,
+              "col": 5
+            },
+            {
+              "row": 3,
+              "col": 5
+            },
+            {
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "manuscript-archive",
+          "name": "Manuscript Archive",
+          "color": "#736453",
+          "cells": [
+            {
+              "row": 5,
+              "col": 3
+            },
+            {
+              "row": 5,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "grand-foyer",
+          "name": "Grand Foyer",
+          "color": "#B8A38B",
+          "cells": [
+            {
+              "row": 3,
+              "col": 1
+            },
+            {
+              "row": 4,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 1
+            }
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "counter-rare-books-vault-1",
+          "kind": "counter",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 0,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "bed-rare-books-vault-2",
+          "kind": "bed",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 1,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "sofa-reading-room-1",
+          "kind": "sofa",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 3,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "wardrobe-map-room-1",
+          "kind": "wardrobe",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "toilet-librarian-s-office-1",
+          "kind": "toilet",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-manuscript-archive-1",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "plant-grand-foyer-1",
+          "kind": "plant",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 3,
+              "col": 1
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "id": "vivienne-thorne",
+          "name": "Vivienne Thorne",
+          "role": "victim",
+          "avatarEmoji": "📚"
+        },
+        {
+          "id": "alistair-finch",
+          "name": "Alistair Finch",
+          "role": "suspect",
+          "avatarEmoji": "🧐"
+        },
+        {
+          "id": "beatrice-plum",
+          "name": "Beatrice Plum",
+          "role": "suspect",
+          "avatarEmoji": "🖋️"
+        },
+        {
+          "id": "cecil-hemingway",
+          "name": "Cecil Hemingway",
+          "role": "suspect",
+          "avatarEmoji": "🗺️"
+        },
+        {
+          "id": "dorothea-sharpe",
+          "name": "Dorothea Sharpe",
+          "role": "suspect",
+          "avatarEmoji": "☕"
+        },
+        {
+          "id": "edgar-blackwood",
+          "name": "Edgar Blackwood",
+          "role": "suspect",
+          "avatarEmoji": "🕯️"
+        }
+      ],
+      "clues": [
+        {
+          "kind": "person-direction",
+          "personA": "alistair-finch",
+          "direction": "SW",
+          "personB": "vivienne-thorne",
+          "text": "Alistair Finch is southwest of Vivienne Thorne"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "cecil-hemingway",
+          "direction": "E",
+          "personB": "edgar-blackwood",
+          "distance": 4,
+          "axis": "col",
+          "text": "Cecil Hemingway is exactly 4 column(s) east of Edgar Blackwood"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "cecil-hemingway",
+          "direction": "S",
+          "personB": "dorothea-sharpe",
+          "distance": 4,
+          "axis": "row",
+          "text": "Cecil Hemingway is exactly 4 row(s) south of Dorothea Sharpe"
+        },
+        {
+          "kind": "person-in-room",
+          "person": "cecil-hemingway",
+          "roomId": "manuscript-archive",
+          "text": "Cecil Hemingway is in the Manuscript Archive"
+        },
+        {
+          "kind": "room-population",
+          "roomId": "rare-books-vault",
+          "count": 1,
+          "text": "The Rare Books Vault has exactly one person in it."
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "beatrice-plum",
+          "roomId": "reading-room",
+          "text": "Beatrice Plum is NOT in the Reading Room"
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "dorothea-sharpe",
+          "roomId": "map-room",
+          "text": "Dorothea Sharpe is NOT in the Map Room"
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "edgar-blackwood",
+          "roomId": "manuscript-archive",
+          "text": "Edgar Blackwood is NOT in the Manuscript Archive"
+        }
+      ],
       "suspectSummaries": [
         {
           "personId": "alistair-finch",
-          "text": "Alistair Finch is 2 columns east of Clarence Ives."
+          "text": "Alistair Finch is southwest of Vivienne Thorne."
         },
         {
-          "personId": "beatrix-thorne",
-          "text": "Beatrix Thorne is 2 columns west and 1 row south of Clarence Ives."
+          "personId": "beatrice-plum",
+          "text": "Beatrice Plum is not in the Reading Room."
         },
         {
-          "personId": "clarence-ives",
-          "text": "Clarence Ives is exactly 1 row south of Ernest Holt."
+          "personId": "cecil-hemingway",
+          "text": "Cecil Hemingway is in the Manuscript Archive, exactly four columns east of Edgar Blackwood and exactly four rows south of Dorothea Sharpe."
         },
         {
-          "personId": "dorothea-bell",
-          "text": "Dorothea Bell is southeast of Ernest Holt."
+          "personId": "dorothea-sharpe",
+          "text": "Dorothea Sharpe is not in the Map Room."
         },
         {
-          "personId": "ernest-holt",
-          "text": "Ernest Holt is in the Library beside a desk."
+          "personId": "edgar-blackwood",
+          "text": "Edgar Blackwood is not in the Manuscript Archive."
         }
-      ]
+      ],
+      "solution": {
+        "placements": [
+          {
+            "personId": "vivienne-thorne",
+            "coord": {
+              "row": 3,
+              "col": 3
+            }
+          },
+          {
+            "personId": "alistair-finch",
+            "coord": {
+              "row": 4,
+              "col": 2
+            }
+          },
+          {
+            "personId": "beatrice-plum",
+            "coord": {
+              "row": 2,
+              "col": 1
+            }
+          },
+          {
+            "personId": "cecil-hemingway",
+            "coord": {
+              "row": 5,
+              "col": 4
+            }
+          },
+          {
+            "personId": "dorothea-sharpe",
+            "coord": {
+              "row": 1,
+              "col": 5
+            }
+          },
+          {
+            "personId": "edgar-blackwood",
+            "coord": {
+              "row": 0,
+              "col": 0
+            }
+          }
+        ],
+        "murdererId": "alistair-finch",
+        "victimId": "vivienne-thorne",
+        "murderRoom": "reading-room"
+      },
+      "generatedAt": "2026-02-28T21:12:59.612Z"
     }
   ]
 }

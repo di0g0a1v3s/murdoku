@@ -90,7 +90,6 @@ interface ObjectTemplate {
 
 const OBJECT_TEMPLATES: ObjectTemplate[] = [
   { kind: 'chair', offsets: [{ row: 0, col: 0 }] },
-  { kind: 'chair', offsets: [{ row: 0, col: 0 }] },
   { kind: 'plant', offsets: [{ row: 0, col: 0 }] },
   { kind: 'table', offsets: [{ row: 0, col: 0 }, { row: 0, col: 1 }] },
   { kind: 'bed', offsets: [{ row: 0, col: 0 }, { row: 1, col: 0 }] },

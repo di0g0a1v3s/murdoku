@@ -19,9 +19,10 @@ Murdoku presents you with a grid divided into rooms. Your goal is to place all s
 - The clues always yield exactly one valid solution
 
 **Clue types:**
-- Directional — *"A is north of B"*, *"A is 2 columns east of B"*
-- Object-relative — *"A is beside a chair"*, *"A is sitting at the desk"*
-- Room-based — *"A is in the library"*, *"A is in the same room as B"*, *"A is alone in their room"*
+- Directional — *"A is north of B"* (row comparison), *"A is northeast of B"* (both row and column)
+- Distance — *"A is 2 columns east of B"* (column distance only, any row)
+- Object-relative — *"A is beside a chair"*, *"A is sitting in a chair"*
+- Room-based — *"A is in the library"*, *"A is in the same room as B"*, *"A is alone in the library"*
 - General — *"Exactly one chair is occupied"*
 
 ---
@@ -37,7 +38,7 @@ murdoku/
 │
 ├── cli/                  # Developer tool — puzzle generator
 │   ├── generate.ts       # Entry point: npm run generate
-│   ├── llm-client.ts     # Vercel AI SDK + Gemini (theme & clue generation)
+│   ├── llm-client.ts     # Vercel AI SDK + Gemini (theme & clue text)
 │   ├── layout-builder.ts # Room partitioning + object placement
 │   ├── placer.ts         # Latin-square backtracking placer
 │   ├── clue-generator.ts # Derives all true facts from a placement
@@ -79,8 +80,14 @@ Puzzles are generated locally by the developer and committed to the repo. The fr
 # Install dependencies
 npm install
 
-# Run the generator
+# Generate one puzzle
 GEMINI_API_KEY=your_key_here npm run generate
+
+# Generate multiple puzzles at once
+GEMINI_API_KEY=your_key_here npm run generate -- --count=5
+
+# Clear all puzzles
+npm run clear-puzzles
 ```
 
 The generator will:
@@ -89,7 +96,7 @@ The generator will:
 3. Algorithmically derive every possible true fact from the placement
 4. Remove any clues that would let a player trivially pin a suspect without cross-suspect reasoning
 5. Minimize the clue set — greedily remove redundant clues while keeping a unique solution
-6. Call Gemini to write one summary sentence per suspect
+6. Call Gemini once to write all suspect summaries and general clue texts
 7. Automatically save to `src/puzzles/puzzles.json`
 
 Add `--debug` to print all LLM prompts and responses:
@@ -122,7 +129,9 @@ Algorithm → grid layout (Voronoi BFS room partitioning + object placement)
 Algorithm → valid placement (backtracking Latin-square solver)
             enforces: 1 person/row, 1 person/col, murder room = exactly 2 people
   ↓
-Algorithm → derive ALL true facts from the placement (shuffled for variety)
+Algorithm → derive ALL true facts from the placement (shuffled for variety,
+            then sorted by weight: direction/distance clues first so they are
+            pruned preferentially)
   ↓
 Algorithm → de-pin: remove clues that let a player trivially locate a suspect
             without any cross-suspect reasoning
@@ -130,9 +139,10 @@ Algorithm → de-pin: remove clues that let a player trivially locate a suspect
 Algorithm → minimize: greedily remove redundant clues while keeping
             (a) unique solution and (b) ≥1 clue per suspect
   ↓
-LLM → write one summary sentence per suspect (covering all their clues)
+LLM → single call writes one summary sentence per suspect + naturalizes
+      any remaining general clues (room-population, object-occupancy)
   ↓
 Auto-save → puzzles.json
 ```
 
-The LLM is only used for **creative content** (theme, suspect summaries). All clue selection and constraint satisfaction is handled algorithmically.
+The LLM is only used for **creative content** (theme, clue text phrasing). All clue selection and constraint satisfaction is handled algorithmically.

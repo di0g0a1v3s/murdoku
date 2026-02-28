@@ -2,7 +2,7 @@ import { randomInt } from 'crypto'
 import type { Clue, Puzzle } from '../shared/types.js'
 import { solve } from '../shared/solver.js'
 import { evaluateClue } from '../shared/clue-evaluator.js'
-import { generateTheme, generateSuspectText, setDebug } from './llm-client.js'
+import { generateTheme, generateAllTexts, setDebug } from './llm-client.js'
 import { buildLayout, hasEnoughOccupiableCells } from './layout-builder.js'
 import { placePeople } from './placer.js'
 import { computeAllFacts } from './clue-generator.js'
@@ -149,6 +149,7 @@ async function generatePuzzle(): Promise<Puzzle> {
     objects: layout.objects,
     people: theme.people,
     clues: [],
+    suspectSummaries: [],
     solution: {
       placements: placerResult.placements,
       murdererId: placerResult.murdererId,
@@ -231,7 +232,16 @@ async function generatePuzzle(): Promise<Puzzle> {
   //     (evaluated in isolation). No uniqueness check here — we have many facts to spare.
   // (b) Minimize: greedily remove redundant clues (uniqueness + coverage only).
   console.log('\n✂️  Step 5: Minimizing clue set...')
+
+  // Lower weight = sorted to front = tried for removal first = less likely to survive.
+  const CLUE_WEIGHT: Partial<Record<Clue['kind'], number>> = {
+    'person-direction': 1,
+    'person-distance': 1,
+  }
+  const DEFAULT_WEIGHT = 5
+
   let clues = shuffle(nonVictimFacts.map(f => ({ ...f.clue, text: f.description } as Clue)))
+    .sort((a, b) => (CLUE_WEIGHT[a.kind] ?? DEFAULT_WEIGHT) - (CLUE_WEIGHT[b.kind] ?? DEFAULT_WEIGHT))
   console.log(`  Starting with ${clues.length} candidate clues`)
   auditClues('all facts', clues)
 
@@ -277,20 +287,38 @@ async function generatePuzzle(): Promise<Puzzle> {
   }
   console.log(`✅ Minimized to ${clues.length} clues`)
 
-  // Step 6: Generate one-sentence summaries per suspect
-  console.log('\n✍️  Step 6: Generating suspect summaries...')
+  // Step 6: Generate all clue texts in one LLM call
+  console.log('\n✍️  Step 6: Generating clue texts...')
 
-  const suspectSummaries: { personId: string; text: string }[] = []
-  for (const suspect of partialPuzzle.people.filter(p => p.role === 'suspect')) {
-    const suspectClues = clues.filter(c => getCluePersonId(c) === suspect.id)
-    if (suspectClues.length === 0) continue
-    const text = await generateSuspectText(
-      suspect.name,
-      suspect.avatarEmoji ?? '',
-      suspectClues.map(c => c.text),
-    )
-    suspectSummaries.push({ personId: suspect.id, text })
+  const suspectInputs = partialPuzzle.people
+    .filter(p => p.role === 'suspect')
+    .map(p => ({
+      personId: p.id,
+      name: p.name,
+      factDescriptions: clues.filter(c => getCluePersonId(c) === p.id).map(c => c.text),
+    }))
+    .filter(s => s.factDescriptions.length > 0)
+
+  const generalClueInputs = clues
+    .filter(c => getCluePersonId(c) === null)
+    .map(c => ({ kind: c.kind, description: c.text }))
+
+  const { suspectTexts, generalClueTexts } = await generateAllTexts(suspectInputs, generalClueInputs)
+
+  const suspectSummaries = suspectTexts.map(({ personId, text }) => {
+    const suspect = partialPuzzle.people.find(p => p.id === personId)!
     console.log(`  ✅ ${suspect.avatarEmoji} ${suspect.name}: "${text}"`)
+    return { personId, text }
+  })
+
+  // Update clue.text for general clues with naturalized text
+  const generalClues = clues.filter(c => getCluePersonId(c) === null)
+  for (let i = 0; i < generalClues.length; i++) {
+    const naturalText = generalClueTexts[i]
+    if (!naturalText) continue
+    const idx = clues.indexOf(generalClues[i]!)
+    if (idx !== -1) clues[idx] = { ...clues[idx]!, text: naturalText }
+    console.log(`  ✅ [${generalClues[i]!.kind}] "${naturalText}"`)
   }
 
   // Step 7: Build final puzzle
@@ -318,23 +346,34 @@ async function main(): Promise<void> {
     console.log('🐛 Debug mode enabled — LLM prompts and responses will be printed')
   }
 
+  const countArg = process.argv.find(a => a.startsWith('--count='))
+  const count = countArg ? parseInt(countArg.split('=')[1]!, 10) : 1
+  if (isNaN(count) || count < 1) {
+    console.error('❌ --count must be a positive integer')
+    process.exit(1)
+  }
+
   console.log('🕵️  Murdoku Puzzle Generator')
   console.log('━'.repeat(40))
 
   resetCosts()
-  try {
-    const puzzle = await generatePuzzle()
-    printGrid(puzzle)
-    printPuzzleSummary(puzzle)
-    printCostSummary()
-
-    appendPuzzle(puzzle, OUTPUT_PATH)
-    console.log(`✅ Puzzle saved to ${OUTPUT_PATH}`)
-  } catch (err) {
-    console.error('❌ Error generating puzzle:', err)
-    printCostSummary()
+  let succeeded = 0
+  for (let i = 0; i < count; i++) {
+    if (count > 1) console.log(`\n📦 Puzzle ${i + 1} of ${count}`)
+    try {
+      const puzzle = await generatePuzzle()
+      printGrid(puzzle)
+      printPuzzleSummary(puzzle)
+      appendPuzzle(puzzle, OUTPUT_PATH)
+      console.log(`✅ Puzzle saved to ${OUTPUT_PATH}`)
+      succeeded++
+    } catch (err) {
+      console.error(`❌ Error generating puzzle ${i + 1}:`, err)
+    }
   }
 
+  printCostSummary()
+  if (count > 1) console.log(`\n📊 Generated ${succeeded}/${count} puzzles successfully`)
   console.log('\n👋 Done!')
 }
 

@@ -1,8 +1,8 @@
 import type { LanguageModelUsage } from 'ai'
 
 // Gemini 2.0 Flash pricing (USD per 1M tokens)
-const INPUT_COST_PER_M = 0.075
-const OUTPUT_COST_PER_M = 0.30
+const INPUT_COST_PER_M = 0.10
+const OUTPUT_COST_PER_M = 0.40
 
 interface Entry {
   label: string

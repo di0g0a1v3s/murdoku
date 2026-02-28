@@ -101,31 +101,59 @@ Make it creative and varied — avoid clichés.`
   }
 }
 
-// ─── One-sentence suspect summary ─────────────────────────────────────────────
+// ─── All clue texts in one call ───────────────────────────────────────────────
 
-export async function generateSuspectText(
-  suspectName: string,
-  suspectEmoji: string,
-  factDescriptions: string[],
-): Promise<string> {
-  const prompt = `You are writing a single clue for a Murdoku murder mystery puzzle.
+export interface SuspectInput {
+  personId: string
+  name: string
+  factDescriptions: string[]
+}
 
-Suspect: ${suspectName}
-Facts about this suspect:
-${factDescriptions.map((d, i) => `${i + 1}. ${d}`).join('\n')}
+export interface GeneralClueInput {
+  kind: string
+  description: string
+}
 
-Write exactly ONE grammatically natural sentence that conveys all of the above facts about ${suspectName}. No mystery prose, no metaphors. Use natural English word order — for example, write "alone in the Library" not "in the Library and alone", "sitting at a desk in the Library" not "in the Library, at a desk".
-Example: "${suspectName} is alone in the Library, 2 columns east of Blake, sitting at a desk."`
+export async function generateAllTexts(
+  suspects: SuspectInput[],
+  generalClues: GeneralClueInput[],
+): Promise<{ suspectTexts: { personId: string; text: string }[]; generalClueTexts: string[] }> {
+  const suspectsBlock = suspects.map((s, i) =>
+    `${i + 1}. ${s.name}:\n${s.factDescriptions.map((d, j) => `   ${j + 1}. ${d}`).join('\n')}`
+  ).join('\n\n')
 
-  const { object, usage } = await generateObject({
-    model,
-    schema: z.object({ text: z.string() }),
-    prompt,
-    temperature: 0.4,
+  const generalBlock = generalClues.length > 0
+    ? `\nGeneral clues:\n${generalClues.map((g, i) => `${i + 1}. [${g.kind}] ${g.description}`).join('\n')}`
+    : ''
+
+  const prompt = `You are writing clue text for a Murdoku murder mystery logic puzzle.
+
+For each suspect, write exactly ONE natural sentence covering ALL of their listed facts.
+For each general clue, rewrite the description as a natural sentence.
+
+Rules:
+- Plain factual English — no mystery prose, no metaphors
+- Natural word order: "alone in the Library" not "in the Library and alone"
+- Use "sitting in a chair" not "occupying a chair"
+- Keep suspect names and room/object names exactly as given
+
+Suspects:
+${suspectsBlock}${generalBlock}
+
+Return exactly ${suspects.length} suspect entries and exactly ${generalClues.length} general clue entries, in the same order as given.`
+
+  const schema = z.object({
+    suspects: z.array(z.object({ text: z.string() })),
+    generalClues: z.array(z.object({ text: z.string() })),
   })
 
-  trackUsage('Suspect text', usage)
-  debugLog('generateSuspectText', prompt, object)
+  const { object, usage } = await generateObject({ model, schema, prompt, temperature: 0.4 })
 
-  return object.text
+  trackUsage('Clue texts', usage)
+  debugLog('generateAllTexts', prompt, object)
+
+  return {
+    suspectTexts: suspects.map((s, i) => ({ personId: s.personId, text: object.suspects[i]!.text })),
+    generalClueTexts: object.generalClues.map(g => g.text),
+  }
 }

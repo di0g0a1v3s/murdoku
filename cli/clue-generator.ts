@@ -26,6 +26,11 @@ function getRoomForPerson(personId: string, placements: PlacedPerson[], puzzle: 
 
 const VALID_DIRECTIONS = new Set(['N', 'S', 'E', 'W', 'NE', 'NW', 'SE', 'SW'])
 
+const DIRECTION_LABEL: Record<string, string> = {
+  N: 'north', S: 'south', E: 'east', W: 'west',
+  NE: 'northeast', NW: 'northwest', SE: 'southeast', SW: 'southwest',
+}
+
 // ─── Derivable facts computation ──────────────────────────────────────────────
 
 export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): DerivableFact[] {
@@ -52,7 +57,7 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
     for (const obj of objectsOnCell) {
       if (obj.occupiable === 'occupiable') {
         facts.push({
-          description: `${name} is on/at a ${obj.kind} in the ${room.name}`,
+          description: `${name} is on/at a ${obj.kind}`,
           clue: { kind: 'person-on-object', person: personId, objectKind: obj.kind as ObjectKind, text: '' },
         })
       }
@@ -65,7 +70,7 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
       if (!seenKinds.has(obj.kind)) {
         seenKinds.add(obj.kind)
         facts.push({
-          description: `${name} is beside a ${obj.kind} in the ${room.name}`,
+          description: `${name} is beside a ${obj.kind}`,
           clue: { kind: 'person-beside-object', person: personId, objectKind: obj.kind as ObjectKind, text: '' },
         })
       }
@@ -84,16 +89,34 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
     const dirArelB = directionFromAToB(cB, cA) // where A is, relative to B
     if (dirArelB && VALID_DIRECTIONS.has(dirArelB)) {
       facts.push({
-        description: `${nameA} is ${dirArelB} of ${nameB}`,
+        description: `${nameA} is ${DIRECTION_LABEL[dirArelB] ?? dirArelB} of ${nameB}`,
         clue: { kind: 'person-direction', personA: pA.personId, direction: dirArelB as Direction, personB: pB.personId, text: '' },
       })
     }
     const dirBrelA = directionFromAToB(cA, cB) // where B is, relative to A
     if (dirBrelA && VALID_DIRECTIONS.has(dirBrelA)) {
       facts.push({
-        description: `${nameB} is ${dirBrelA} of ${nameA}`,
+        description: `${nameB} is ${DIRECTION_LABEL[dirBrelA] ?? dirBrelA} of ${nameA}`,
         clue: { kind: 'person-direction', personA: pB.personId, direction: dirBrelA as Direction, personB: pA.personId, text: '' },
       })
+    }
+
+    // Cardinal row direction (N/S) — A's row vs B's row, any column
+    if (cA.row < cB.row) {
+      facts.push({ description: `${nameA} is north of ${nameB}`, clue: { kind: 'person-direction', personA: pA.personId, direction: 'N', personB: pB.personId, text: '' } })
+      facts.push({ description: `${nameB} is south of ${nameA}`, clue: { kind: 'person-direction', personA: pB.personId, direction: 'S', personB: pA.personId, text: '' } })
+    } else {
+      facts.push({ description: `${nameA} is south of ${nameB}`, clue: { kind: 'person-direction', personA: pA.personId, direction: 'S', personB: pB.personId, text: '' } })
+      facts.push({ description: `${nameB} is north of ${nameA}`, clue: { kind: 'person-direction', personA: pB.personId, direction: 'N', personB: pA.personId, text: '' } })
+    }
+
+    // Cardinal column direction (E/W) — A's col vs B's col, any row
+    if (cA.col > cB.col) {
+      facts.push({ description: `${nameA} is east of ${nameB}`, clue: { kind: 'person-direction', personA: pA.personId, direction: 'E', personB: pB.personId, text: '' } })
+      facts.push({ description: `${nameB} is west of ${nameA}`, clue: { kind: 'person-direction', personA: pB.personId, direction: 'W', personB: pA.personId, text: '' } })
+    } else {
+      facts.push({ description: `${nameA} is west of ${nameB}`, clue: { kind: 'person-direction', personA: pA.personId, direction: 'W', personB: pB.personId, text: '' } })
+      facts.push({ description: `${nameB} is east of ${nameA}`, clue: { kind: 'person-direction', personA: pB.personId, direction: 'E', personB: pA.personId, text: '' } })
     }
 
     // Column distance (E/W) — how many columns apart, any row
@@ -162,7 +185,7 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
         if (personHere) {
           facts.push({
             description: `${personName(personHere.personId)} is alone in the ${room.name}`,
-            clue: { kind: 'person-alone-in-room', person: personHere.personId, text: '' },
+            clue: { kind: 'person-alone-in-room', person: personHere.personId, roomId: room.id, text: '' },
           })
         }
       }

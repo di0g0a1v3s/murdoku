@@ -53,12 +53,14 @@ function directionFromAToB(a: Coord, b: Coord): string {
 
 // Checks if A is in the given direction relative to B
 // "A is N of B" means A.row < B.row (A is above B)
+// "A is N of B" means A's row is above B's (any column); similarly for S/E/W.
+// Diagonal directions (NE/NW/SE/SW) constrain both axes simultaneously.
 function isInDirection(a: Coord, b: Coord, dir: string): boolean {
   switch (dir) {
-    case 'N': return a.row < b.row && a.col === b.col
-    case 'S': return a.row > b.row && a.col === b.col
-    case 'E': return a.col > b.col && a.row === b.row
-    case 'W': return a.col < b.col && a.row === b.row
+    case 'N': return a.row < b.row
+    case 'S': return a.row > b.row
+    case 'E': return a.col > b.col
+    case 'W': return a.col < b.col
     case 'NE': return a.row < b.row && a.col > b.col
     case 'NW': return a.row < b.row && a.col < b.col
     case 'SE': return a.row > b.row && a.col > b.col
@@ -152,23 +154,20 @@ function evalPersonAloneInRoom(
   puzzle: Puzzle,
   allPersonIds: string[],
 ): EvalResult {
-  const coord = assignment.get(clue.person)
-  if (!coord) return 'unknown'
-  const roomId = getRoomId(coord, puzzle)
-  if (!roomId) return 'unknown'
-
-  // Count how many assigned people are in the same room
-  let count = 0
-  for (const [, c] of assignment) {
-    if (getRoomId(c, puzzle) === roomId) count++
+  // If anyone else is already placed in the room, violated immediately
+  for (const [pid, c] of assignment) {
+    if (pid === clue.person) continue
+    if (getRoomId(c, puzzle) === clue.roomId) return 'violated'
   }
 
-  const totalPeople = allPersonIds.length
-  const assignedCount = assignment.size
+  const coord = assignment.get(clue.person)
+  if (!coord) return 'unknown'
 
-  if (count > 1) return 'violated'
-  // If all people are assigned and count === 1, it's satisfied
-  if (assignedCount === totalPeople && count === 1) return 'satisfied'
+  // Person must be in the specified room
+  if (getRoomId(coord, puzzle) !== clue.roomId) return 'violated'
+
+  // Person is in the room and currently alone
+  if (assignment.size === allPersonIds.length) return 'satisfied'
   return 'unknown'
 }
 

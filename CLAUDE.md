@@ -13,7 +13,7 @@ A logic puzzle game combining murder mystery storytelling with Sudoku-style grid
 
 **Grid:**
 - Any size grid (Phase 1 uses 6×6), divided into named rooms
-- Cells can be: empty, occupiable object (chair, bed, sofa, desk…), or non-occupiable object (table, plant, bookshelf…)
+- Cells can be: empty, occupiable object (chair, bed, sofa...), or non-occupiable object (table, plant, bookshelf…)
 - Objects can span multiple cells
 
 **People:**
@@ -26,18 +26,22 @@ A logic puzzle game combining murder mystery storytelling with Sudoku-style grid
 - The murderer is the suspect alone in the same room as the victim (exactly 2 people in that room)
 
 **Clue types:**
-- `person-direction` — "A is northwest of B"
+- `person-direction` — "A is northwest of B" (diagonal) or "A is north of B" (row comparison only, any column)
 - `person-distance` — "A is exactly 2 columns east of B" (column/row distance only, no row/col alignment required)
 - `person-beside-object` — "A is beside a table" (orthogonally adjacent, same room only)
-- `person-on-object` — "A is sitting at the desk"
+- `person-on-object` — "A is sitting at the chair"
 - `person-in-room` — "A is in the kitchen"
 - `persons-same-room` — "A is in the same room as B"
-- `person-alone-in-room` — "A is alone in their room"
+- `person-alone-in-room` — "A is alone in the library" (encodes `roomId`; implies person-in-room for that room)
 - `room-population` — "The library has exactly 2 people"
 - `object-occupancy` — "Exactly one chair is occupied"
 - `person-not-in-room` — "A is not in the ballroom"
 - `persons-not-same-room` — "A and B are not in the same room"
 - Clues always yield exactly one valid solution
+
+**Direction semantics:**
+- Cardinal (N/S/E/W): row or column comparison only — "A is north of B" means A.row < B.row regardless of column
+- Diagonal (NE/NW/SE/SW): both row and column — "A is northeast of B" means A.row < B.row AND A.col > B.col
 
 ---
 
@@ -61,8 +65,8 @@ murdoku/
 │   └── clue-evaluator.ts      # Per-clue-kind evaluators used by solver
 │
 ├── cli/                       # Developer puzzle generator (never bundled)
-│   ├── generate.ts            # Entry: npm run generate
-│   ├── llm-client.ts          # Vercel AI SDK + Gemini (theme & clue generation)
+│   ├── generate.ts            # Entry: npm run generate [--count=N] [--debug]
+│   ├── llm-client.ts          # Vercel AI SDK + Gemini (theme + all clue texts)
 │   ├── layout-builder.ts      # Voronoi BFS room partitioning + object placement
 │   ├── placer.ts              # Latin-square backtracking placer
 │   ├── clue-generator.ts      # computeAllFacts() — derives all true facts
@@ -106,10 +110,12 @@ murdoku/
 ## Key Commands
 
 ```bash
-npm run dev                                       # Dev server
-npm run build                                     # Build → dist/index.html (single file)
-GEMINI_API_KEY=your_key npm run generate          # Generate a new puzzle
-GEMINI_API_KEY=your_key npm run generate -- --debug  # Print all LLM prompts/responses
+npm run dev                                              # Dev server
+npm run build                                            # Build → dist/index.html (single file)
+npm run clear-puzzles                                    # Reset puzzles.json to empty
+GEMINI_API_KEY=your_key npm run generate                 # Generate 1 puzzle
+GEMINI_API_KEY=your_key npm run generate -- --count=5   # Generate 5 puzzles
+GEMINI_API_KEY=your_key npm run generate -- --debug     # Print all LLM prompts/responses
 ```
 
 ---
@@ -125,19 +131,23 @@ GEMINI_API_KEY=your_key npm run generate -- --debug  # Print all LLM prompts/res
            enforces: 1/row, 1/col, no non-occupiable cells,
            victim's room has exactly 2 people (victim + murderer)
 4. Algo → computeAllFacts() — exhaustive list of all true statements (victim facts excluded)
-           shuffled for variety before processing
+           facts are weighted and sorted: person-direction/distance (weight 1) first,
+           general clues (weight 2) next, all others (weight 5) last
 5. Algo → de-pin pass — remove any clue whose removal still leaves the suspect
            with ≥1 clue but no longer individually pinned to one cell
            (no uniqueness check; pool is large enough to absorb removals)
 6. Algo → minimize pass — greedily remove redundant clues while maintaining
            (a) unique solution and (b) ≥1 clue per suspect
-7. LLM  → generateSuspectText() — one LLM call per suspect → one summary sentence
-           covering all their clues; temperature=0.4 for accurate factual prose
+           (lower-weight clues tried first → person-direction/distance pruned preferentially)
+7. LLM  → generateAllTexts() — single LLM call produces:
+           - one summary sentence per suspect (covering all their clue facts)
+           - natural language text for each general clue (room-population, object-occupancy)
+           temperature=0.4 for accurate factual prose
            victim clue is fixed ("alone with murderer") and never stored
 8. Auto-save → append to src/puzzles/puzzles.json
 ```
 
-**Key design principle:** LLM handles creative content only (theme, suspect summaries). All clue selection and constraint satisfaction is fully algorithmic.
+**Key design principle:** LLM handles creative content only (theme, clue text phrasing). All clue selection and constraint satisfaction is fully algorithmic.
 
 ---
 
@@ -149,9 +159,9 @@ Puzzle {
   rooms: Room[]          // each room owns its cells + has a CSS color
   objects: GridObject[]  // kind, occupiable|non-occupiable, cells[]
   people: Person[]       // role: 'victim' | 'suspect', avatarEmoji
-  clues: Clue[]          // discriminated union; text = fact description (used by solver)
+  clues: Clue[]          // discriminated union; each clue's .text = raw description (used by solver audit)
   suspectSummaries: { personId: string; text: string }[]
-                         // one LLM-written sentence per suspect (used for display)
+                         // one LLM-written sentence per suspect (used for UI display)
   solution: {
     placements: { personId, coord }[]
     murdererId, victimId, murderRoom
@@ -159,7 +169,9 @@ Puzzle {
 }
 ```
 
-**Display vs solver split:** `clues[].text` holds the raw fact description and is used by the solver. `suspectSummaries` holds one LLM-generated sentence per suspect that combines all their facts for display in the UI. The victim clue is hardcoded in the UI ("The victim is alone in a room with the murderer.") and never stored in `clues`.
+**Display vs solver split:** `suspectSummaries` holds one LLM-generated sentence per suspect that combines all their facts for display. General clue `text` fields hold LLM-naturalized text rendered directly in the UI. The victim clue is hardcoded in the UI ("The victim is alone in a room with the murderer.") and never stored in `clues`.
+
+**`person-alone-in-room` encodes `roomId`:** This clue stores the room explicitly, so the evaluator can prune immediately if any other person enters that room — making `room-population count=1` for the same room genuinely redundant and removable by the minimizer.
 
 ---
 
