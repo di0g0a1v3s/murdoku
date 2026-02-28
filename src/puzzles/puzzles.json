@@ -957,6 +957,484 @@
         "murderRoom": "the-secret-library"
       },
       "generatedAt": "2026-02-28T15:36:49.882Z"
+    },
+    {
+      "id": "the-serpent-s-gambit-mm6i9kuu",
+      "title": "The Serpent's Gambit",
+      "subtitle": "A deadly game of secrets and shadows at the Shanghai Bund.",
+      "gridSize": {
+        "rows": 6,
+        "cols": 6
+      },
+      "rooms": [
+        {
+          "id": "opium-den",
+          "name": "Opium Den",
+          "color": "#EBDCCA",
+          "cells": [
+            {
+              "row": 0,
+              "col": 4
+            },
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 1,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "mahjong-parlor",
+          "name": "Mahjong Parlor",
+          "color": "#D1E8DD",
+          "cells": [
+            {
+              "row": 2,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 5
+            },
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 5
+            },
+            {
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 5
+            },
+            {
+              "row": 5,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "vip-lounge",
+          "name": "VIP Lounge",
+          "color": "#F2D7D5",
+          "cells": [
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 1,
+              "col": 2
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 2
+            },
+            {
+              "row": 2,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "backstage-dressing-room",
+          "name": "Backstage Dressing Room",
+          "color": "#D8D0E1",
+          "cells": [
+            {
+              "row": 3,
+              "col": 1
+            },
+            {
+              "row": 4,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 1
+            },
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 4,
+              "col": 3
+            },
+            {
+              "row": 5,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 2
+            },
+            {
+              "row": 5,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "high-stakes-vault",
+          "name": "High-Stakes Vault",
+          "color": "#E0D5C4",
+          "cells": [
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "rooftop-terrace",
+          "name": "Rooftop Terrace",
+          "color": "#C7DAD9",
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 3,
+              "col": 0
+            }
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "chair-opium-den-1",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "chair-mahjong-parlor-1",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "toilet-vip-lounge-1",
+          "kind": "toilet",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "wardrobe-vip-lounge-2",
+          "kind": "wardrobe",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "sofa-backstage-dressing-room-1",
+          "kind": "sofa",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "chair-backstage-dressing-room-2",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "sofa-high-stakes-vault-1",
+          "kind": "sofa",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 0,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "bed-high-stakes-vault-2",
+          "kind": "bed",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "chair-rooftop-terrace-1",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 0
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "id": "victor-sinclair",
+          "name": "Victor Sinclair",
+          "role": "victim",
+          "avatarEmoji": "💀"
+        },
+        {
+          "id": "mei-ling",
+          "name": "Mei Ling",
+          "role": "suspect",
+          "avatarEmoji": "💃"
+        },
+        {
+          "id": "jean-pierre-dubois",
+          "name": "Jean-Pierre Dubois",
+          "role": "suspect",
+          "avatarEmoji": "👨‍✈️"
+        },
+        {
+          "id": "kazuo-the-knife-tanaka",
+          "name": "Kazuo 'The Knife' Tanaka",
+          "role": "suspect",
+          "avatarEmoji": "🔪"
+        },
+        {
+          "id": "isabelle-moreau",
+          "name": "Isabelle Moreau",
+          "role": "suspect",
+          "avatarEmoji": "👩‍🎤"
+        },
+        {
+          "id": "-lucky-louie",
+          "name": "'Lucky' Louie",
+          "role": "suspect",
+          "avatarEmoji": "🎲"
+        }
+      ],
+      "clues": [
+        {
+          "kind": "room-population",
+          "roomId": "mahjong-parlor",
+          "count": 2,
+          "text": "The Mahjong Parlor has exactly 2 people."
+        },
+        {
+          "kind": "room-population",
+          "roomId": "backstage-dressing-room",
+          "count": 2,
+          "text": "The Backstage Dressing Room has exactly 2 people."
+        },
+        {
+          "kind": "room-population",
+          "roomId": "high-stakes-vault",
+          "count": 1,
+          "text": "The High-Stakes Vault has exactly 1 person."
+        },
+        {
+          "kind": "room-population",
+          "roomId": "rooftop-terrace",
+          "count": 1,
+          "text": "The Rooftop Terrace has exactly 1 person."
+        },
+        {
+          "kind": "person-in-room",
+          "person": "victor-sinclair",
+          "roomId": "mahjong-parlor",
+          "text": "Victor Sinclair is in the Mahjong Parlor."
+        },
+        {
+          "kind": "person-in-room",
+          "person": "jean-pierre-dubois",
+          "roomId": "backstage-dressing-room",
+          "text": "Jean-Pierre Dubois is in the Backstage Dressing Room."
+        },
+        {
+          "kind": "person-in-room",
+          "person": "isabelle-moreau",
+          "roomId": "high-stakes-vault",
+          "text": "Isabelle Moreau is in the High-Stakes Vault."
+        },
+        {
+          "kind": "person-beside-object",
+          "person": "kazuo-the-knife-tanaka",
+          "objectKind": "chair",
+          "text": "Kazuo 'The Knife' Tanaka is beside a chair in the Rooftop Terrace."
+        },
+        {
+          "kind": "person-on-object",
+          "person": "isabelle-moreau",
+          "objectKind": "sofa",
+          "text": "Isabelle Moreau is on/at a sofa in the High-Stakes Vault."
+        },
+        {
+          "kind": "persons-same-room",
+          "personA": "jean-pierre-dubois",
+          "personB": "-lucky-louie",
+          "text": "Jean-Pierre Dubois and 'Lucky' Louie are in the same room."
+        },
+        {
+          "kind": "person-on-object",
+          "person": "jean-pierre-dubois",
+          "objectKind": "sofa",
+          "text": "Jean-Pierre Dubois is on the sofa in the Backstage Dressing Room."
+        },
+        {
+          "kind": "person-beside-object",
+          "person": "jean-pierre-dubois",
+          "objectKind": "chair",
+          "text": "Jean-Pierre Dubois is beside a chair in the Backstage Dressing Room."
+        },
+        {
+          "kind": "person-on-object",
+          "person": "victor-sinclair",
+          "objectKind": "chair",
+          "text": "Victor Sinclair is on the chair in the Mahjong Parlor."
+        }
+      ],
+      "solution": {
+        "placements": [
+          {
+            "personId": "victor-sinclair",
+            "coord": {
+              "row": 2,
+              "col": 4
+            }
+          },
+          {
+            "personId": "mei-ling",
+            "coord": {
+              "row": 3,
+              "col": 5
+            }
+          },
+          {
+            "personId": "jean-pierre-dubois",
+            "coord": {
+              "row": 5,
+              "col": 1
+            }
+          },
+          {
+            "personId": "kazuo-the-knife-tanaka",
+            "coord": {
+              "row": 1,
+              "col": 0
+            }
+          },
+          {
+            "personId": "isabelle-moreau",
+            "coord": {
+              "row": 0,
+              "col": 2
+            }
+          },
+          {
+            "personId": "-lucky-louie",
+            "coord": {
+              "row": 4,
+              "col": 3
+            }
+          }
+        ],
+        "murdererId": "mei-ling",
+        "victimId": "victor-sinclair",
+        "murderRoom": "mahjong-parlor"
+      },
+      "generatedAt": "2026-02-28T15:58:13.924Z"
     }
   ]
 }

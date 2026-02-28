@@ -261,7 +261,7 @@ async function generatePuzzle(): Promise<Puzzle> {
         : unusedFacts
 
       console.log(`  ⚠️  Multiple solutions exist. Adding constraining clue (attempt ${augmentAttempts + 1}) — ${candidateFacts.length} discriminating facts available...`)
-      const extra = await generateAdditionalClue(theme, candidateFacts.length > 0 ? candidateFacts : unusedFacts)
+      const extra = await generateAdditionalClue(candidateFacts.length > 0 ? candidateFacts : unusedFacts)
       if (!extra) {
         console.log('  ❌ No more facts to add!')
         break

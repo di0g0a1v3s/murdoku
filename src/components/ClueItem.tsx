@@ -16,35 +16,24 @@ const CLUE_ICONS: Record<Clue['kind'], string> = {
 
 interface ClueItemProps {
   clue: Clue
-  index: number
 }
 
-export function ClueItem({ clue, index }: ClueItemProps) {
+export function ClueItem({ clue }: ClueItemProps) {
   return (
     <div style={{
       display: 'flex',
       gap: 10,
-      padding: '10px 12px',
+      padding: '8px 10px',
       borderRadius: 8,
       background: 'rgba(0,0,0,0.03)',
       borderLeft: '3px solid rgba(0,0,0,0.12)',
     }}>
-      <div style={{
-        minWidth: 28,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: 2,
-      }}>
-        <span style={{ fontSize: 18, lineHeight: 1 }}>{CLUE_ICONS[clue.kind]}</span>
-        <span style={{ fontSize: 10, color: 'rgba(0,0,0,0.35)', fontWeight: 600 }}>{index + 1}</span>
-      </div>
+      <span style={{ fontSize: 16, lineHeight: 1.4, flexShrink: 0 }}>{CLUE_ICONS[clue.kind]}</span>
       <p style={{
         margin: 0,
-        fontSize: 14,
+        fontSize: 13,
         lineHeight: 1.5,
         color: '#1a1a2e',
-        fontStyle: 'italic',
       }}>
         {clue.text}
       </p>

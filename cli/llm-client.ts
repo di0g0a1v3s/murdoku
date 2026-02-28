@@ -106,18 +106,17 @@ ${theme.setting}
 PUZZLE SOLUTION FACTS (indexed 0 to ${facts.length - 1}):
 ${factsText}
 
-TASK: Select exactly ${targetCount} facts from the list above that, together, uniquely identify where every person is located. For each selected fact, write one sentence of atmospheric mystery flavor text.
+TASK: Select exactly ${targetCount} facts from the list above that, together, uniquely identify where every person is located. For each selected fact, write a short plain-language clue.
 
 Rules:
 1. Output exactly ${targetCount} selections, each with a valid factIndex (0 to ${facts.length - 1}) and a text string
 2. Do NOT repeat the same factIndex twice
 3. Vary the clue types — pick a mix of direction, room, object, and population facts
-4. Write "text" as an atmospheric in-world mystery clue (witness statement, investigation note, etc.)
+4. Write "text" as a clear, direct one-sentence statement of the fact. No mystery prose, no metaphors.
+   Examples: "Rex is in the Library." / "Rex is north of Alice." / "Rex is beside the bookshelf." / "The Kitchen has 2 people."
 5. The victim's position should be deducible from the clues, but don't state it trivially
 6. The murderer's identity should emerge from logic, not be stated directly
-7. Each suspect should be constrained by at least one clue
-
-Example text style: "A witness reported seeing [name] near the fireplace in the library..." rather than stating facts bluntly.`,
+7. Each suspect should be constrained by at least one clue`,
   })
 
   trackUsage('Clue generation', usage)
@@ -132,7 +131,6 @@ Example text style: "A witness reported seeing [name] near the fireplace in the 
 // ─── Text generation for a specific fact (programmatic fallback) ──────────────
 
 export async function generateAdditionalClue(
-  theme: PuzzleTheme,
   candidateFacts: DerivableFact[],
 ): Promise<Clue | null> {
   if (candidateFacts.length === 0) return null
@@ -141,14 +139,12 @@ export async function generateAdditionalClue(
   const { object, usage } = await generateObject({
     model,
     schema: z.object({ text: z.string() }),
-    prompt: `Write one atmospheric mystery clue for this Murdoku puzzle.
+    prompt: `Write one short, plain-language clue for this Murdoku puzzle.
 
-Setting: ${theme.title} — ${theme.setting}
-Fact to describe: ${fact.description}
-Clue data: ${JSON.stringify(fact.clue)}
+Fact: ${fact.description}
 
-Write a single sentence of atmospheric mystery flavor text that conveys this fact.
-Make it sound like a witness statement or investigation note. Do not be too on-the-nose.`,
+Write a single clear sentence stating this fact directly. No mystery prose, no metaphors.
+Example style: "Rex is in the Library." / "Rex is north of Alice." / "Rex is beside the bookshelf."`,
   })
 
   trackUsage('Additional clue', usage)
