@@ -95,7 +95,6 @@ const OBJECT_TEMPLATES: ObjectTemplate[] = [
   { kind: 'table', offsets: [{ row: 0, col: 0 }, { row: 0, col: 1 }] },
   { kind: 'bed', offsets: [{ row: 0, col: 0 }, { row: 1, col: 0 }] },
   { kind: 'bookshelf', offsets: [{ row: 0, col: 0 }] },
-  { kind: 'desk', offsets: [{ row: 0, col: 0 }] },
   { kind: 'sofa', offsets: [{ row: 0, col: 0 }, { row: 0, col: 1 }] },
   { kind: 'fireplace', offsets: [{ row: 0, col: 0 }] },
   { kind: 'counter', offsets: [{ row: 0, col: 0 }, { row: 0, col: 1 }] },

@@ -11,9 +11,7 @@ export type ObjectKind =
   | 'chair'
   | 'bed'
   | 'sofa'
-  | 'desk'
   | 'toilet'
-  | 'bathtub'
   | 'table'
   | 'plant'
   | 'bookshelf'
@@ -108,9 +106,7 @@ export const OBJECT_OCCUPIABILITY: Record<ObjectKind, Occupiability> = {
   chair: 'occupiable',
   bed: 'occupiable',
   sofa: 'occupiable',
-  desk: 'occupiable',
   toilet: 'occupiable',
-  bathtub: 'occupiable',
   table: 'non-occupiable',
   plant: 'non-occupiable',
   bookshelf: 'non-occupiable',
@@ -123,9 +119,7 @@ export const OBJECT_EMOJI: Record<ObjectKind, string> = {
   chair: '🪑',
   bed: '🛏️',
   sofa: '🛋️',
-  desk: '🖊️',
   toilet: '🚽',
-  bathtub: '🛁',
   table: '🍽️',
   plant: '🪴',
   bookshelf: '📚',
