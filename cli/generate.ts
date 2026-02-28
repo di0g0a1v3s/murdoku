@@ -7,6 +7,7 @@ import { buildLayout, hasEnoughOccupiableCells } from './layout-builder.js'
 import { placePeople } from './placer.js'
 import { computeAllFacts } from './clue-generator.js'
 import { appendPuzzle } from './output.js'
+import { printCostSummary, resetCosts } from './cost-tracker.js'
 
 const OUTPUT_PATH = 'src/puzzles/puzzles.json'
 const GRID_ROWS = 6
@@ -223,10 +224,12 @@ async function main(): Promise<void> {
 
   let keepGoing = true
   while (keepGoing) {
+    resetCosts()
     try {
       const puzzle = await generatePuzzle()
       printGrid(puzzle)
       printPuzzleSummary(puzzle)
+      printCostSummary()
 
       const answer = await ask('\n💾 Save this puzzle? [Y/n]: ')
       if (answer.toLowerCase() !== 'n') {

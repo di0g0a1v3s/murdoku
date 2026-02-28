@@ -2,6 +2,7 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { generateObject } from 'ai'
 import { z } from 'zod'
 import type { Clue, Person, Room } from '../shared/types.js'
+import { trackUsage } from './cost-tracker.js'
 
 const google = createGoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY ?? '',
@@ -32,7 +33,7 @@ export interface PuzzleTheme {
 }
 
 export async function generateTheme(): Promise<PuzzleTheme> {
-  const { object } = await generateObject({
+  const { object, usage } = await generateObject({
     model,
     schema: ThemeSchema,
     prompt: `You are designing a murder mystery logic puzzle called Murdoku.
@@ -49,6 +50,8 @@ Requirements:
 
 Make it creative and varied — avoid clichés.`,
   })
+
+  trackUsage('Theme generation', usage)
 
   const rooms = object.roomNames.map((name, i) => ({
     id: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
@@ -101,7 +104,7 @@ export async function generateClues(
   const factsText = facts.map((f, i) => `${i + 1}. ${f.description}`).join('\n')
   const factsJson = JSON.stringify(facts.map(f => f.clue), null, 2)
 
-  const { object } = await generateObject({
+  const { object, usage } = await generateObject({
     model,
     schema: z.object({ clues: ClueOutputSchema }),
     prompt: `You are writing clues for a Murdoku puzzle (murder mystery + logic grid).
@@ -129,6 +132,8 @@ Rules:
 The "text" field is the human-readable mystery flavor text shown to the player. Make it atmospheric and in-world (e.g., "A witness reported seeing [name] near the fireplace in the library..." rather than just stating facts bluntly).`,
   })
 
+  trackUsage('Clue generation', usage)
+
   return object.clues as Clue[]
 }
 
@@ -144,7 +149,7 @@ export async function generateAdditionalClue(
   if (unusedFacts.length === 0) return null
 
   const fact = unusedFacts[0]!
-  const { object } = await generateObject({
+  const { object, usage } = await generateObject({
     model,
     schema: z.object({ text: z.string() }),
     prompt: `Write one atmospheric mystery clue for this Murdoku puzzle.
@@ -156,6 +161,8 @@ Clue data: ${JSON.stringify(fact.clue)}
 Write a single sentence of atmospheric mystery flavor text that conveys this fact.
 Make it sound like a witness statement or investigation note. Do not be too on-the-nose.`,
   })
+
+  trackUsage('Additional clue', usage)
 
   return { ...fact.clue, text: object.text } as Clue
 }
