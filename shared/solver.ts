@@ -13,6 +13,7 @@ export type SolveResult =
 export function solve(
   puzzle: Puzzle,
   clues: Clue[],
+  // TODO: Hardcode this
   limit = 2,
 ): SolveResult {
   const { rows, cols } = puzzle.gridSize
@@ -73,6 +74,19 @@ export function solve(
         assertNever(clue)
     }
   }
+
+  // TODO: function to compute domains that takes an incomplete assignments map
+  // TODO: restrict domain also for other clues: 
+  // person-distance: if other person is in assignment, we can restict a lot (to single row/column), if not we can still restrict a little (A is 3 rows north of B => A can't be in the bottom 3 rows, B can't be in the top 3 rows)
+  // person-direction: if other person is in assignment, we can restict a lot (to single square bounds), if not we can still restrict a little (A is north of B => A can't be in the bottom row, B can't be in the top row)
+  // persons-same-room: if other person is in assignment or other person domain is in single room, we can restrict
+  // persons-not-same-room: same as above
+  // person-beside-object: can restrict to cells adjacent to objects (can precompute cells adjacent to each obj at start)
+  // person-on-object: same as above
+  // room-population: if N assignees already in room, can restrict to outside
+  // ...
+  // person-alone-in-room: Same as person-in-room. Besides, can restrict all others to not in room 
+  // The domain can be restricted more and more with each clue
 
   // Narrow each person's domain using room constraints.
   // person-in-room  → domain ∩= room cells
@@ -228,6 +242,7 @@ export function solve(
 
     if (!nextPerson || minFeasible === 0) return
 
+    // TODO: can we re-compute the person's domain here (i.e, cells where they can be placed) given the current assignment, so we can be more efficient?
     const domain = personDomains.get(nextPerson)!
     const myCluesToCheck = cluesByPerson.get(nextPerson) ?? []
 

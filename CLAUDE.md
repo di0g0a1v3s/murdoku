@@ -228,6 +228,7 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 
 - More clue types: person in row X, person in column Y, person in corner, only person in object, not in room, X empty rooms, X people in object,
 - Generate less positional clues
+- Higher res icon
 - More object types: rug, tv, car
 - Non-square grids
 - Hint system using the solver

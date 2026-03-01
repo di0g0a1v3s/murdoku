@@ -7,7 +7,7 @@ interface CluesPanelProps {
   people: Person[]
   suspectSummaries: { personId: string; text: string }[]
 }
-
+// TODO: remove duplication with getPrimaryPersonId and getCluePersonId
 function getPrimaryPersonId(clue: Clue): string | null {
   switch (clue.kind) {
     case 'person-direction':
