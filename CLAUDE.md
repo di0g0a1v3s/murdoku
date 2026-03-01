@@ -73,18 +73,18 @@ murdoku/
 │   └── output.ts              # Read/write src/puzzles/puzzles.json
 │
 ├── src/
-│   ├── App.tsx                # Root: puzzle selection + showSolution state
+│   ├── App.tsx                # Root: puzzle selection + completed state (localStorage)
 │   ├── puzzles/
 │   │   └── puzzles.json       # Generated puzzles (committed, bundled at build)
 │   └── components/
-│       ├── GridCanvas.tsx     # Layered CSS Grid: rooms→objects→cells→tokens
-│       ├── Cell.tsx           # Single cell with room-boundary borders
+│       ├── GridCanvas.tsx     # Layered CSS Grid: rooms→objects→cells→marks
+│       ├── Cell.tsx           # Single cell with room-boundary borders + click handler
 │       ├── ObjectSprite.tsx   # Lucide icon spanning grid cells
-│       ├── PersonToken.tsx    # Suspect/victim token (shown on reveal)
+│       ├── CellPopup.tsx      # Popup to toggle person/X marks on a cell
 │       ├── CluesPanel.tsx     # Scrollable evidence list
 │       ├── ClueItem.tsx       # Single clue with kind icon + text
 │       ├── PuzzleView.tsx     # Full puzzle layout (grid + clues + controls)
-│       ├── PuzzleSelector.tsx # Puzzle picker (shown when >1 puzzle)
+│       ├── PuzzleSelector.tsx # Puzzle picker grouped by difficulty, completed state
 │       └── MurdererReveal.tsx # Modal shown when solution revealed
 │
 ├── .github/workflows/
@@ -192,27 +192,34 @@ Puzzle {
 Grid uses **layered CSS Grid** (not SVG/Canvas):
 1. Room background fills (color at ~33% opacity)
 2. Room name labels (topmost-leftmost actual room cell — never outside the room)
-3. Cell borders (thick = room boundary, thin = intra-room)
+3. Cell borders (thick = room boundary, thin = intra-room) + click targets
 4. Object sprites (Lucide icon + label, spanning correct grid cells)
-5. Person tokens (shown only when `showSolution=true`)
+5. Cell marks — player annotations (person initial in purple/red, or ✕); when solution is revealed, solution placements are shown using the same marks layer
+
+**Interactive solving:** clicking an occupiable cell opens a popup (`CellPopup`) with one button per person (initial letter) plus an X. Clicking a letter toggles that mark on the cell (multiple people per cell allowed; X is exclusive). Popup closes after each selection. Marks persist in `localStorage` per puzzle (`murdoku-progress-{id}`).
+
+**Verify Solution:** button checks that user's marks exactly match the solution placements (one person per cell, all placed, nothing extra; X marks ignored). Correct → green banner + marks puzzle complete. Wrong → red hint message.
+
+**Completed puzzles:** stored in `localStorage` (`murdoku-completed`). `PuzzleSelector` shows completed puzzles in green with a ✓ prefix, grouped by difficulty (Easy ≤6 people, Medium 7–9, Hard 10+). A Reset button clears completion and progress.
 
 Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 
 ---
 
-## Phase 1 Status: Complete
+## Status: Complete
 
 - [x] CLI puzzle generator with LLM + algorithmic pipeline
 - [x] Frontend renders grid, rooms, objects, clues
-- [x] Solution reveal (person tokens + murderer modal)
-- [x] Puzzle selector for multiple puzzles
+- [x] Solution reveal (letter marks + murderer modal)
+- [x] Puzzle selector grouped by difficulty (Easy/Medium/Hard)
+- [x] Interactive solving — click cells to annotate with person initials or X
+- [x] Verify Solution — checks marks against solution, marks puzzle complete
+- [x] Progress + completed state persisted in localStorage
 - [x] Single-file build deployable to GitHub Pages
 - [x] GitHub Actions auto-deploy on push to main
 
-## Phase 2 Ideas (not started)
+## Future Ideas
 
-- Difficulty ratings
 - More clue types
 - More object types
-- Interactive solving
 - Hint system using the solver

@@ -9,6 +9,33 @@ const collection = puzzleData as PuzzleCollection
 export function App() {
   const puzzles = collection.puzzles
   const [selectedId, setSelectedId] = useState(puzzles[0]?.id ?? '')
+  const [completedIds, setCompletedIds] = useState<Set<string>>(() => {
+    try {
+      const stored = localStorage.getItem('murdoku-completed')
+      return new Set(stored ? JSON.parse(stored) as string[] : [])
+    } catch {
+      return new Set()
+    }
+  })
+
+  function handleComplete(id: string) {
+    setCompletedIds(prev => {
+      const next = new Set(prev)
+      next.add(id)
+      try { localStorage.setItem('murdoku-completed', JSON.stringify([...next])) } catch { /* ignore */ }
+      return next
+    })
+  }
+
+  function handleReset(id: string) {
+    setCompletedIds(prev => {
+      const next = new Set(prev)
+      next.delete(id)
+      try { localStorage.setItem('murdoku-completed', JSON.stringify([...next])) } catch { /* ignore */ }
+      return next
+    })
+    try { localStorage.removeItem(`murdoku-progress-${id}`) } catch { /* ignore */ }
+  }
 
   const selectedPuzzle = puzzles.find(p => p.id === selectedId) ?? puzzles[0]
 
@@ -64,9 +91,18 @@ export function App() {
         puzzles={puzzles}
         selectedId={selectedId}
         onSelect={setSelectedId}
+        completedIds={completedIds}
       />
 
-      {selectedPuzzle && <PuzzleView key={selectedPuzzle.id} puzzle={selectedPuzzle} />}
+      {selectedPuzzle && (
+        <PuzzleView
+          key={selectedPuzzle.id}
+          puzzle={selectedPuzzle}
+          isCompleted={completedIds.has(selectedPuzzle.id)}
+          onComplete={() => handleComplete(selectedPuzzle.id)}
+          onReset={() => handleReset(selectedPuzzle.id)}
+        />
+      )}
     </div>
   )
 }

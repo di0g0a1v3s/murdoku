@@ -18,6 +18,12 @@ Murdoku presents you with a grid divided into rooms. Your goal is to place all s
 - The **murderer** is the suspect who ends up **alone in the same room as the victim**
 - The clues always yield exactly one valid solution
 
+**Solving:**
+- Tap any empty cell to open a popup — select a person's initial to mark them there, or ✕ to mark the cell empty
+- Tap again to remove a mark
+- When you've placed everyone, hit **Verify Solution** to check your answer
+- Stuck? Use **Reveal Solution** to see the answer
+
 **Clue types:**
 - Directional — *"A is north of B"* (row comparison), *"A is northeast of B"* (both row and column)
 - Distance — *"A is 2 columns east of B"* (column distance only, any row)
@@ -49,9 +55,10 @@ murdoku/
     ├── puzzles/
     │   └── puzzles.json  # Generated puzzles (bundled into the build)
     └── components/
-        ├── GridCanvas.tsx
+        ├── GridCanvas.tsx   # Layered CSS grid renderer
+        ├── CellPopup.tsx    # Mark-toggling popup
         ├── CluesPanel.tsx
-        ├── PuzzleView.tsx
+        ├── PuzzleView.tsx   # Grid + clues + verify/reveal controls
         └── ...
 ```
 

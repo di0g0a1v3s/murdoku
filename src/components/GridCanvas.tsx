@@ -2,21 +2,31 @@ import { useMemo } from 'react'
 import type { Coord, Puzzle, Room } from '@shared/types'
 import { Cell } from './Cell'
 import { ObjectSprite } from './ObjectSprite'
-import { PersonToken } from './PersonToken'
 
 interface GridCanvasProps {
   puzzle: Puzzle
-  showSolution: boolean
   cellSize: number
+  cellMarks?: Map<string, Set<string>>
+  onCellClick?: (row: number, col: number, e: React.MouseEvent) => void
 }
 
 function getRoomAt(coord: Coord, rooms: Room[]): Room | undefined {
   return rooms.find(r => r.cells.some(c => c.row === coord.row && c.col === coord.col))
 }
 
-export function GridCanvas({ puzzle, showSolution, cellSize }: GridCanvasProps) {
-  const { gridSize, rooms, objects, people, solution } = puzzle
+export function GridCanvas({ puzzle, cellSize, cellMarks, onCellClick }: GridCanvasProps) {
+  const { gridSize, rooms, objects, people } = puzzle
   const { rows, cols } = gridSize
+
+  const nonOccupiable = useMemo(() => {
+    const s = new Set<string>()
+    for (const obj of objects) {
+      if (obj.occupiable === 'non-occupiable') {
+        for (const c of obj.cells) s.add(`${c.row},${c.col}`)
+      }
+    }
+    return s
+  }, [objects])
 
   // Compute borders for each cell
   const cellBorders = useMemo(() => {
@@ -101,20 +111,24 @@ export function GridCanvas({ puzzle, showSolution, cellSize }: GridCanvasProps) 
         </div>
       ))}
 
-      {/* Layer 3: Cell borders (drawn as grid items) */}
+      {/* Layer 3: Cell borders + click targets */}
       {Array.from({ length: rows }, (_, row) =>
-        Array.from({ length: cols }, (_, col) => (
-          <Cell
-            key={`cell-${row}-${col}`}
-            borders={cellBorders[row][col]}
-            style={{
-              gridColumn: col + 1,
-              gridRow: row + 1,
-              zIndex: 3,
-              background: 'transparent',
-            }}
-          />
-        ))
+        Array.from({ length: cols }, (_, col) => {
+          const clickable = onCellClick && !nonOccupiable.has(`${row},${col}`)
+          return (
+            <Cell
+              key={`cell-${row}-${col}`}
+              borders={cellBorders[row][col]}
+              onClick={clickable ? e => onCellClick(row, col, e) : undefined}
+              style={{
+                gridColumn: col + 1,
+                gridRow: row + 1,
+                zIndex: 3,
+                background: 'transparent',
+              }}
+            />
+          )
+        })
       )}
 
       {/* Layer 4: Objects */}
@@ -133,8 +147,8 @@ export function GridCanvas({ puzzle, showSolution, cellSize }: GridCanvasProps) 
         ))}
       </div>
 
-      {/* Layer 5: Person tokens (shown when solution revealed) */}
-      {showSolution && (
+      {/* Layer 4.5: Cell marks (player annotations) */}
+      {cellMarks && cellMarks.size > 0 && (
         <div style={{
           ...gridStyle,
           position: 'absolute',
@@ -143,24 +157,55 @@ export function GridCanvas({ puzzle, showSolution, cellSize }: GridCanvasProps) 
           width: '100%',
           height: '100%',
           pointerEvents: 'none',
-          zIndex: 5,
+          zIndex: 4,
         }}>
-          {solution.placements.map(p => {
-            const person = people.find(pe => pe.id === p.personId)!
+          {Array.from(cellMarks.entries()).map(([key, marks]) => {
+            const [row, col] = key.split(',').map(Number)
+            const isX = marks.has('X')
+            const personIds = [...marks].filter(m => m !== 'X')
+            const count = isX ? 1 : personIds.length
+            const fontSize = count <= 2 ? cellSize * 0.3 : count <= 4 ? cellSize * 0.23 : cellSize * 0.18
             return (
-              <PersonToken
-                key={p.personId}
-                person={person}
-                row={p.coord.row}
-                col={p.coord.col}
-                cellSize={cellSize}
-                isVictim={p.personId === solution.victimId}
-                isMurderer={p.personId === solution.murdererId}
-              />
+              <div
+                key={key}
+                style={{
+                  gridColumn: col + 1,
+                  gridRow: row + 1,
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: 2,
+                  gap: 1,
+                }}
+              >
+                {isX ? (
+                  <span style={{ fontSize: cellSize * 0.42, color: '#dc2626', fontWeight: 900, lineHeight: 1 }}>✕</span>
+                ) : (
+                  personIds.map(pid => {
+                    const person = people.find(p => p.id === pid)
+                    if (!person) return null
+                    return (
+                      <span
+                        key={pid}
+                        style={{
+                          fontSize,
+                          fontWeight: 700,
+                          color: person.role === 'victim' ? '#dc2626' : '#7c3aed',
+                          lineHeight: 1,
+                        }}
+                      >
+                        {person.name[0].toUpperCase()}
+                      </span>
+                    )
+                  })
+                )}
+              </div>
             )
           })}
         </div>
       )}
+
     </div>
   )
 }
