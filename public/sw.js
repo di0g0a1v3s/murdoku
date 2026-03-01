@@ -15,6 +15,20 @@ self.addEventListener('activate', e => {
 })
 
 self.addEventListener('fetch', e => {
+  // Network-first for HTML navigation: always fetch fresh content when online,
+  // update the cache, and only fall back to the cache when offline.
+  if (e.request.mode === 'navigate') {
+    e.respondWith(
+      fetch(e.request)
+        .then(response => {
+          caches.open(CACHE).then(c => c.put(e.request, response.clone()))
+          return response
+        })
+        .catch(() => caches.match(e.request))
+    )
+    return
+  }
+  // Cache-first for everything else (fonts, icons, etc.)
   e.respondWith(
     caches.match(e.request).then(cached => cached ?? fetch(e.request))
   )
