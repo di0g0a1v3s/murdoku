@@ -87,6 +87,10 @@ murdoku/
 │       ├── PuzzleSelector.tsx # Puzzle picker grouped by difficulty, completed state
 │       └── MurdererReveal.tsx # Modal shown when solution revealed
 │
+├── public/
+│   ├── icon.svg               # PWA home screen icon (512×512, dark bg + 🕵️)
+│   ├── manifest.json          # PWA manifest (standalone display, theme colour)
+│   └── sw.js                  # Service worker — cache-first, caches index.html
 ├── .github/workflows/
 │   └── deploy.yml             # GitHub Actions: build + deploy to GitHub Pages
 ├── index.html
@@ -104,6 +108,7 @@ murdoku/
 - **CLI:** TypeScript via `tsx`, Vercel AI SDK (`ai` + `@ai-sdk/google`), Zod
 - **LLM:** Google Gemini (`gemini-2.0-flash`) — requires `GEMINI_API_KEY`
 - **Hosting:** GitHub Pages (single `index.html`)
+- **PWA:** manual manifest + cache-first service worker; no extra plugin (avoids conflict with `viteSingleFile`); all URLs relative (`./`) so works under the `/murdoku/` subpath without a Vite `base` change
 
 ---
 
@@ -217,9 +222,12 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 - [x] Progress + completed state persisted in localStorage
 - [x] Single-file build deployable to GitHub Pages
 - [x] GitHub Actions auto-deploy on push to main
+- [x] PWA — installable, works offline after first visit
 
 ## Future Ideas
 
-- More clue types
-- More object types
+- More clue types: person in row X, person in column Y, person in corner, only person in object, not in room, X empty rooms, X people in object,
+- Generate less positional clues
+- More object types: rug, tv, car
+- Non-square grids
 - Hint system using the solver

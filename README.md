@@ -4,7 +4,7 @@
 
 > Place every suspect on the grid. Find who was alone with the victim. Solve the case.
 
-**[▶ Play online](https://di0g0a1v3s.github.io/murdoku/)**
+**[▶ Play online](https://di0g0a1v3s.github.io/murdoku/)** — installable PWA, works offline
 
 ---
 
@@ -60,6 +60,10 @@ murdoku/
         ├── CluesPanel.tsx
         ├── PuzzleView.tsx   # Grid + clues + verify/reveal controls
         └── ...
+├── public/
+│   ├── icon.svg         # PWA home screen icon
+│   ├── manifest.json    # PWA manifest
+│   └── sw.js            # Service worker (offline caching)
 ```
 
 ---
@@ -71,6 +75,7 @@ murdoku/
 | Frontend | React + TypeScript |
 | Bundler | Vite + `vite-plugin-singlefile` (outputs a single `index.html`) |
 | Hosting | GitHub Pages |
+| PWA | Manual manifest + service worker (cache-first, offline-capable) |
 | CLI | TypeScript via `tsx` |
 | LLM | Vercel AI SDK + Google Gemini |
 | Structured output | Zod |
