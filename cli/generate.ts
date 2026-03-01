@@ -275,21 +275,22 @@ async function generatePuzzle(existingTitles: string[], n: number): Promise<Puzz
   }
   console.log(`  ${clues.length} clues after de-pinning`)
 
-  // (b) Minimize pass — remove any clue redundant for uniqueness or coverage
+  // Minimize: sweep through, removing any redundant clue (O(clues × passes)).
   partialPuzzle.clues = clues
-  let changed = true
-  while (changed) {
-    changed = false
-    for (let i = 0; i < clues.length; i++) {
+  let passChanged = true
+  while (passChanged) {
+    passChanged = false
+    let i = 0
+    while (i < clues.length) {
       const candidate = [...clues.slice(0, i), ...clues.slice(i + 1)]
       const covered = new Set(candidate.map(c => getCluePersonId(c)).filter(Boolean))
-      if ([...suspectIds].some(id => !covered.has(id))) continue
-      if (solve(partialPuzzle, candidate, 2).status !== 'unique') continue
-      console.log(`  ✂️  Removed: ${clues[i]!.text}`)
+      if ([...suspectIds].some(id => !covered.has(id))) { i++; continue }
+      if (solve(partialPuzzle, candidate, 2).status !== 'unique') { i++; continue }
+      console.log(`  ✂️  Removed: ${clues[i]!.text}, current: ${candidate.length}/${nonVictimFacts.length}`)
       clues = candidate
       partialPuzzle.clues = clues
-      changed = true
-      break
+      passChanged = true
+      // Don't increment i — the array shifted left, next clue is now at position i
     }
   }
   console.log(`✅ Minimized to ${clues.length} clues`)

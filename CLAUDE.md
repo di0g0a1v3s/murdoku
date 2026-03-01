@@ -133,7 +133,7 @@ GEMINI_API_KEY=your_key npm run generate -- --debug              # Print all LLM
            victim's room has exactly 2 people (victim + murderer)
 4. Algo → computeAllFacts() — exhaustive list of all true statements (victim facts excluded)
            facts are weighted and sorted: person-direction/distance (weight 1) first,
-           general clues (weight 2) next, all others (weight 5) last
+           all others (weight 5) last
 5. Algo → de-pin pass — remove any clue whose removal still leaves the suspect
            with ≥1 clue but no longer individually pinned to one cell
            (no uniqueness check; pool is large enough to absorb removals)
@@ -181,6 +181,8 @@ Puzzle {
 - `solve(puzzle, clues, limit?) → { status: 'unique'|'multiple'|'none', ... }`
 - Backtracking with early pruning via clue evaluators
 - MRV heuristic (most-constrained person first)
+- **Row/col reservation propagation**: at each node, propagates to a fixed point — when all feasible cells for an unplaced person share the same row or column, that row/col is reserved for them and blocked for all others; cascades until stable; prunes immediately on contradiction
+- Per-person domain precomputation from `person-in-room` / `person-not-in-room` clues
 - Used by CLI for uniqueness verification; also available for browser in Phase 2
 
 ---
