@@ -39,7 +39,7 @@ Murdoku presents you with a grid divided into rooms. Your goal is to place all s
 murdoku/
 ├── shared/               # Types and logic shared by CLI + frontend
 │   ├── types.ts          # Canonical data model (Puzzle, Room, Clue, etc.)
-│   ├── solver.ts         # Backtracking solver (uniqueness verification)
+│   ├── solver.ts         # Backtracking solver with domain narrowing (uniqueness verification)
 │   └── clue-evaluator.ts # Per-clue-kind constraint evaluators
 │
 ├── cli/                  # Developer tool — puzzle generator

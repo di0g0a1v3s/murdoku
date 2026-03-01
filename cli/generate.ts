@@ -115,6 +115,8 @@ async function generatePuzzle(existingTitles: string[], n: number): Promise<Puzz
   for (let attempt = 0; attempt < MAX_LAYOUT_RETRIES; attempt++) {
     console.log(`\n🏗️  Step 2: Building layout (attempt ${attempt + 1})...`)
     try {
+      // TODO start removing rooms on each attempt
+      // TODO add more objects for bigger puzzles
       const candidate = buildLayout(theme, layoutSeed + attempt, n, n)
       if (hasEnoughOccupiableCells(candidate.rooms, candidate.objects, n)) {
         layout = candidate
@@ -240,6 +242,7 @@ async function generatePuzzle(existingTitles: string[], n: number): Promise<Puzz
   // (b) Minimize: greedily remove redundant clues (uniqueness + coverage only).
   console.log('\n✂️  Step 5: Minimizing clue set...')
 
+  // TODO: weight for every Clue kind
   // Lower weight = sorted to front = tried for removal first = less likely to survive.
   const CLUE_WEIGHT: Partial<Record<Clue['kind'], number>> = {
     'person-direction': 1,
@@ -285,7 +288,7 @@ async function generatePuzzle(existingTitles: string[], n: number): Promise<Puzz
       const candidate = [...clues.slice(0, i), ...clues.slice(i + 1)]
       const covered = new Set(candidate.map(c => getCluePersonId(c)).filter(Boolean))
       if ([...suspectIds].some(id => !covered.has(id))) { i++; continue }
-      if (solve(partialPuzzle, candidate, 2).status !== 'unique') { i++; continue }
+      if (solve(partialPuzzle, candidate).status !== 'unique') { i++; continue }
       console.log(`  ✂️  Removed: ${clues[i]!.text}, current: ${candidate.length}/${nonVictimFacts.length}`)
       clues = candidate
       partialPuzzle.clues = clues

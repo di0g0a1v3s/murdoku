@@ -13,8 +13,6 @@ export type SolveResult =
 export function solve(
   puzzle: Puzzle,
   clues: Clue[],
-  // TODO: Hardcode this
-  limit = 2,
 ): SolveResult {
   const { rows, cols } = puzzle.gridSize
   const allPersonIds = puzzle.people.map(p => p.id)
@@ -29,16 +27,57 @@ export function solve(
   }
 
   // All valid (non-occupiable) cells — used as the default domain
+  const allValidKeys = new Set<string>()
   const allValidCells: Coord[] = []
-  for (let r = 0; r < rows; r++)
-    for (let c = 0; c < cols; c++)
-      if (!nonOccupiable.has(`${r},${c}`))
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (!nonOccupiable.has(`${r},${c}`)) {
+        allValidKeys.add(`${r},${c}`)
         allValidCells.push({ row: r, col: c })
+      }
+    }
+  }
 
   // Room cell sets for domain narrowing
   const roomCellSets = new Map<string, Set<string>>()
   for (const room of puzzle.rooms) {
     roomCellSets.set(room.id, new Set(room.cells.map(c => `${c.row},${c.col}`)))
+  }
+
+  // O(1) coord → roomId lookup
+  const coordToRoom = new Map<string, string>()
+  for (const room of puzzle.rooms) {
+    for (const c of room.cells) coordToRoom.set(`${c.row},${c.col}`, room.id)
+  }
+
+  // Pre-compute valid cells adjacent (in same room) to each object kind
+  const besideCellsByKind = new Map<string, Set<string>>()
+  for (const obj of puzzle.objects) {
+    for (const c of obj.cells) {
+      const roomId = coordToRoom.get(`${c.row},${c.col}`)
+      if (!roomId) continue
+      const neighbors: Coord[] = [
+        { row: c.row - 1, col: c.col },
+        { row: c.row + 1, col: c.col },
+        { row: c.row, col: c.col - 1 },
+        { row: c.row, col: c.col + 1 },
+      ]
+      for (const n of neighbors) {
+        if (n.row < 0 || n.row >= rows || n.col < 0 || n.col >= cols) continue
+        if (coordToRoom.get(`${n.row},${n.col}`) !== roomId) continue
+        if (nonOccupiable.has(`${n.row},${n.col}`)) continue
+        if (!besideCellsByKind.has(obj.kind)) besideCellsByKind.set(obj.kind, new Set())
+        besideCellsByKind.get(obj.kind)!.add(`${n.row},${n.col}`)
+      }
+    }
+  }
+
+  // Pre-compute occupiable cells of each object kind
+  const onObjectCellsByKind = new Map<string, Set<string>>()
+  for (const obj of puzzle.objects) {
+    if (obj.occupiable !== 'occupiable') continue
+    if (!onObjectCellsByKind.has(obj.kind)) onObjectCellsByKind.set(obj.kind, new Set())
+    for (const c of obj.cells) onObjectCellsByKind.get(obj.kind)!.add(`${c.row},${c.col}`)
   }
 
   // Index clues by person for fast per-step evaluation.
@@ -50,6 +89,7 @@ export function solve(
   for (const pid of allPersonIds) cluesByPerson.set(pid, [])
   const globalClues: Clue[] = []
 
+  // TODO: Typesafe way of making sure all clue kinds are handled in computeDomain
   for (const clue of clues) {
     switch (clue.kind) {
       case 'person-direction':
@@ -75,116 +115,227 @@ export function solve(
     }
   }
 
-  // TODO: function to compute domains that takes an incomplete assignments map
-  // TODO: restrict domain also for other clues: 
-  // person-distance: if other person is in assignment, we can restict a lot (to single row/column), if not we can still restrict a little (A is 3 rows north of B => A can't be in the bottom 3 rows, B can't be in the top 3 rows)
-  // person-direction: if other person is in assignment, we can restict a lot (to single square bounds), if not we can still restrict a little (A is north of B => A can't be in the bottom row, B can't be in the top row)
-  // persons-same-room: if other person is in assignment or other person domain is in single room, we can restrict
-  // persons-not-same-room: same as above
-  // person-beside-object: can restrict to cells adjacent to objects (can precompute cells adjacent to each obj at start)
-  // person-on-object: same as above
-  // room-population: if N assignees already in room, can restrict to outside
-  // ...
-  // person-alone-in-room: Same as person-in-room. Besides, can restrict all others to not in room 
-  // The domain can be restricted more and more with each clue
+  // Compute the set of valid cells for a person given the current assignment.
+  //
+  // Static constraints (applied regardless of assignment):
+  //   person-in-room        → domain ∩= room cells
+  //   person-not-in-room    → domain -= room cells
+  //   person-beside-object  → domain ∩= cells adjacent to objects of that kind (in same room)
+  //   person-on-object      → domain ∩= occupiable cells of that object kind
+  //   person-alone-in-room  → alone person: domain ∩= that room; all others: domain -= that room
+  //   person-direction      → tighten row/col bounds (e.g. "A is N of B" → A's maxRow = rows-2,
+  //                           B's minRow = 1; diagonals constrain both axes)
+  //   person-distance       → tighten row/col bounds to the valid range given the fixed offset
+  //                           (e.g. "A is 3 cols E of B" → A's minCol = 3, B's maxCol = cols-4)
+  //
+  // Dynamic constraints (applied when the relevant other person is already placed):
+  //   Latin square          → exclude rows/cols already occupied by placed people
+  //   person-direction      → filter to cells satisfying the directional constraint vs the placed other
+  //   person-distance       → filter to the single row/col at the exact offset from the placed other
+  //   persons-same-room     → filter to cells in the placed other's room
+  //   persons-not-same-room → filter to cells not in the placed other's room
+  //   room-population       → exclude rooms that have already reached their population cap
+  function computeDomain(pid: string, assignment: Map<string, Coord>): Coord[] {
+    // ── Static constraints: build domain as a set of coord keys ──────────────
+    // Pure helpers — return a new set rather than mutating, so TypeScript's
+    // control-flow analysis doesn't lose track of the type of `domainKeys`.
+    function intersectDomain(d: Set<string> | null, keys: Set<string>): Set<string> {
+      if (d === null) return new Set(keys)
+      const next = new Set<string>()
+      for (const k of d) if (keys.has(k)) next.add(k)
+      return next
+    }
+    function excludeFromDomain(d: Set<string> | null, keys: Set<string>): Set<string> {
+      const next = d !== null ? new Set(d) : new Set(allValidKeys)
+      for (const k of keys) next.delete(k)
+      return next
+    }
 
-  // Narrow each person's domain using room constraints.
-  // person-in-room  → domain ∩= room cells
-  // person-not-in-room → domain -= room cells
-  // Persons with no room clue get the full allValidCells domain.
-  const personDomains = new Map<string, Coord[]>()
-  for (const personId of allPersonIds) {
     let domainKeys: Set<string> | null = null
 
-    for (const clue of cluesByPerson.get(personId) ?? []) {
+    // Row/col bounds accumulated from direction/distance clues — no assignment needed.
+    // Multiple clues on the same person tighten the bounds further via Math.min/max.
+    let minRow = 0, maxRow = rows - 1
+    let minCol = 0, maxCol = cols - 1
+
+    for (const clue of cluesByPerson.get(pid) ?? []) {
       if (clue.kind === 'person-in-room') {
         const rSet = roomCellSets.get(clue.roomId)
-        if (rSet) {
-          if (domainKeys !== null) {
-            const next = new Set<string>()
-            for (const k of domainKeys) if (rSet.has(k)) next.add(k)
-            domainKeys = next
-          } else {
-            domainKeys = new Set(rSet)
-          }
-        }
+        if (rSet) domainKeys = intersectDomain(domainKeys, rSet)
       } else if (clue.kind === 'person-not-in-room') {
         const rSet = roomCellSets.get(clue.roomId)
-        if (rSet) {
-          if (!domainKeys) domainKeys = new Set(allValidCells.map(c => `${c.row},${c.col}`))
-          for (const k of rSet) domainKeys.delete(k)
+        if (rSet) domainKeys = excludeFromDomain(domainKeys, rSet)
+      } else if (clue.kind === 'person-beside-object') {
+        const cells = besideCellsByKind.get(clue.objectKind)
+        if (cells) domainKeys = intersectDomain(domainKeys, cells)
+      } else if (clue.kind === 'person-on-object') {
+        const cells = onObjectCellsByKind.get(clue.objectKind)
+        if (cells) domainKeys = intersectDomain(domainKeys, cells)
+      } else if (clue.kind === 'person-direction') {
+        // "A is [dir] of B": if pid is A apply A-side bounds; if pid is B apply B-side bounds.
+        // Cardinal directions constrain one axis; diagonals constrain both.
+        const a = clue.personA === pid  // true → pid is personA
+        const d = clue.direction
+        if (a ? (d === 'N' || d === 'NE' || d === 'NW') : (d === 'S' || d === 'SE' || d === 'SW')) maxRow = Math.min(maxRow, rows - 2)
+        if (a ? (d === 'S' || d === 'SE' || d === 'SW') : (d === 'N' || d === 'NE' || d === 'NW')) minRow = Math.max(minRow, 1)
+        if (a ? (d === 'E' || d === 'NE' || d === 'SE') : (d === 'W' || d === 'NW' || d === 'SW')) minCol = Math.max(minCol, 1)
+        if (a ? (d === 'W' || d === 'NW' || d === 'SW') : (d === 'E' || d === 'NE' || d === 'SE')) maxCol = Math.min(maxCol, cols - 2)
+      } else if (clue.kind === 'person-distance') {
+        // "A is [distance] [dir] of B" on a single axis.
+        // Evaluator: col axis E → a.col - b.col = distance; N axis → a.row - b.row = -distance
+        const a = clue.personA === pid
+        if (clue.axis === 'col') {
+          if (clue.direction === 'E') {
+            // A.col = B.col + distance  →  A.col ≥ distance;  B.col ≤ cols-1-distance
+            if (a) minCol = Math.max(minCol, clue.distance)
+            else   maxCol = Math.min(maxCol, cols - 1 - clue.distance)
+          } else { // W: A.col = B.col - distance  →  A.col ≤ cols-1-distance;  B.col ≥ distance
+            if (a) maxCol = Math.min(maxCol, cols - 1 - clue.distance)
+            else   minCol = Math.max(minCol, clue.distance)
+          }
+        } else { // row
+          if (clue.direction === 'S') {
+            // A.row = B.row + distance  →  A.row ≥ distance;  B.row ≤ rows-1-distance
+            if (a) minRow = Math.max(minRow, clue.distance)
+            else   maxRow = Math.min(maxRow, rows - 1 - clue.distance)
+          } else { // N: A.row = B.row - distance  →  A.row ≤ rows-1-distance;  B.row ≥ distance
+            if (a) maxRow = Math.min(maxRow, rows - 1 - clue.distance)
+            else   minRow = Math.max(minRow, clue.distance)
+          }
         }
       }
     }
 
+    // person-alone-in-room: alone person must be in that room; all others must not be
+    for (const clue of globalClues) {
+      if (clue.kind !== 'person-alone-in-room') continue
+      const rSet = roomCellSets.get(clue.roomId)
+      if (!rSet) continue
+      if (pid === clue.person) {
+        domainKeys = intersectDomain(domainKeys, rSet)
+      } else {
+        domainKeys = excludeFromDomain(domainKeys, rSet)
+      }
+    }
+
+    // Convert to Coord[], applying row/col bounds and filtering non-occupiable cells
+    const base: Coord[] = []
     if (domainKeys !== null) {
-      const coords: Coord[] = []
       for (const key of domainKeys) {
         if (nonOccupiable.has(key)) continue
         const i = key.indexOf(',')
-        coords.push({ row: Number(key.slice(0, i)), col: Number(key.slice(i + 1)) })
+        const row = Number(key.slice(0, i))
+        const col = Number(key.slice(i + 1))
+        if (row < minRow || row > maxRow || col < minCol || col > maxCol) continue
+        base.push({ row, col })
       }
-      personDomains.set(personId, coords)
     } else {
-      personDomains.set(personId, allValidCells)
+      for (const c of allValidCells) {
+        if (c.row >= minRow && c.row <= maxRow && c.col >= minCol && c.col <= maxCol) {
+          base.push(c)
+        }
+      }
     }
-  }
 
-  const usedRows = new Set<number>()
-  const usedCols = new Set<number>()
-  const assignment = new Map<string, Coord>()
+    if (assignment.size === 0) return base
 
-  // Propagate row/col reservations to a fixed point.
-  // When all feasible cells for an unplaced person share the same row (or col),
-  // that row (col) is reserved for them — no other person may use it. This can
-  // cascade: reserving a row/col may collapse another person's domain to one
-  // row/col, triggering further reservations.
-  // rowFor/colFor record who owns each reservation so a person is not blocked by
-  // their own reservation. Returns false if any person ends up with 0 feasible
-  // cells (contradiction → prune the branch immediately).
-  function propagate(
-    effectiveRows: Set<number>,
-    effectiveCols: Set<number>,
-    rowFor: Map<number, string>,
-    colFor: Map<number, string>,
-  ): boolean {
-    let changed = true
-    while (changed) {
-      changed = false
-      for (const pid of allPersonIds) {
-        if (assignment.has(pid)) continue
-        const domain = personDomains.get(pid)!
-        let firstRow = -1; let multiRow = false
-        let firstCol = -1; let multiCol = false
-        let hasFeasible = false
-        for (const c of domain) {
-          if ((!effectiveRows.has(c.row) || rowFor.get(c.row) === pid) &&
-              (!effectiveCols.has(c.col) || colFor.get(c.col) === pid)) {
-            hasFeasible = true
-            if (!multiRow) {
-              if (firstRow < 0) firstRow = c.row
-              else if (firstRow !== c.row) multiRow = true
+    // ── Dynamic constraints: filter base domain by current assignment ─────────
+    // Pre-compute used rows/cols once for O(1) lookup in the filter below.
+    const usedR = new Set<number>()
+    const usedC = new Set<number>()
+    for (const [, placed] of assignment) {
+      usedR.add(placed.row)
+      usedC.add(placed.col)
+    }
+
+    return base.filter(c => {
+      // Latin square: skip rows/cols already occupied by a placed person
+      if (usedR.has(c.row) || usedC.has(c.col)) return false
+
+      const cKey = `${c.row},${c.col}`
+
+      for (const clue of cluesByPerson.get(pid) ?? []) {
+        switch (clue.kind) {
+          case 'person-direction': {
+            const otherId = clue.personA === pid ? clue.personB : clue.personA
+            const other = assignment.get(otherId)
+            if (other) {
+              // If pid is personA, pid (at c) must be in direction `dir` relative to personB (other).
+              // If pid is personB, personA (other) must be in direction `dir` relative to pid (at c).
+              const [a, b] = clue.personA === pid ? [c, other] : [other, c]
+              switch (clue.direction) {
+                case 'N':  if (!(a.row < b.row)) return false; break
+                case 'S':  if (!(a.row > b.row)) return false; break
+                case 'E':  if (!(a.col > b.col)) return false; break
+                case 'W':  if (!(a.col < b.col)) return false; break
+                case 'NE': if (!(a.row < b.row && a.col > b.col)) return false; break
+                case 'NW': if (!(a.row < b.row && a.col < b.col)) return false; break
+                case 'SE': if (!(a.row > b.row && a.col > b.col)) return false; break
+                case 'SW': if (!(a.row > b.row && a.col < b.col)) return false; break
+              }
             }
-            if (!multiCol) {
-              if (firstCol < 0) firstCol = c.col
-              else if (firstCol !== c.col) multiCol = true
+            break
+          }
+          case 'person-distance': {
+            const otherId = clue.personA === pid ? clue.personB : clue.personA
+            const other = assignment.get(otherId)
+            if (other) {
+              const isPidA = clue.personA === pid
+              if (clue.axis === 'col') {
+                // Evaluator: a.col - b.col === distance for E, -distance for W
+                const offset = clue.direction === 'E' ? clue.distance : -clue.distance
+                const expected = isPidA ? other.col + offset : other.col - offset
+                if (c.col !== expected) return false
+              } else {
+                // Evaluator: a.row - b.row === -distance for N, +distance for S
+                const offset = clue.direction === 'S' ? clue.distance : -clue.distance
+                const expected = isPidA ? other.row + offset : other.row - offset
+                if (c.row !== expected) return false
+              }
             }
+            break
+          }
+          case 'persons-same-room': {
+            const otherId = clue.personA === pid ? clue.personB : clue.personA
+            const other = assignment.get(otherId)
+            if (other) {
+              const otherRoom = coordToRoom.get(`${other.row},${other.col}`)
+              if (otherRoom && coordToRoom.get(cKey) !== otherRoom) return false
+            }
+            break
+          }
+          case 'persons-not-same-room': {
+            const otherId = clue.personA === pid ? clue.personB : clue.personA
+            const other = assignment.get(otherId)
+            if (other) {
+              const otherRoom = coordToRoom.get(`${other.row},${other.col}`)
+              if (otherRoom && coordToRoom.get(cKey) === otherRoom) return false
+            }
+            break
           }
         }
-        if (!hasFeasible) return false
-        if (!multiRow && !effectiveRows.has(firstRow)) {
-          effectiveRows.add(firstRow); rowFor.set(firstRow, pid); changed = true
-        }
-        if (!multiCol && !effectiveCols.has(firstCol)) {
-          effectiveCols.add(firstCol); colFor.set(firstCol, pid); changed = true
+      }
+
+      // room-population: if the room has already hit its limit, don't add more
+      const cRoom = coordToRoom.get(cKey)
+      for (const clue of globalClues) {
+        if (clue.kind === 'room-population' && cRoom === clue.roomId) {
+          let countInRoom = 0
+          for (const [, oc] of assignment) {
+            if (coordToRoom.get(`${oc.row},${oc.col}`) === clue.roomId) countInRoom++
+          }
+          if (countInRoom >= clue.count) return false
         }
       }
-    }
-    return true
+
+      return true
+    })
   }
 
+  const assignment = new Map<string, Coord>()
+
   function backtrack(): void {
-    if (solutions.length >= limit) return
+    if (solutions.length > 1) return
 
     if (assignment.size === allPersonIds.length) {
       // All placed: global clues must be satisfied (not just non-violated)
@@ -210,73 +361,46 @@ export function solve(
       return
     }
 
-    // Propagate row/col reservations. If any person gets 0 feasible cells → prune.
-    // effectiveRows/effectiveCols extend usedRows/usedCols with propagated reservations.
-    // usedRows ⊆ effectiveRows; entries from actual placements are NOT in rowFor/colFor.
-    const effectiveRows = new Set(usedRows)
-    const effectiveCols = new Set(usedCols)
-    const rowFor = new Map<number, string>()
-    const colFor = new Map<number, string>()
-    if (!propagate(effectiveRows, effectiveCols, rowFor, colFor)) return
-
-    // MRV: pick the unplaced person with the fewest feasible cells under the
-    // propagated constraints. Feasibility respects each person's own reservation.
+    // MRV: pick the unplaced person with the fewest feasible cells.
+    // computeDomain already accounts for used rows/cols and all clue constraints,
+    // so domain.length is the true feasible count — no additional filtering needed.
+    // Save the winning domain to avoid recomputing it for the iteration below.
     let nextPerson: string | null = null
+    let bestDomain: Coord[] = []
     let minFeasible = Infinity
     for (const pid of allPersonIds) {
       if (assignment.has(pid)) continue
-      const domain = personDomains.get(pid)!
-      let count = 0
-      for (const c of domain) {
-        if ((!effectiveRows.has(c.row) || rowFor.get(c.row) === pid) &&
-            (!effectiveCols.has(c.col) || colFor.get(c.col) === pid)) {
-          if (++count >= minFeasible) break
-        }
-      }
-      if (count < minFeasible) {
-        minFeasible = count
+      const domain = computeDomain(pid, assignment)
+      if (domain.length < minFeasible) {
+        minFeasible = domain.length
         nextPerson = pid
+        bestDomain = domain
         if (minFeasible === 0) break
       }
     }
 
     if (!nextPerson || minFeasible === 0) return
 
-    // TODO: can we re-compute the person's domain here (i.e, cells where they can be placed) given the current assignment, so we can be more efficient?
-    const domain = personDomains.get(nextPerson)!
     const myCluesToCheck = cluesByPerson.get(nextPerson) ?? []
 
-    for (const { row, col } of domain) {
-      // Skip cells blocked by actual placements (via usedRows ⊆ effectiveRows where
-      // rowFor has no entry) or reserved by propagation for another person.
-      if ((!effectiveRows.has(row) || rowFor.get(row) === nextPerson) &&
-          (!effectiveCols.has(col) || colFor.get(col) === nextPerson)) {
-        // Double-check actual Latin square (covers usedRows case via effectiveRows,
-        // but be explicit so the assignment invariant is clear).
-        if (usedRows.has(row) || usedCols.has(col)) continue
+    for (const { row, col } of bestDomain) {
+      assignment.set(nextPerson, { row, col })
 
-        assignment.set(nextPerson, { row, col })
-        usedRows.add(row)
-        usedCols.add(col)
-
-        let violated = false
-        for (const clue of myCluesToCheck) {
+      let violated = false
+      for (const clue of myCluesToCheck) {
+        if (evaluateClue(clue, assignment, puzzle) === 'violated') { violated = true; break }
+      }
+      if (!violated) {
+        for (const clue of globalClues) {
           if (evaluateClue(clue, assignment, puzzle) === 'violated') { violated = true; break }
         }
-        if (!violated) {
-          for (const clue of globalClues) {
-            if (evaluateClue(clue, assignment, puzzle) === 'violated') { violated = true; break }
-          }
-        }
-
-        if (!violated) backtrack()
-
-        assignment.delete(nextPerson)
-        usedRows.delete(row)
-        usedCols.delete(col)
-
-        if (solutions.length >= limit) return
       }
+
+      if (!violated) backtrack()
+
+      assignment.delete(nextPerson)
+
+      if (solutions.length > 1) return
     }
   }
 

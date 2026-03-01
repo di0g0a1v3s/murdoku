@@ -30,6 +30,7 @@ function is2x2Block(cells: Coord[]): boolean {
   return rows.size === 2 && cols.size === 2
 }
 
+// TODO can remove
 function checkObjectConstraints(
   coord: Coord,
   assignment: Map<string, Coord>,
@@ -106,15 +107,16 @@ export function placePeople(
   // Shuffle placement order for variety
   const personOrder = lcgShuffle([...people], seed)
 
+  // TODO: not necessary
   function backtrack(personIndex: number): boolean {
     if (personIndex === personOrder.length) {
       // Validate murder condition: victim's room must have exactly 2 people
       const victimCoord = assignment.get(victimId)!
-      const victimRoom = getRoomId(victimCoord, { rooms, objects, people, gridSize: { rows: gridRows, cols: gridCols }, clues: [], id: '', title: '', solution: { placements: [], murdererId: '', victimId: '', murderRoom: '' }, generatedAt: '' })
+      const victimRoom = getRoomId(victimCoord, { rooms, objects, people, gridSize: { rows: gridRows, cols: gridCols }, clues: [], id: '', title: '', solution: { placements: [], murdererId: '', victimId: '', murderRoom: '' }, generatedAt: '', suspectSummaries: [] })
       if (!victimRoom) return false
 
       const inVictimRoom = [...assignment.entries()].filter(
-        ([, c]) => getRoomId(c, { rooms, objects, people, gridSize: { rows: gridRows, cols: gridCols }, clues: [], id: '', title: '', solution: { placements: [], murdererId: '', victimId: '', murderRoom: '' }, generatedAt: '' }) === victimRoom,
+        ([, c]) => getRoomId(c, { rooms, objects, people, gridSize: { rows: gridRows, cols: gridCols }, clues: [], id: '', title: '', solution: { placements: [], murdererId: '', victimId: '', murderRoom: '' }, generatedAt: '', suspectSummaries: [] }) === victimRoom,
       )
       return inVictimRoom.length === 2
     }
@@ -147,7 +149,7 @@ export function placePeople(
 
   // Determine murderer
   const victimCoord = assignment.get(victimId)!
-  const puzzleShell = { rooms, objects, people, gridSize: { rows: gridRows, cols: gridCols }, clues: [], id: '', title: '', solution: { placements: [], murdererId: '', victimId: '', murderRoom: '' }, generatedAt: '' }
+  const puzzleShell = { rooms, objects, people, gridSize: { rows: gridRows, cols: gridCols }, clues: [], id: '', title: '', solution: { placements: [], murdererId: '', victimId: '', murderRoom: '' }, generatedAt: '', suspectSummaries: [] }
   const victimRoom = getRoomId(victimCoord, puzzleShell)!
   const murdererId = suspects.find(s => {
     const c = assignment.get(s.id)

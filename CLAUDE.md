@@ -183,12 +183,15 @@ Puzzle {
 
 ## Solver (shared/solver.ts)
 
-- `solve(puzzle, clues, limit?) → { status: 'unique'|'multiple'|'none', ... }`
+- `solve(puzzle, clues) → { status: 'unique'|'multiple'|'none', ... }`
 - Backtracking with early pruning via clue evaluators
 - MRV heuristic (most-constrained person first)
-- **Row/col reservation propagation**: at each node, propagates to a fixed point — when all feasible cells for an unplaced person share the same row or column, that row/col is reserved for them and blocked for all others; cascades until stable; prunes immediately on contradiction
-- Per-person domain precomputation from `person-in-room` / `person-not-in-room` clues
-- Used by CLI for uniqueness verification; also available for browser in Phase 2
+- **`computeDomain(pid, assignment)`** — single function that computes a person's valid cells given the current partial assignment. Applies two layers of constraints:
+  - *Static* (no assignment needed): room membership, object adjacency/occupancy, person-alone-in-room exclusions, and row/col bound tightening from direction/distance clues (e.g. "A is N of B" → A's maxRow shrinks by 1)
+  - *Dynamic* (uses placed people): Latin square (exclude used rows/cols), direction/distance pinning to the placed other, same/not-same-room filtering, room-population cap
+- Calling with an empty assignment gives the tightest static domain; calling with the live assignment gives the tightest possible domain at that search node
+- MRV selects the person whose `computeDomain` result is smallest; if any person reaches 0 the branch is pruned immediately
+- Used by CLI for uniqueness verification; also available for browser hint system
 
 ---
 
@@ -226,7 +229,7 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 
 ## Future Ideas
 
-- More clue types: person in row X, person in column Y, person in corner, only person in object, not in room, X empty rooms, X people in object,
+- More clue types: person in row X, person in column Y, person in corner, only person in object, X empty rooms, X people in object,
 - Generate less positional clues
 - Higher res icon
 - More object types: rug, tv, car

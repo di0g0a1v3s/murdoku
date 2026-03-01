@@ -74,6 +74,7 @@ export async function generateTheme(n: number, existingTitles: string[] = []): P
       : `  - Person ${i} (suspect ${letter}): name must start with ${letter}`
   ).join('\n')
 
+  // TODO: for room names, avoid positional names like "West wing"
   const prompt = `You are designing a murder mystery logic puzzle called Murdoku.
 Create a unique and atmospheric theme for a ${n}-person puzzle set in an interesting location.
 
@@ -160,6 +161,7 @@ export async function generateAllTexts(
     ? `\nGeneral clues:\n${generalClues.map((g, i) => `${i + 1}. [${g.kind}] ${g.description}`).join('\n')}`
     : ''
 
+  // TODO: "Anya, alone is the Server Room, is south of Chen Wei" -> should be "Anya is alone in the Server Room and south of Chen Wei"
   const prompt = `You are writing clue text for a Murdoku murder mystery logic puzzle.
 
 For each suspect, write exactly ONE natural sentence covering ALL of their listed facts.
