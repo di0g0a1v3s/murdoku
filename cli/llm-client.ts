@@ -1,7 +1,8 @@
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { generateObject } from 'ai'
 import { z } from 'zod'
-import type { Person, Room } from '../shared/types.js'
+import { OBJECT_KIND_VALUES } from '../shared/types.js'
+import type { ObjectKind, Person, Room } from '../shared/types.js'
 import { trackUsage } from './cost-tracker.js'
 
 const google = createGoogleGenerativeAI({
@@ -25,65 +26,98 @@ function debugLog(label: string, prompt: string, result: unknown): void {
 
 // ─── Theme Generation ─────────────────────────────────────────────────────────
 
-const ThemeSchema = z.object({
-  title: z.string().describe('A dramatic murder mystery title'),
-  subtitle: z.string().describe('A short atmospheric tagline'),
-  setting: z.string().describe('Brief description of the setting/atmosphere'),
-  roomNames: z.array(z.string()).length(6).describe('Exactly 6 room names for this setting'),
-  roomColors: z.array(z.string()).length(6).describe('Exactly 6 hex color codes (e.g. #F5E6D3) — muted, distinct, atmospheric'),
-  people: z.array(z.object({
-    name: z.string(),
-    avatarEmoji: z.string().describe('A single emoji representing this person'),
-  })).length(6).describe('Exactly 6 people: index 0 is the VICTIM (name starts with V), index 1 is suspect A (name starts with A), index 2 is suspect B (name starts with B), index 3 is suspect C (name starts with C), index 4 is suspect D (name starts with D), index 5 is suspect E (name starts with E)'),
-})
+const FALLBACK_NAMES: Record<string, string> = {
+  V: 'Victor', A: 'Alex', B: 'Blake', C: 'Casey', D: 'Dana', E: 'Elliot',
+  F: 'Frances', G: 'George', H: 'Henry', I: 'Iris', J: 'James', K: 'Kit',
+}
 
 export interface PuzzleTheme {
   title: string
   subtitle: string
   setting: string
   people: Person[]
-  rooms: Pick<Room, 'id' | 'name' | 'color'>[]
+  rooms: (Pick<Room, 'id' | 'name' | 'color'> & { allowedObjects: ObjectKind[]; requiredObjects: ObjectKind[] })[]
 }
 
-export async function generateTheme(): Promise<PuzzleTheme> {
+export async function generateTheme(n: number, existingTitles: string[] = []): Promise<PuzzleTheme> {
+  const suspectInitials = Array.from({ length: n - 1 }, (_, i) => String.fromCharCode(65 + i))
+  const allInitials = ['V', ...suspectInitials]
+
+  const schema = z.object({
+    title: z.string().describe('A 1–3 word title referring to the place or time of the crime (e.g. "The Hotel", "The Mall", "Valentine\'s Day", "The Orient Express")'),
+    subtitle: z.string().describe('A short atmospheric tagline'),
+    setting: z.string().describe('Brief description of the setting/atmosphere'),
+    rooms: z.array(z.object({
+      name: z.string().describe('Room name, at most 2 words'),
+      color: z.string().describe('Hex color code (e.g. #F5E6D3) — muted and atmospheric'),
+      allowedObjects: z.array(z.enum(OBJECT_KIND_VALUES)).min(2).max(5)
+        .describe(`2–5 object kinds that could realistically appear in this room. Choose from: ${OBJECT_KIND_VALUES.join(', ')}`),
+      requiredObjects: z.array(z.enum(OBJECT_KIND_VALUES)).max(2)
+        .describe('0–2 objects that must appear in this room (must be a subset of allowedObjects). Use for objects that are definitionally part of the room, e.g. a toilet in a bathroom, a bed in a bedroom, a counter in a bar.'),
+    })).describe('Rooms — names at most 2 words, colors distinct'),
+    people: z.array(z.object({
+      name: z.string(),
+      avatarEmoji: z.string().describe('A single emoji representing this person'),
+    })).length(n).describe(
+      `Exactly ${n} people: index 0 is the VICTIM (name starts with V), ` +
+      suspectInitials.map((l, i) => `index ${i + 1} is suspect ${l} (name starts with ${l})`).join(', ')
+    ),
+  })
+
+  const avoidLine = existingTitles.length > 0
+    ? `\n- Avoid these already-used titles: ${existingTitles.map(t => `"${t}"`).join(', ')}`
+    : ''
+
+  const peopleRules = allInitials.map((letter, i) =>
+    i === 0
+      ? `  - Person 0 (VICTIM): name must start with V (e.g. Victor, Vivienne, Valentina)`
+      : `  - Person ${i} (suspect ${letter}): name must start with ${letter}`
+  ).join('\n')
+
   const prompt = `You are designing a murder mystery logic puzzle called Murdoku.
-Create a unique and atmospheric theme for a 6-person puzzle set in an interesting location.
+Create a unique and atmospheric theme for a ${n}-person puzzle set in an interesting location.
 
 Requirements:
-- Title should be dramatic and specific to the setting — avoid generic dark words like "Obsidian", "Shadow", "Blood", "Crimson", "Midnight", "Dark", "Black"
-  Good examples: "Death on the Orient Express", "The Vanishing at Thornfield", "Poisoned at the Grand Prix", "A Fatal Evening at Café Lumière"
+- Title must be 1–3 words referring to the place or time of the crime
+  Good examples: "The Hotel", "The Mall", "Valentine's Day", "The Orient Express", "The Grand Prix", "The Monastery", "New Year's Eve"
+  Avoid generic dark words like "Shadow", "Blood", "Crimson", "Midnight", "Dark"${avoidLine}
 - Setting can be any interesting location (manor, ship, library, theatre, casino, monastery, etc.)
-- Room names should fit the setting naturally
+- Room names must be at most 2 words and fit the setting naturally
+  Good examples: "Wine Cellar", "Ballroom", "East Wing", "Ship Deck", "Reading Room"
+- For each room, provide:
+  - allowedObjects: 2–5 object kinds that could realistically appear there
+  - requiredObjects: 0–2 objects that are definitionally part of the room (subset of allowedObjects)
+  Available objects: ${OBJECT_KIND_VALUES.join(', ')}
+  Examples:
+    Bedroom   → allowed: [bed, wardrobe, chair, plant], required: [bed]
+    Bathroom  → allowed: [toilet, wardrobe], required: [toilet]
+    Bar       → allowed: [counter, sofa, chair, table], required: [counter]
+    Library   → allowed: [bookshelf, chair, table, plant], required: [bookshelf]
+    Ballroom  → allowed: [chair, sofa, plant, fireplace], required: []
 - Room colors should be distinct and evoke the mood (hex codes)
-- 6 people with specific naming rules:
-  - Person 0 (VICTIM): name must start with V (e.g. Victor, Vivienne, Valentina)
-  - Person 1 (suspect A): name must start with A
-  - Person 2 (suspect B): name must start with B
-  - Person 3 (suspect C): name must start with C
-  - Person 4 (suspect D): name must start with D
-  - Person 5 (suspect E): name must start with E
+- ${n} people with specific naming rules:
+${peopleRules}
 - Names should be memorable and fit the setting's era/style
 - Each person gets one emoji avatar
 
 Make it creative and varied — avoid clichés.`
 
-  const { object, usage } = await generateObject({ model, schema: ThemeSchema, prompt, temperature: 1.5 })
+  const { object, usage } = await generateObject({ model, schema, prompt, temperature: 1.5 })
 
   trackUsage('Theme generation', usage)
   debugLog('generateTheme', prompt, object)
 
-  const rooms = object.roomNames.map((name, i) => ({
-    id: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-    name,
-    color: object.roomColors[i]!,
+  const rooms = object.rooms.map(r => ({
+    id: r.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    name: r.name,
+    color: r.color,
+    allowedObjects: r.allowedObjects as ObjectKind[],
+    requiredObjects: r.requiredObjects as ObjectKind[],
   }))
 
-  const REQUIRED_INITIALS = ['V', 'A', 'B', 'C', 'D', 'E']
-  const FALLBACK_NAMES = ['Victor', 'Alex', 'Blake', 'Casey', 'Dana', 'Elliot']
-
   const people: Person[] = object.people.map((p, i) => {
-    const required = REQUIRED_INITIALS[i]!
-    const name = p.name.startsWith(required) ? p.name : FALLBACK_NAMES[i]!
+    const initial = allInitials[i]!
+    const name = p.name.startsWith(initial) ? p.name : (FALLBACK_NAMES[initial] ?? initial)
     return {
       id: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       name,

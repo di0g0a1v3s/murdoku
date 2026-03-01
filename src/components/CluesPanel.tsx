@@ -1,3 +1,4 @@
+import { assertNever } from '@shared/types'
 import type { Clue, Person } from '@shared/types'
 import { ClueItem } from './ClueItem'
 
@@ -23,6 +24,8 @@ function getPrimaryPersonId(clue: Clue): string | null {
     case 'room-population':
     case 'object-occupancy':
       return null
+    default:
+      return assertNever(clue)
   }
 }
 

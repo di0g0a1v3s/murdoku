@@ -146,7 +146,7 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
     if (roomA && roomB) {
       if (roomA.id === roomB.id) {
         facts.push({
-          description: `${nameA} and ${nameB} are in the same room (${roomA.name})`,
+          description: `${nameA} and ${nameB} are in the same room`,
           clue: { kind: 'persons-same-room', personA: pA.personId, personB: pB.personId, text: '' },
         })
       } else {

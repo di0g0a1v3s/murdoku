@@ -80,11 +80,17 @@ Puzzles are generated locally by the developer and committed to the repo. The fr
 # Install dependencies
 npm install
 
-# Generate one puzzle
+# Generate one puzzle (default 6×6)
 GEMINI_API_KEY=your_key_here npm run generate
 
 # Generate multiple puzzles at once
 GEMINI_API_KEY=your_key_here npm run generate -- --count=5
+
+# Generate a puzzle with N people on an N×N grid (minimum 4)
+GEMINI_API_KEY=your_key_here npm run generate -- --people=4
+
+# Combine flags
+GEMINI_API_KEY=your_key_here npm run generate -- --count=3 --people=8
 
 # Clear all puzzles
 npm run clear-puzzles

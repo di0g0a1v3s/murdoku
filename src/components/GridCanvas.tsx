@@ -39,12 +39,14 @@ export function GridCanvas({ puzzle, showSolution, cellSize }: GridCanvasProps) 
     )
   }, [rows, cols, rooms])
 
-  // Room label positions (top-left cell of bounding box per room)
+  // Room label positions — topmost-leftmost cell actually in the room
   const roomLabels = useMemo(() => {
     return rooms.map(room => {
-      const minRow = Math.min(...room.cells.map(c => c.row))
-      const minCol = Math.min(...room.cells.map(c => c.col))
-      return { room, row: minRow, col: minCol }
+      const sorted = [...room.cells].sort((a, b) => a.row !== b.row ? a.row - b.row : a.col - b.col)
+      const { row, col } = sorted[0]!
+      // Number of room cells in the label row at or right of the label column
+      const spanInRow = room.cells.filter(c => c.row === row && c.col >= col).length
+      return { room, row, col, spanInRow }
     })
   }, [rooms])
 
@@ -76,22 +78,23 @@ export function GridCanvas({ puzzle, showSolution, cellSize }: GridCanvasProps) 
       )}
 
       {/* Layer 2: Room labels — position:absolute only (no gridColumn/gridRow to avoid double-offset) */}
-      {roomLabels.map(({ room, row, col }) => (
+      {roomLabels.map(({ room, row, col, spanInRow }) => (
         <div
           key={`label-${room.id}`}
           style={{
             position: 'absolute' as const,
             left: col * cellSize + 4,
             top: row * cellSize + 3,
-            fontSize: cellSize * 0.155,
+            maxWidth: spanInRow * cellSize - 8,
+            fontSize: cellSize * 0.2,
             fontWeight: 700,
             color: 'rgba(0,0,0,0.45)',
             textTransform: 'uppercase',
             letterSpacing: '0.04em',
             zIndex: 1,
             pointerEvents: 'none',
-            whiteSpace: 'nowrap',
-            lineHeight: 1,
+            wordBreak: 'break-word',
+            lineHeight: 1.2,
           }}
         >
           {room.name}

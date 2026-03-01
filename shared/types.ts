@@ -1,3 +1,7 @@
+export function assertNever(x: never): never {
+  throw new Error(`Unhandled variant: ${JSON.stringify(x)}`)
+}
+
 // ─── Coordinates ─────────────────────────────────────────────────────────────
 
 export interface Coord {
@@ -7,17 +11,8 @@ export interface Coord {
 
 // ─── Grid Objects ─────────────────────────────────────────────────────────────
 
-export type ObjectKind =
-  | 'chair'
-  | 'bed'
-  | 'sofa'
-  | 'toilet'
-  | 'table'
-  | 'plant'
-  | 'bookshelf'
-  | 'counter'
-  | 'wardrobe'
-  | 'fireplace'
+export const OBJECT_KIND_VALUES = ['chair', 'bed', 'sofa', 'toilet', 'table', 'plant', 'bookshelf', 'counter', 'wardrobe', 'fireplace'] as const
+export type ObjectKind = typeof OBJECT_KIND_VALUES[number]
 
 export type Occupiability = 'occupiable' | 'non-occupiable'
 

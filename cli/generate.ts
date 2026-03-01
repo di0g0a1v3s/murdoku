@@ -1,17 +1,16 @@
 import { randomInt } from 'crypto'
 import type { Clue, Puzzle } from '../shared/types.js'
+import { assertNever } from '../shared/types.js'
 import { solve } from '../shared/solver.js'
 import { evaluateClue } from '../shared/clue-evaluator.js'
 import { generateTheme, generateAllTexts, setDebug } from './llm-client.js'
 import { buildLayout, hasEnoughOccupiableCells } from './layout-builder.js'
 import { placePeople } from './placer.js'
 import { computeAllFacts } from './clue-generator.js'
-import { appendPuzzle } from './output.js'
+import { appendPuzzle, loadCollection } from './output.js'
 import { printCostSummary, resetCosts } from './cost-tracker.js'
 
 const OUTPUT_PATH = 'src/puzzles/puzzles.json'
-const GRID_ROWS = 6
-const GRID_COLS = 6
 const MAX_LAYOUT_RETRIES = 10
 const MAX_PLACEMENT_RETRIES = 10
 
@@ -70,6 +69,7 @@ function printPuzzleSummary(puzzle: Puzzle): void {
 // ─── Grid rendering for terminal ──────────────────────────────────────────────
 
 function printGrid(puzzle: Puzzle): void {
+  const { rows: GRID_ROWS, cols: GRID_COLS } = puzzle.gridSize
   const grid: string[][] = Array.from({ length: GRID_ROWS }, () => Array(GRID_COLS).fill('   '))
 
   // Mark rooms
@@ -104,9 +104,9 @@ function printGrid(puzzle: Puzzle): void {
 
 // ─── Main generation pipeline ─────────────────────────────────────────────────
 
-async function generatePuzzle(): Promise<Puzzle> {
+async function generatePuzzle(existingTitles: string[], n: number): Promise<Puzzle> {
   console.log('\n🎲 Step 1: Generating theme via LLM...')
-  const theme = await generateTheme()
+  const theme = await generateTheme(n, existingTitles)
   console.log(`✅ Theme: "${theme.title}"`)
 
   // Step 2: Build grid layout
@@ -114,12 +114,16 @@ async function generatePuzzle(): Promise<Puzzle> {
   const layoutSeed = randomInt(0, 1_000_000)
   for (let attempt = 0; attempt < MAX_LAYOUT_RETRIES; attempt++) {
     console.log(`\n🏗️  Step 2: Building layout (attempt ${attempt + 1})...`)
-    const candidate = buildLayout(theme, layoutSeed + attempt)
-    if (hasEnoughOccupiableCells(candidate.rooms, candidate.objects, 6)) {
-      layout = candidate
-      break
+    try {
+      const candidate = buildLayout(theme, layoutSeed + attempt, n, n)
+      if (hasEnoughOccupiableCells(candidate.rooms, candidate.objects, n)) {
+        layout = candidate
+        break
+      }
+      console.log('  ⚠️  Not enough occupiable cells, retrying...')
+    } catch (err) {
+      console.log(`  ⚠️  ${err instanceof Error ? err.message : String(err)}, retrying...`)
     }
-    console.log('  ⚠️  Not enough occupiable cells, retrying...')
   }
   if (!layout) throw new Error('Failed to build valid layout after retries')
   console.log(`✅ Layout built: ${layout.rooms.length} rooms, ${layout.objects.length} objects`)
@@ -129,7 +133,7 @@ async function generatePuzzle(): Promise<Puzzle> {
   const placementSeed = randomInt(0, 1_000_000)
   for (let attempt = 0; attempt < MAX_PLACEMENT_RETRIES; attempt++) {
     console.log(`\n👥 Step 3: Placing people (attempt ${attempt + 1})...`)
-    const result = placePeople(theme.people, layout, GRID_ROWS, GRID_COLS, placementSeed + attempt * 100)
+    const result = placePeople(theme.people, layout, n, n, placementSeed + attempt * 100)
     if (result) {
       placerResult = result
       break
@@ -144,7 +148,7 @@ async function generatePuzzle(): Promise<Puzzle> {
     id: '',
     title: theme.title,
     subtitle: theme.subtitle,
-    gridSize: { rows: GRID_ROWS, cols: GRID_COLS },
+    gridSize: { rows: n, cols: n },
     rooms: layout.rooms,
     objects: layout.objects,
     people: theme.people,
@@ -201,8 +205,11 @@ async function generatePuzzle(): Promise<Puzzle> {
       case 'person-alone-in-room':
       case 'person-not-in-room':
         return clue.person
-      default:
+      case 'room-population':
+      case 'object-occupancy':
         return null
+      default:
+        return assertNever(clue)
     }
   }
 
@@ -353,15 +360,24 @@ async function main(): Promise<void> {
     process.exit(1)
   }
 
+  const peopleArg = process.argv.find(a => a.startsWith('--people='))
+  const n = peopleArg ? parseInt(peopleArg.split('=')[1]!, 10) : 6
+  if (isNaN(n) || n < 4) {
+    console.error('❌ --people must be an integer >= 4')
+    process.exit(1)
+  }
+
   console.log('🕵️  Murdoku Puzzle Generator')
   console.log('━'.repeat(40))
 
   resetCosts()
+  const usedTitles = loadCollection(OUTPUT_PATH).puzzles.map(p => p.title)
   let succeeded = 0
   for (let i = 0; i < count; i++) {
     if (count > 1) console.log(`\n📦 Puzzle ${i + 1} of ${count}`)
     try {
-      const puzzle = await generatePuzzle()
+      const puzzle = await generatePuzzle(usedTitles, n)
+      usedTitles.push(puzzle.title)
       printGrid(puzzle)
       printPuzzleSummary(puzzle)
       appendPuzzle(puzzle, OUTPUT_PATH)

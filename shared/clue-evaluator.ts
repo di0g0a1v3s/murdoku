@@ -1,3 +1,4 @@
+import { assertNever } from './types.js'
 import type { Clue, Coord, GridObject, Puzzle } from './types.js'
 
 type EvalResult = 'satisfied' | 'violated' | 'unknown'
@@ -260,6 +261,7 @@ export function evaluateClue(
     case 'object-occupancy': return evalObjectOccupancy(clue, assignment, puzzle, allPersonIds)
     case 'person-not-in-room': return evalPersonNotInRoom(clue, assignment, puzzle)
     case 'persons-not-same-room': return evalPersonsNotSameRoom(clue, assignment, puzzle)
+    default: return assertNever(clue)
   }
 }
 

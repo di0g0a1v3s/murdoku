@@ -12,13 +12,13 @@ A logic puzzle game combining murder mystery storytelling with Sudoku-style grid
 ## Game Rules
 
 **Grid:**
-- Any size grid (Phase 1 uses 6×6), divided into named rooms
+- N×N grid (default 6×6, configurable via `--people=N`), divided into named rooms
 - Cells can be: empty, occupiable object (chair, bed, sofa...), or non-occupiable object (table, plant, bookshelf…)
 - Objects can span multiple cells
 
 **People:**
-- N total = 1 victim + (N-1) suspects; Phase 1 uses 6 people (V + A/B/C/D/E)
-- Naming convention: victim name starts with V; suspects start with A, B, C, D, E
+- N total = 1 victim + (N-1) suspects; default N=6, minimum N=4
+- Naming convention: victim name starts with V; suspects start with A, B, C, D, E, F, … (alphabetically)
 - One person per row, one per column (Latin square constraint)
 - People cannot be placed on non-occupiable object cells
 
@@ -65,7 +65,7 @@ murdoku/
 │   └── clue-evaluator.ts      # Per-clue-kind evaluators used by solver
 │
 ├── cli/                       # Developer puzzle generator (never bundled)
-│   ├── generate.ts            # Entry: npm run generate [--count=N] [--debug]
+│   ├── generate.ts            # Entry: npm run generate [--count=N] [--people=N] [--debug]
 │   ├── llm-client.ts          # Vercel AI SDK + Gemini (theme + all clue texts)
 │   ├── layout-builder.ts      # Voronoi BFS room partitioning + object placement
 │   ├── placer.ts              # Latin-square backtracking placer
@@ -110,12 +110,13 @@ murdoku/
 ## Key Commands
 
 ```bash
-npm run dev                                              # Dev server
-npm run build                                            # Build → dist/index.html (single file)
-npm run clear-puzzles                                    # Reset puzzles.json to empty
-GEMINI_API_KEY=your_key npm run generate                 # Generate 1 puzzle
-GEMINI_API_KEY=your_key npm run generate -- --count=5   # Generate 5 puzzles
-GEMINI_API_KEY=your_key npm run generate -- --debug     # Print all LLM prompts/responses
+npm run dev                                                       # Dev server
+npm run build                                                     # Build → dist/index.html (single file)
+npm run clear-puzzles                                             # Reset puzzles.json to empty
+GEMINI_API_KEY=your_key npm run generate                          # Generate 1 puzzle (6×6)
+GEMINI_API_KEY=your_key npm run generate -- --count=5            # Generate 5 puzzles
+GEMINI_API_KEY=your_key npm run generate -- --people=4           # Generate a 4×4 puzzle
+GEMINI_API_KEY=your_key npm run generate -- --debug              # Print all LLM prompts/responses
 ```
 
 ---
@@ -188,7 +189,7 @@ Puzzle {
 
 Grid uses **layered CSS Grid** (not SVG/Canvas):
 1. Room background fills (color at ~33% opacity)
-2. Room name labels (top-left of each room's bounding box)
+2. Room name labels (topmost-leftmost actual room cell — never outside the room)
 3. Cell borders (thick = room boundary, thin = intra-room)
 4. Object sprites (Lucide icon + label, spanning correct grid cells)
 5. Person tokens (shown only when `showSolution=true`)
@@ -211,6 +212,5 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 - Difficulty ratings
 - More clue types
 - More object types
-- Bigger grids
 - Interactive solving
 - Hint system using the solver
