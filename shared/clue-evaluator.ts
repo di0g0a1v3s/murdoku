@@ -28,6 +28,8 @@ function getObjectsAdjacentInRoom(coord: Coord, puzzle: Puzzle): GridObject[] {
     { row: coord.row, col: coord.col - 1 },
     { row: coord.row, col: coord.col + 1 },
   ]
+
+  // TODO  !getObjectsAtCoord
   return puzzle.objects.filter(obj =>
     obj.cells.some(cell => {
       const inRoom = getRoomId(cell, puzzle) === roomId

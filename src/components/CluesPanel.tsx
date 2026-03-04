@@ -29,6 +29,7 @@ function getPrimaryPersonId(clue: Clue): string | null {
   }
 }
 
+// TODO: checkmark besides characters
 export function CluesPanel({ clues, people, suspectSummaries }: CluesPanelProps) {
   const victim = people.find(p => p.role === 'victim')!
   const summaryMap = new Map(suspectSummaries.map(s => [s.personId, s.text]))
@@ -61,7 +62,7 @@ export function CluesPanel({ clues, people, suspectSummaries }: CluesPanelProps)
       }}>
         Evidence
       </h3>
-
+      {/* TODO: victim at the end */}
       {/* Victim section — always shown with fixed rule text */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         <div style={{

@@ -8,6 +8,7 @@ interface CellPopupProps {
   onClose: () => void
 }
 
+// TODO: button to "commit" position
 export function CellPopup({ people, marks, position, onToggle, onClose }: CellPopupProps) {
   const POPUP_W = 44 * Math.min(people.length + 1, 6) + 16
   const POPUP_H = people.length + 1 > 6 ? 108 : 60
@@ -43,7 +44,9 @@ export function CellPopup({ people, marks, position, onToggle, onClose }: CellPo
         }}
         onClick={e => e.stopPropagation()}
       >
+        
         {people.map(person => {
+          // TODO: victim at the end
           const initial = person.name[0].toUpperCase()
           const active = marks.has(person.id)
           const isVictim = person.role === 'victim'

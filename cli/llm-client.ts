@@ -75,6 +75,7 @@ export async function generateTheme(n: number, existingTitles: string[] = []): P
   ).join('\n')
 
   // TODO: for room names, avoid positional names like "West wing"
+  // TODO: ask ai percentage of space for each room
   const prompt = `You are designing a murder mystery logic puzzle called Murdoku.
 Create a unique and atmospheric theme for a ${n}-person puzzle set in an interesting location.
 

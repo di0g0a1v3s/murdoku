@@ -90,6 +90,7 @@ export function solve(
   const globalClues: Clue[] = []
 
   // TODO: Typesafe way of making sure all clue kinds are handled in computeDomain
+  // TODO: add victim condition: Victim is alone in a room with another person
   for (const clue of clues) {
     switch (clue.kind) {
       case 'person-direction':
@@ -135,6 +136,7 @@ export function solve(
   //   persons-same-room     → filter to cells in the placed other's room
   //   persons-not-same-room → filter to cells not in the placed other's room
   //   room-population       → exclude rooms that have already reached their population cap
+
   function computeDomain(pid: string, assignment: Map<string, Coord>): Coord[] {
     // ── Static constraints: build domain as a set of coord keys ──────────────
     // Pure helpers — return a new set rather than mutating, so TypeScript's
@@ -338,6 +340,7 @@ export function solve(
     if (solutions.length > 1) return
 
     if (assignment.size === allPersonIds.length) {
+      // TODO: verify here all clues?
       // All placed: global clues must be satisfied (not just non-violated)
       for (const clue of globalClues) {
         if (evaluateClue(clue, assignment, puzzle) !== 'satisfied') return
@@ -378,6 +381,10 @@ export function solve(
         if (minFeasible === 0) break
       }
     }
+    // TODO: if while minFeasible > 1 or no changes: 
+    // restrict domain further with:
+    // if person domain is in single row/column, remove that row/column from other people's domain
+    // if person's domain is 2 cells, restrict intersected cells fom other people's domains
 
     if (!nextPerson || minFeasible === 0) return
 
@@ -386,13 +393,20 @@ export function solve(
     for (const { row, col } of bestDomain) {
       assignment.set(nextPerson, { row, col })
 
+      // TODO: dont need to evaluate here
       let violated = false
       for (const clue of myCluesToCheck) {
-        if (evaluateClue(clue, assignment, puzzle) === 'violated') { violated = true; break }
+        if (evaluateClue(clue, assignment, puzzle) === 'violated') { 
+          violated = true; 
+          break 
+        }
       }
       if (!violated) {
         for (const clue of globalClues) {
-          if (evaluateClue(clue, assignment, puzzle) === 'violated') { violated = true; break }
+          if (evaluateClue(clue, assignment, puzzle) === 'violated') { 
+            violated = true; 
+            break 
+          }
         }
       }
 

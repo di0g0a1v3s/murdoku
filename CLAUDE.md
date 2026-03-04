@@ -235,3 +235,6 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 - More object types: rug, tv, car
 - Non-square grids
 - Hint system using the solver
+- Daily puzzle
+- Undo
+- Clean board

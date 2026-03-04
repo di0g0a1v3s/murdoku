@@ -381,6 +381,7 @@ export function PuzzleView({ puzzle, isCompleted, onComplete, onReset }: PuzzleV
           onClose={() => setShowRevealModal(false)}
         />
       )}
+      {/* TODO: rules section */}
     </div>
   )
 }

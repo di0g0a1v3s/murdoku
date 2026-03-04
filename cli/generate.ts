@@ -229,6 +229,7 @@ async function generatePuzzle(existingTitles: string[], n: number): Promise<Puzz
         )
         if (nonOccupiable) continue
         const assignment = new Map([[suspectId, { row, col }]])
+        // TODO: can do this instead of computeDomains ?
         const ok = suspectClues.every(c => evaluateClue(c, assignment, partialPuzzle) !== 'violated')
         if (ok && ++compatibleCount > 1) return false
       }
@@ -297,6 +298,8 @@ async function generatePuzzle(existingTitles: string[], n: number): Promise<Puzz
     }
   }
   console.log(`✅ Minimized to ${clues.length} clues`)
+
+  // TODO: not allow more than 15% "positional" clues
 
   // Step 6: Generate all clue texts in one LLM call
   console.log('\n✍️  Step 6: Generating clue texts...')

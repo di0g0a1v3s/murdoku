@@ -137,6 +137,7 @@ const OBJECT_TEMPLATES: ObjectTemplate[] = OBJECT_KIND_VALUES.map(kind => ({
   mustTouchWall: OBJECT_MUST_TOUCH_WALL[kind],
 }))
 
+// TODO: allow rotation
 function getCellsForTemplate(anchor: Coord, template: ObjectTemplate): Coord[] {
   return template.offsets.map(o => ({ row: anchor.row + o.row, col: anchor.col + o.col }))
 }
