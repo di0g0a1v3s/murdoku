@@ -1,13 +1,11 @@
 import type { Coord, GridObject, Person, PlacedPerson } from '../shared/types.js'
-import { getRoomId } from '../shared/clue-evaluator.js'
 import type { LayoutResult } from './layout-builder.js'
 
 // ─── Latin-square backtracking placer ────────────────────────────────────────
-// Finds a valid placement for all N people such that:
-// - One person per row, one per column
-// - No person on a non-occupiable cell
-// - Multi-cell object constraints respected
-// - The victim's room has exactly 2 people (victim + one suspect = murderer)
+// Finds a valid Latin-square placement for all N people (1/row, 1/col, no
+// non-occupiable cells) where the victim's room has exactly 2 people.
+// Exhaustively searches all Latin-square placements; returns null only if
+// no valid placement exists for this layout.
 
 function isNonOccupiable(coord: Coord, objects: GridObject[]): boolean {
   return objects.some(
@@ -46,45 +44,48 @@ export function placePeople(
   const { rooms, objects } = layout
 
   const victimId = people.find(p => p.role === 'victim')!.id
-  const suspects = people.filter(p => p.role === 'suspect')
+
+  // Build O(1) coord→roomId lookup
+  const coordToRoomId = new Map<string, string>()
+  for (const room of rooms)
+    for (const cell of room.cells)
+      coordToRoomId.set(`${cell.row},${cell.col}`, room.id)
 
   const assignment = new Map<string, Coord>()
-  const reverseAssignment = new Map<string, string>()
   const usedRows = new Set<number>()
   const usedCols = new Set<number>()
 
-  // Pre-build occupiable cells list per row/col for efficiency
   const allCells: Coord[] = []
   for (let r = 0; r < gridRows; r++)
     for (let c = 0; c < gridCols; c++)
       if (!isNonOccupiable({ row: r, col: c }, objects))
         allCells.push({ row: r, col: c })
 
-  // Shuffle placement order for variety
   const personOrder = lcgShuffle([...people], seed)
+  const candidates = lcgShuffle(allCells, seed)
 
   function backtrack(personIndex: number): boolean {
     if (personIndex === personOrder.length) {
-      // Validate murder condition: victim's room must have exactly 2 people
+      // Murder condition: victim's room must have exactly 2 people
       const victimCoord = assignment.get(victimId)!
-      const victimRoom = getRoomId(victimCoord, { rooms, objects, people, gridSize: { rows: gridRows, cols: gridCols }, clues: [], id: '', title: '', solution: { placements: [], murdererId: '', victimId: '', murderRoom: '' }, generatedAt: '', suspectSummaries: [] })
-      if (!victimRoom) return false
-
-      const inVictimRoom = [...assignment.entries()].filter(
-        ([, c]) => getRoomId(c, { rooms, objects, people, gridSize: { rows: gridRows, cols: gridCols }, clues: [], id: '', title: '', solution: { placements: [], murdererId: '', victimId: '', murderRoom: '' }, generatedAt: '', suspectSummaries: [] }) === victimRoom,
-      )
-      return inVictimRoom.length === 2
+      const victimRoom = coordToRoomId.get(`${victimCoord.row},${victimCoord.col}`)!
+      const count = [...assignment.values()].filter(
+        c => coordToRoomId.get(`${c.row},${c.col}`) === victimRoom,
+      ).length
+      return count === 2
     }
 
-    const person = personOrder[personIndex]
-    const candidates = lcgShuffle(allCells, seed + personIndex * 37)
+    const person = personOrder[personIndex]!
 
     for (const coord of candidates) {
-      if (usedRows.has(coord.row) || usedCols.has(coord.col)) continue
+      if (usedRows.has(coord.row) || usedCols.has(coord.col)) {
+        continue
+      }
+      if (!coordToRoomId.has(`${coord.row},${coord.col}`)) {
+        continue
+      }
 
-      const key = `${coord.row},${coord.col}`
       assignment.set(person.id, coord)
-      reverseAssignment.set(key, person.id)
       usedRows.add(coord.row)
       usedCols.add(coord.col)
 
@@ -93,23 +94,22 @@ export function placePeople(
       }
 
       assignment.delete(person.id)
-      reverseAssignment.delete(key)
       usedRows.delete(coord.row)
       usedCols.delete(coord.col)
     }
     return false
   }
 
-  if (!backtrack(0)) return null
+  if (!backtrack(0)) {
+    return null
+  }
 
-  // Determine murderer
   const victimCoord = assignment.get(victimId)!
-  const puzzleShell = { rooms, objects, people, gridSize: { rows: gridRows, cols: gridCols }, clues: [], id: '', title: '', solution: { placements: [], murdererId: '', victimId: '', murderRoom: '' }, generatedAt: '', suspectSummaries: [] }
-  const victimRoom = getRoomId(victimCoord, puzzleShell)!
-  const murdererId = suspects.find(s => {
-    const c = assignment.get(s.id)
-    return c && getRoomId(c, puzzleShell) === victimRoom
-  })!.id
+  const victimRoom = coordToRoomId.get(`${victimCoord.row},${victimCoord.col}`)!
+  const murdererId = [...assignment.entries()].find(
+    ([pid, c]) => pid !== victimId && coordToRoomId.get(`${c.row},${c.col}`) === victimRoom,
+  )![0]!
+
 
   const placements: PlacedPerson[] = people.map(p => ({
     personId: p.id,

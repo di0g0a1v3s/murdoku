@@ -12,7 +12,6 @@ import { printCostSummary, resetCosts } from './cost-tracker.js'
 
 const OUTPUT_PATH = 'src/puzzles/puzzles.json'
 const MAX_LAYOUT_RETRIES = 10
-const MAX_PLACEMENT_RETRIES = 10
 
 // ─── CLI helpers ──────────────────────────────────────────────────────────────
 
@@ -130,19 +129,12 @@ async function generatePuzzle(existingTitles: string[], n: number): Promise<Puzz
   if (!layout) throw new Error('Failed to build valid layout after retries')
   console.log(`✅ Layout built: ${layout.rooms.length} rooms, ${layout.objects.length} objects`)
 
-  // Step 3: Place people
-  let placerResult = null
-  const placementSeed = randomInt(0, 1_000_000)
-  for (let attempt = 0; attempt < MAX_PLACEMENT_RETRIES; attempt++) {
-    console.log(`\n👥 Step 3: Placing people (attempt ${attempt + 1})...`)
-    const result = placePeople(theme.people, layout, n, n, placementSeed + attempt * 100)
-    if (result) {
-      placerResult = result
-      break
-    }
-    console.log('  ⚠️  No valid placement found, retrying...')
+  // Step 3: Place people (exhaustive search — no retries needed)
+  console.log(`\n👥 Step 3: Placing people...`)
+  const placerResult = placePeople(theme.people, layout, n, n, randomInt(0, 1_000_000))
+  if (!placerResult) {
+    throw new Error('Failed to place people: no valid placement exists for this layout')
   }
-  if (!placerResult) throw new Error('Failed to place people after retries')
   console.log(`✅ Placed ${theme.people.length} people. Murderer: ${theme.people.find(p => p.id === placerResult!.murdererId)?.name}`)
 
   // Build partial puzzle for fact computation
