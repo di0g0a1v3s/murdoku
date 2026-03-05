@@ -168,26 +168,28 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
 
   // Room population facts
   for (const room of puzzle.rooms) {
-    const count = placements.filter(p => {
+    const inRoom = placements.filter(p => {
       const r = puzzle.rooms.find(r => r.cells.some(c => c.row === p.coord.row && c.col === p.coord.col))
       return r?.id === room.id
-    }).length
+    })
+    const count = inRoom.length
     if (count > 0) {
       facts.push({
         description: `The ${room.name} has exactly ${count} person(s)`,
         clue: { kind: 'room-population', roomId: room.id, count, text: '' },
       })
       if (count === 1) {
-        const personHere = placements.find(p => {
-          const r = puzzle.rooms.find(r => r.cells.some(c => c.row === p.coord.row && c.col === p.coord.col))
-          return r?.id === room.id
+        facts.push({
+          description: `${personName(inRoom[0]!.personId)} is alone in the ${room.name}`,
+          clue: { kind: 'person-alone-in-room', person: inRoom[0]!.personId, roomId: room.id, text: '' },
         })
-        if (personHere) {
-          facts.push({
-            description: `${personName(personHere.personId)} is alone in the ${room.name}`,
-            clue: { kind: 'person-alone-in-room', person: personHere.personId, roomId: room.id, text: '' },
-          })
-        }
+      }
+      for (const p of inRoom) {
+        const otherCount = count - 1
+        facts.push({
+          description: `${personName(p.personId)} is in a room with exactly ${otherCount} other ${otherCount === 1 ? 'person' : 'people'}`,
+          clue: { kind: 'person-in-room-with', person: p.personId, count: otherCount, text: '' },
+        })
       }
     }
   }

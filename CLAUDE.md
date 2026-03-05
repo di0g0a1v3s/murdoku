@@ -37,6 +37,7 @@ A logic puzzle game combining murder mystery storytelling with Sudoku-style grid
 - `object-occupancy` — "Exactly one chair is occupied"
 - `person-not-in-room` — "A is not in the ballroom"
 - `persons-not-same-room` — "A and B are not in the same room"
+- `person-in-room-with` — "A is in a room with exactly 2 other people"
 - Clues always yield exactly one valid solution
 
 **Direction semantics:**
@@ -185,12 +186,18 @@ Puzzle {
 
 - `solve(puzzle, clues) → { status: 'unique'|'multiple'|'none', ... }`
 - Backtracking with early pruning via clue evaluators
-- MRV heuristic (most-constrained person first)
-- **`computeDomain(pid, assignment)`** — single function that computes a person's valid cells given the current partial assignment. Applies two layers of constraints:
-  - *Static* (no assignment needed): room membership, object adjacency/occupancy, person-alone-in-room exclusions, and row/col bound tightening from direction/distance clues (e.g. "A is N of B" → A's maxRow shrinks by 1)
-  - *Dynamic* (uses placed people): Latin square (exclude used rows/cols), direction/distance pinning to the placed other, same/not-same-room filtering, room-population cap
-- Calling with an empty assignment gives the tightest static domain; calling with the live assignment gives the tightest possible domain at that search node
-- MRV selects the person whose `computeDomain` result is smallest; if any person reaches 0 the branch is pruned immediately
+- **`computeDomain(pid, assignment)`** — computes valid cells for a person given the current partial assignment. Temporarily places the candidate cell in the assignment and calls `evaluateClue` for all relevant clues; any `'violated'` result eliminates the cell. `'unknown'` passes through (partner not yet placed).
+- **Clue evaluators** (`shared/clue-evaluator.ts`) — per-kind constraint checks returning `'satisfied' | 'violated' | 'unknown'`. All O(1) via a per-puzzle WeakMap cache (coordToRoomId, coordToObjects, coordToAdjacentKinds, occupiableCoordToObj). Direction/distance evaluators also return `'violated'` for geometrically impossible partial placements (e.g. "A is N of B" → if only A is placed in the last row, violated immediately).
+- **Murder condition** — encoded as an implicit `person-in-room-with` global clue (victim must be with exactly 1 other person). Pruned mid-search, not just at leaves.
+- **Backtrack loop:**
+  1. *Compute domains* — `computeDomain` for every unplaced person
+  2. *Propagate* — iterate until stable:
+     - **Row/col locking**: if all of a person's domain cells share one row (or col), reserve that row/col for them and remove it from everyone else's domains
+     - **2-cell cross elimination**: if domain = `{(r1,c1),(r2,c2)}` with r1≠r2 and c1≠c2, cells `(r1,c2)` and `(r2,c1)` are forbidden for all (proven: Latin square blocks both cross-cells regardless of which the person takes)
+     - Contradiction (empty domain or two people locked to same row/col) → prune branch
+  3. *MRV* — pick unplaced person with fewest remaining cells
+  4. *Branch* — try each cell in MRV winner's propagated domain
+- **Leaf verification** — all input clues checked for `'satisfied'` (person clues: defensive; global clues: necessary since they stay `'unknown'` mid-search); implicit victim clue verified separately
 - Used by CLI for uniqueness verification; also available for browser hint system
 
 ---

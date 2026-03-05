@@ -22681,6 +22681,2134 @@
         "murderRoom": "orne-library"
       },
       "generatedAt": "2026-03-01T15:46:23.729Z"
+    },
+    {
+      "id": "tomb-of-akhenaten-mmcnsc96",
+      "title": "Tomb of Akhenaten",
+      "subtitle": "Secrets buried with a heretic pharaoh.",
+      "gridSize": {
+        "rows": 12,
+        "cols": 12
+      },
+      "rooms": [
+        {
+          "id": "entrance-chamber",
+          "name": "Entrance Chamber",
+          "color": "#D3B092",
+          "cells": [
+            {
+              "row": 7,
+              "col": 0
+            },
+            {
+              "row": 7,
+              "col": 1
+            },
+            {
+              "row": 7,
+              "col": 2
+            },
+            {
+              "row": 7,
+              "col": 3
+            },
+            {
+              "row": 7,
+              "col": 4
+            },
+            {
+              "row": 7,
+              "col": 5
+            },
+            {
+              "row": 7,
+              "col": 6
+            },
+            {
+              "row": 7,
+              "col": 7
+            },
+            {
+              "row": 8,
+              "col": 0
+            },
+            {
+              "row": 8,
+              "col": 1
+            },
+            {
+              "row": 8,
+              "col": 2
+            },
+            {
+              "row": 8,
+              "col": 3
+            },
+            {
+              "row": 8,
+              "col": 4
+            },
+            {
+              "row": 8,
+              "col": 5
+            },
+            {
+              "row": 8,
+              "col": 6
+            }
+          ]
+        },
+        {
+          "id": "antechamber",
+          "name": "Antechamber",
+          "color": "#BFA275",
+          "cells": [
+            {
+              "row": 0,
+              "col": 4
+            },
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 0,
+              "col": 6
+            },
+            {
+              "row": 0,
+              "col": 7
+            },
+            {
+              "row": 0,
+              "col": 8
+            },
+            {
+              "row": 0,
+              "col": 9
+            },
+            {
+              "row": 0,
+              "col": 10
+            },
+            {
+              "row": 0,
+              "col": 11
+            },
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 1,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 6
+            },
+            {
+              "row": 1,
+              "col": 7
+            },
+            {
+              "row": 1,
+              "col": 8
+            },
+            {
+              "row": 1,
+              "col": 9
+            },
+            {
+              "row": 1,
+              "col": 10
+            },
+            {
+              "row": 1,
+              "col": 11
+            },
+            {
+              "row": 2,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 5
+            },
+            {
+              "row": 2,
+              "col": 6
+            },
+            {
+              "row": 2,
+              "col": 7
+            },
+            {
+              "row": 2,
+              "col": 8
+            },
+            {
+              "row": 2,
+              "col": 9
+            },
+            {
+              "row": 2,
+              "col": 10
+            },
+            {
+              "row": 2,
+              "col": 11
+            },
+            {
+              "row": 3,
+              "col": 5
+            },
+            {
+              "row": 3,
+              "col": 6
+            },
+            {
+              "row": 3,
+              "col": 7
+            },
+            {
+              "row": 3,
+              "col": 8
+            },
+            {
+              "row": 3,
+              "col": 9
+            },
+            {
+              "row": 3,
+              "col": 10
+            },
+            {
+              "row": 3,
+              "col": 11
+            },
+            {
+              "row": 4,
+              "col": 6
+            },
+            {
+              "row": 4,
+              "col": 7
+            },
+            {
+              "row": 4,
+              "col": 8
+            },
+            {
+              "row": 4,
+              "col": 9
+            },
+            {
+              "row": 4,
+              "col": 10
+            },
+            {
+              "row": 4,
+              "col": 11
+            },
+            {
+              "row": 5,
+              "col": 7
+            },
+            {
+              "row": 5,
+              "col": 8
+            },
+            {
+              "row": 5,
+              "col": 9
+            },
+            {
+              "row": 5,
+              "col": 10
+            },
+            {
+              "row": 5,
+              "col": 11
+            },
+            {
+              "row": 6,
+              "col": 8
+            },
+            {
+              "row": 6,
+              "col": 9
+            },
+            {
+              "row": 6,
+              "col": 10
+            },
+            {
+              "row": 6,
+              "col": 11
+            }
+          ]
+        },
+        {
+          "id": "burial-chamber",
+          "name": "Burial Chamber",
+          "color": "#9A8257",
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 1,
+              "col": 2
+            },
+            {
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 2
+            },
+            {
+              "row": 2,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 0
+            },
+            {
+              "row": 3,
+              "col": 1
+            },
+            {
+              "row": 3,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 1
+            },
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 4,
+              "col": 3
+            },
+            {
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 5
+            },
+            {
+              "row": 5,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 2
+            },
+            {
+              "row": 5,
+              "col": 3
+            },
+            {
+              "row": 5,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 5
+            },
+            {
+              "row": 5,
+              "col": 6
+            },
+            {
+              "row": 6,
+              "col": 0
+            },
+            {
+              "row": 6,
+              "col": 1
+            },
+            {
+              "row": 6,
+              "col": 2
+            },
+            {
+              "row": 6,
+              "col": 3
+            },
+            {
+              "row": 6,
+              "col": 4
+            },
+            {
+              "row": 6,
+              "col": 5
+            },
+            {
+              "row": 6,
+              "col": 6
+            },
+            {
+              "row": 6,
+              "col": 7
+            }
+          ]
+        },
+        {
+          "id": "sarcophagus-room",
+          "name": "Sarcophagus Room",
+          "color": "#766339",
+          "cells": [
+            {
+              "row": 9,
+              "col": 0
+            },
+            {
+              "row": 9,
+              "col": 1
+            },
+            {
+              "row": 9,
+              "col": 2
+            },
+            {
+              "row": 9,
+              "col": 3
+            },
+            {
+              "row": 9,
+              "col": 4
+            },
+            {
+              "row": 9,
+              "col": 5
+            },
+            {
+              "row": 9,
+              "col": 6
+            },
+            {
+              "row": 10,
+              "col": 0
+            },
+            {
+              "row": 10,
+              "col": 1
+            },
+            {
+              "row": 10,
+              "col": 2
+            },
+            {
+              "row": 10,
+              "col": 3
+            },
+            {
+              "row": 10,
+              "col": 4
+            },
+            {
+              "row": 10,
+              "col": 5
+            },
+            {
+              "row": 10,
+              "col": 6
+            },
+            {
+              "row": 11,
+              "col": 0
+            },
+            {
+              "row": 11,
+              "col": 1
+            },
+            {
+              "row": 11,
+              "col": 2
+            },
+            {
+              "row": 11,
+              "col": 3
+            },
+            {
+              "row": 11,
+              "col": 4
+            },
+            {
+              "row": 11,
+              "col": 5
+            },
+            {
+              "row": 11,
+              "col": 6
+            }
+          ]
+        },
+        {
+          "id": "storage-room",
+          "name": "Storage Room",
+          "color": "#62512D",
+          "cells": [
+            {
+              "row": 7,
+              "col": 8
+            },
+            {
+              "row": 7,
+              "col": 9
+            },
+            {
+              "row": 7,
+              "col": 10
+            },
+            {
+              "row": 7,
+              "col": 11
+            },
+            {
+              "row": 8,
+              "col": 7
+            },
+            {
+              "row": 8,
+              "col": 8
+            },
+            {
+              "row": 8,
+              "col": 9
+            },
+            {
+              "row": 8,
+              "col": 10
+            },
+            {
+              "row": 8,
+              "col": 11
+            },
+            {
+              "row": 9,
+              "col": 7
+            },
+            {
+              "row": 9,
+              "col": 8
+            },
+            {
+              "row": 9,
+              "col": 9
+            },
+            {
+              "row": 9,
+              "col": 10
+            },
+            {
+              "row": 9,
+              "col": 11
+            },
+            {
+              "row": 10,
+              "col": 7
+            },
+            {
+              "row": 10,
+              "col": 8
+            },
+            {
+              "row": 10,
+              "col": 9
+            },
+            {
+              "row": 10,
+              "col": 10
+            },
+            {
+              "row": 10,
+              "col": 11
+            },
+            {
+              "row": 11,
+              "col": 7
+            },
+            {
+              "row": 11,
+              "col": 8
+            },
+            {
+              "row": 11,
+              "col": 9
+            },
+            {
+              "row": 11,
+              "col": 10
+            },
+            {
+              "row": 11,
+              "col": 11
+            }
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "table-entrance-chamber-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 8,
+              "col": 2
+            },
+            {
+              "row": 8,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "table-entrance-chamber-2",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 7,
+              "col": 6
+            },
+            {
+              "row": 7,
+              "col": 7
+            }
+          ]
+        },
+        {
+          "id": "table-antechamber-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 8
+            },
+            {
+              "row": 1,
+              "col": 9
+            }
+          ]
+        },
+        {
+          "id": "bed-burial-chamber-1",
+          "kind": "bed",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 2
+            },
+            {
+              "row": 6,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "bed-burial-chamber-2",
+          "kind": "bed",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "table-sarcophagus-room-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 9,
+              "col": 3
+            },
+            {
+              "row": 9,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-storage-room-1",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 11,
+              "col": 7
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "id": "valentina-moreau",
+          "name": "Valentina Moreau",
+          "role": "victim",
+          "avatarEmoji": "🏺"
+        },
+        {
+          "id": "alistair-finch",
+          "name": "Alistair Finch",
+          "role": "suspect",
+          "avatarEmoji": "🧐"
+        },
+        {
+          "id": "beatrice-dubois",
+          "name": "Beatrice Dubois",
+          "role": "suspect",
+          "avatarEmoji": "👒"
+        },
+        {
+          "id": "cecil-weatherby",
+          "name": "Cecil Weatherby",
+          "role": "suspect",
+          "avatarEmoji": "👨‍💼"
+        },
+        {
+          "id": "daphne-bellweather",
+          "name": "Daphne Bellweather",
+          "role": "suspect",
+          "avatarEmoji": "🪞"
+        },
+        {
+          "id": "edmund-sterling",
+          "name": "Edmund Sterling",
+          "role": "suspect",
+          "avatarEmoji": "🧭"
+        },
+        {
+          "id": "flora-ainsworth",
+          "name": "Flora Ainsworth",
+          "role": "suspect",
+          "avatarEmoji": "🧳"
+        },
+        {
+          "id": "gregory-pembroke",
+          "name": "Gregory Pembroke",
+          "role": "suspect",
+          "avatarEmoji": "⛏️"
+        },
+        {
+          "id": "harriet-davies",
+          "name": "Harriet Davies",
+          "role": "suspect",
+          "avatarEmoji": "📜"
+        },
+        {
+          "id": "ismail-hassan",
+          "name": "Ismail Hassan",
+          "role": "suspect",
+          "avatarEmoji": "👳"
+        },
+        {
+          "id": "julian-carter",
+          "name": "Julian Carter",
+          "role": "suspect",
+          "avatarEmoji": "📸"
+        },
+        {
+          "id": "kamaria-el-masry",
+          "name": "Kamaria El-Masry",
+          "role": "suspect",
+          "avatarEmoji": "👩🏽‍🌾"
+        }
+      ],
+      "clues": [
+        {
+          "kind": "person-distance",
+          "personA": "edmund-sterling",
+          "direction": "N",
+          "personB": "harriet-davies",
+          "distance": 8,
+          "axis": "row",
+          "text": "Edmund Sterling is exactly 8 row(s) north of Harriet Davies"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "gregory-pembroke",
+          "direction": "NW",
+          "personB": "valentina-moreau",
+          "text": "Gregory Pembroke is northwest of Valentina Moreau"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "beatrice-dubois",
+          "direction": "E",
+          "personB": "cecil-weatherby",
+          "distance": 8,
+          "axis": "col",
+          "text": "Beatrice Dubois is exactly 8 column(s) east of Cecil Weatherby"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "daphne-bellweather",
+          "direction": "E",
+          "personB": "julian-carter",
+          "distance": 4,
+          "axis": "col",
+          "text": "Daphne Bellweather is exactly 4 column(s) east of Julian Carter"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "beatrice-dubois",
+          "direction": "NE",
+          "personB": "alistair-finch",
+          "text": "Beatrice Dubois is northeast of Alistair Finch"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "gregory-pembroke",
+          "direction": "W",
+          "personB": "harriet-davies",
+          "distance": 5,
+          "axis": "col",
+          "text": "Gregory Pembroke is exactly 5 column(s) west of Harriet Davies"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "cecil-weatherby",
+          "direction": "W",
+          "personB": "kamaria-el-masry",
+          "distance": 1,
+          "axis": "col",
+          "text": "Cecil Weatherby is exactly 1 column(s) west of Kamaria El-Masry"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "gregory-pembroke",
+          "direction": "W",
+          "personB": "ismail-hassan",
+          "distance": 11,
+          "axis": "col",
+          "text": "Gregory Pembroke is exactly 11 column(s) west of Ismail Hassan"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "beatrice-dubois",
+          "direction": "NW",
+          "personB": "ismail-hassan",
+          "text": "Beatrice Dubois is northwest of Ismail Hassan"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "flora-ainsworth",
+          "direction": "NE",
+          "personB": "julian-carter",
+          "text": "Flora Ainsworth is northeast of Julian Carter"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "beatrice-dubois",
+          "direction": "S",
+          "personB": "kamaria-el-masry",
+          "distance": 4,
+          "axis": "row",
+          "text": "Beatrice Dubois is exactly 4 row(s) south of Kamaria El-Masry"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "harriet-davies",
+          "direction": "S",
+          "personB": "valentina-moreau",
+          "text": "Harriet Davies is south of Valentina Moreau"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "cecil-weatherby",
+          "direction": "N",
+          "personB": "kamaria-el-masry",
+          "distance": 1,
+          "axis": "row",
+          "text": "Cecil Weatherby is exactly 1 row(s) north of Kamaria El-Masry"
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "gregory-pembroke",
+          "roomId": "entrance-chamber",
+          "text": "Gregory Pembroke is NOT in the Entrance Chamber"
+        },
+        {
+          "kind": "person-in-room-with",
+          "person": "flora-ainsworth",
+          "count": 2,
+          "text": "Flora Ainsworth is in a room with exactly 2 other people"
+        },
+        {
+          "kind": "persons-not-same-room",
+          "personA": "alistair-finch",
+          "personB": "edmund-sterling",
+          "text": "Alistair Finch and Edmund Sterling are NOT in the same room"
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "julian-carter",
+          "roomId": "burial-chamber",
+          "text": "Julian Carter is NOT in the Burial Chamber"
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "kamaria-el-masry",
+          "roomId": "storage-room",
+          "text": "Kamaria El-Masry is NOT in the Storage Room"
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "ismail-hassan",
+          "roomId": "burial-chamber",
+          "text": "Ismail Hassan is NOT in the Burial Chamber"
+        },
+        {
+          "kind": "room-population",
+          "roomId": "entrance-chamber",
+          "count": 1,
+          "text": "The Entrance Chamber has exactly one person."
+        },
+        {
+          "kind": "person-in-room-with",
+          "person": "edmund-sterling",
+          "count": 3,
+          "text": "Edmund Sterling is in a room with exactly 3 other people"
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "edmund-sterling",
+          "roomId": "burial-chamber",
+          "text": "Edmund Sterling is NOT in the Burial Chamber"
+        }
+      ],
+      "suspectSummaries": [
+        {
+          "personId": "alistair-finch",
+          "text": "Alistair Finch is not in the same room as Edmund Sterling."
+        },
+        {
+          "personId": "beatrice-dubois",
+          "text": "Beatrice Dubois is eight columns east of Cecil Weatherby, northeast of Alistair Finch, northwest of Ismail Hassan, and four rows south of Kamaria El-Masry."
+        },
+        {
+          "personId": "cecil-weatherby",
+          "text": "Cecil Weatherby is one column west and one row north of Kamaria El-Masry."
+        },
+        {
+          "personId": "daphne-bellweather",
+          "text": "Daphne Bellweather is four columns east of Julian Carter."
+        },
+        {
+          "personId": "edmund-sterling",
+          "text": "Edmund Sterling is eight rows north of Harriet Davies, in a room with three other people, and not in the Burial Chamber."
+        },
+        {
+          "personId": "flora-ainsworth",
+          "text": "Flora Ainsworth is northeast of Julian Carter and in a room with two other people."
+        },
+        {
+          "personId": "gregory-pembroke",
+          "text": "Gregory Pembroke is northwest of Valentina Moreau, five columns west of Harriet Davies, eleven columns west of Ismail Hassan, and not in the Entrance Chamber."
+        },
+        {
+          "personId": "harriet-davies",
+          "text": "Harriet Davies is south of Valentina Moreau."
+        },
+        {
+          "personId": "ismail-hassan",
+          "text": "Ismail Hassan is not in the Burial Chamber."
+        },
+        {
+          "personId": "julian-carter",
+          "text": "Julian Carter is not in the Burial Chamber."
+        },
+        {
+          "personId": "kamaria-el-masry",
+          "text": "Kamaria El-Masry is not in the Storage Room."
+        }
+      ],
+      "solution": {
+        "placements": [
+          {
+            "personId": "valentina-moreau",
+            "coord": {
+              "row": 10,
+              "col": 10
+            }
+          },
+          {
+            "personId": "alistair-finch",
+            "coord": {
+              "row": 8,
+              "col": 8
+            }
+          },
+          {
+            "personId": "beatrice-dubois",
+            "coord": {
+              "row": 5,
+              "col": 9
+            }
+          },
+          {
+            "personId": "cecil-weatherby",
+            "coord": {
+              "row": 0,
+              "col": 1
+            }
+          },
+          {
+            "personId": "daphne-bellweather",
+            "coord": {
+              "row": 2,
+              "col": 7
+            }
+          },
+          {
+            "personId": "edmund-sterling",
+            "coord": {
+              "row": 3,
+              "col": 6
+            }
+          },
+          {
+            "personId": "flora-ainsworth",
+            "coord": {
+              "row": 4,
+              "col": 4
+            }
+          },
+          {
+            "personId": "gregory-pembroke",
+            "coord": {
+              "row": 9,
+              "col": 0
+            }
+          },
+          {
+            "personId": "harriet-davies",
+            "coord": {
+              "row": 11,
+              "col": 5
+            }
+          },
+          {
+            "personId": "ismail-hassan",
+            "coord": {
+              "row": 6,
+              "col": 11
+            }
+          },
+          {
+            "personId": "julian-carter",
+            "coord": {
+              "row": 7,
+              "col": 3
+            }
+          },
+          {
+            "personId": "kamaria-el-masry",
+            "coord": {
+              "row": 1,
+              "col": 2
+            }
+          }
+        ],
+        "murdererId": "alistair-finch",
+        "victimId": "valentina-moreau",
+        "murderRoom": "storage-room"
+      },
+      "generatedAt": "2026-03-04T23:16:52.473Z"
+    },
+    {
+      "id": "the-botanical-garden-mmco0drr",
+      "title": "The Botanical Garden",
+      "subtitle": "Secrets bloom amidst the verdant leaves...",
+      "gridSize": {
+        "rows": 12,
+        "cols": 12
+      },
+      "rooms": [
+        {
+          "id": "orchid-house",
+          "name": "Orchid House",
+          "color": "#E8F5E9",
+          "cells": [
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 0,
+              "col": 6
+            },
+            {
+              "row": 0,
+              "col": 7
+            },
+            {
+              "row": 0,
+              "col": 8
+            },
+            {
+              "row": 0,
+              "col": 9
+            },
+            {
+              "row": 0,
+              "col": 10
+            },
+            {
+              "row": 0,
+              "col": 11
+            },
+            {
+              "row": 1,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 6
+            },
+            {
+              "row": 1,
+              "col": 7
+            },
+            {
+              "row": 1,
+              "col": 8
+            },
+            {
+              "row": 1,
+              "col": 9
+            },
+            {
+              "row": 1,
+              "col": 10
+            },
+            {
+              "row": 1,
+              "col": 11
+            },
+            {
+              "row": 2,
+              "col": 5
+            },
+            {
+              "row": 2,
+              "col": 6
+            },
+            {
+              "row": 2,
+              "col": 7
+            },
+            {
+              "row": 2,
+              "col": 8
+            },
+            {
+              "row": 2,
+              "col": 9
+            },
+            {
+              "row": 2,
+              "col": 10
+            },
+            {
+              "row": 2,
+              "col": 11
+            },
+            {
+              "row": 3,
+              "col": 5
+            },
+            {
+              "row": 3,
+              "col": 6
+            },
+            {
+              "row": 3,
+              "col": 7
+            },
+            {
+              "row": 3,
+              "col": 8
+            },
+            {
+              "row": 3,
+              "col": 9
+            },
+            {
+              "row": 3,
+              "col": 10
+            },
+            {
+              "row": 3,
+              "col": 11
+            },
+            {
+              "row": 4,
+              "col": 5
+            },
+            {
+              "row": 4,
+              "col": 6
+            },
+            {
+              "row": 4,
+              "col": 7
+            },
+            {
+              "row": 4,
+              "col": 8
+            },
+            {
+              "row": 4,
+              "col": 9
+            },
+            {
+              "row": 4,
+              "col": 10
+            },
+            {
+              "row": 4,
+              "col": 11
+            },
+            {
+              "row": 5,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 5
+            },
+            {
+              "row": 5,
+              "col": 6
+            },
+            {
+              "row": 5,
+              "col": 7
+            },
+            {
+              "row": 5,
+              "col": 8
+            },
+            {
+              "row": 5,
+              "col": 9
+            },
+            {
+              "row": 5,
+              "col": 10
+            },
+            {
+              "row": 5,
+              "col": 11
+            },
+            {
+              "row": 6,
+              "col": 3
+            },
+            {
+              "row": 6,
+              "col": 4
+            },
+            {
+              "row": 6,
+              "col": 5
+            },
+            {
+              "row": 6,
+              "col": 6
+            },
+            {
+              "row": 6,
+              "col": 7
+            },
+            {
+              "row": 6,
+              "col": 8
+            },
+            {
+              "row": 6,
+              "col": 9
+            },
+            {
+              "row": 6,
+              "col": 10
+            },
+            {
+              "row": 6,
+              "col": 11
+            },
+            {
+              "row": 7,
+              "col": 0
+            },
+            {
+              "row": 7,
+              "col": 1
+            },
+            {
+              "row": 7,
+              "col": 2
+            },
+            {
+              "row": 7,
+              "col": 3
+            },
+            {
+              "row": 7,
+              "col": 4
+            },
+            {
+              "row": 7,
+              "col": 5
+            },
+            {
+              "row": 7,
+              "col": 6
+            },
+            {
+              "row": 7,
+              "col": 7
+            },
+            {
+              "row": 7,
+              "col": 8
+            },
+            {
+              "row": 7,
+              "col": 9
+            },
+            {
+              "row": 7,
+              "col": 10
+            },
+            {
+              "row": 7,
+              "col": 11
+            },
+            {
+              "row": 8,
+              "col": 4
+            },
+            {
+              "row": 8,
+              "col": 5
+            },
+            {
+              "row": 8,
+              "col": 6
+            },
+            {
+              "row": 8,
+              "col": 7
+            },
+            {
+              "row": 8,
+              "col": 8
+            },
+            {
+              "row": 8,
+              "col": 9
+            },
+            {
+              "row": 8,
+              "col": 10
+            },
+            {
+              "row": 8,
+              "col": 11
+            },
+            {
+              "row": 9,
+              "col": 5
+            },
+            {
+              "row": 9,
+              "col": 6
+            },
+            {
+              "row": 9,
+              "col": 7
+            },
+            {
+              "row": 9,
+              "col": 8
+            },
+            {
+              "row": 9,
+              "col": 9
+            },
+            {
+              "row": 9,
+              "col": 10
+            },
+            {
+              "row": 9,
+              "col": 11
+            },
+            {
+              "row": 10,
+              "col": 5
+            },
+            {
+              "row": 10,
+              "col": 6
+            },
+            {
+              "row": 10,
+              "col": 7
+            },
+            {
+              "row": 10,
+              "col": 8
+            },
+            {
+              "row": 10,
+              "col": 9
+            },
+            {
+              "row": 10,
+              "col": 10
+            },
+            {
+              "row": 10,
+              "col": 11
+            },
+            {
+              "row": 11,
+              "col": 5
+            },
+            {
+              "row": 11,
+              "col": 6
+            },
+            {
+              "row": 11,
+              "col": 7
+            },
+            {
+              "row": 11,
+              "col": 8
+            },
+            {
+              "row": 11,
+              "col": 9
+            },
+            {
+              "row": 11,
+              "col": 10
+            },
+            {
+              "row": 11,
+              "col": 11
+            }
+          ]
+        },
+        {
+          "id": "tropical-pavilion",
+          "name": "Tropical Pavilion",
+          "color": "#D1C4E9",
+          "cells": [
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 0,
+              "col": 4
+            },
+            {
+              "row": 1,
+              "col": 2
+            },
+            {
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 2
+            },
+            {
+              "row": 2,
+              "col": 3
+            },
+            {
+              "row": 2,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 1
+            },
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 4,
+              "col": 3
+            },
+            {
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 2
+            },
+            {
+              "row": 5,
+              "col": 3
+            },
+            {
+              "row": 6,
+              "col": 0
+            },
+            {
+              "row": 6,
+              "col": 1
+            },
+            {
+              "row": 6,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "research-lab",
+          "name": "Research Lab",
+          "color": "#B2DFDB",
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 3,
+              "col": 0
+            },
+            {
+              "row": 3,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "director-s-office",
+          "name": "Director's Office",
+          "color": "#FFE0B2",
+          "cells": [
+            {
+              "row": 8,
+              "col": 0
+            },
+            {
+              "row": 8,
+              "col": 1
+            },
+            {
+              "row": 8,
+              "col": 2
+            },
+            {
+              "row": 8,
+              "col": 3
+            },
+            {
+              "row": 9,
+              "col": 0
+            },
+            {
+              "row": 9,
+              "col": 1
+            },
+            {
+              "row": 9,
+              "col": 2
+            },
+            {
+              "row": 9,
+              "col": 3
+            },
+            {
+              "row": 9,
+              "col": 4
+            },
+            {
+              "row": 10,
+              "col": 0
+            },
+            {
+              "row": 10,
+              "col": 1
+            },
+            {
+              "row": 10,
+              "col": 2
+            },
+            {
+              "row": 10,
+              "col": 3
+            },
+            {
+              "row": 10,
+              "col": 4
+            },
+            {
+              "row": 11,
+              "col": 0
+            },
+            {
+              "row": 11,
+              "col": 1
+            },
+            {
+              "row": 11,
+              "col": 2
+            },
+            {
+              "row": 11,
+              "col": 3
+            },
+            {
+              "row": 11,
+              "col": 4
+            }
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "plant-orchid-house-1",
+          "kind": "plant",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 10,
+              "col": 7
+            }
+          ]
+        },
+        {
+          "id": "plant-orchid-house-2",
+          "kind": "plant",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 9,
+              "col": 7
+            }
+          ]
+        },
+        {
+          "id": "plant-tropical-pavilion-1",
+          "kind": "plant",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "plant-tropical-pavilion-2",
+          "kind": "plant",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 6,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "counter-research-lab-1",
+          "kind": "counter",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 2,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-director-s-office-1",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 8,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-director-s-office-2",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 11,
+              "col": 0
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "id": "vivienne-sterling",
+          "name": "Vivienne Sterling",
+          "role": "victim",
+          "avatarEmoji": "👩‍🔬"
+        },
+        {
+          "id": "alistair-finch",
+          "name": "Alistair Finch",
+          "role": "suspect",
+          "avatarEmoji": "👨‍🌾"
+        },
+        {
+          "id": "beatrice-hawthorne",
+          "name": "Beatrice Hawthorne",
+          "role": "suspect",
+          "avatarEmoji": "👩‍🔬"
+        },
+        {
+          "id": "cecil-blackwood",
+          "name": "Cecil Blackwood",
+          "role": "suspect",
+          "avatarEmoji": "👨‍🔬"
+        },
+        {
+          "id": "dorothy-ainsworth",
+          "name": "Dorothy Ainsworth",
+          "role": "suspect",
+          "avatarEmoji": "👩‍🌾"
+        },
+        {
+          "id": "edgar-thornton",
+          "name": "Edgar Thornton",
+          "role": "suspect",
+          "avatarEmoji": "👨‍🔬"
+        },
+        {
+          "id": "flora-nightingale",
+          "name": "Flora Nightingale",
+          "role": "suspect",
+          "avatarEmoji": "👩‍🌾"
+        },
+        {
+          "id": "gregory-beaumont",
+          "name": "Gregory Beaumont",
+          "role": "suspect",
+          "avatarEmoji": "👨‍🔬"
+        },
+        {
+          "id": "hazel-cartwright",
+          "name": "Hazel Cartwright",
+          "role": "suspect",
+          "avatarEmoji": "👩‍🌾"
+        },
+        {
+          "id": "ignatius-reed",
+          "name": "Ignatius Reed",
+          "role": "suspect",
+          "avatarEmoji": "👨‍🔬"
+        },
+        {
+          "id": "jillian-ashworth",
+          "name": "Jillian Ashworth",
+          "role": "suspect",
+          "avatarEmoji": "👩‍🌾"
+        },
+        {
+          "id": "kenneth-bellweather",
+          "name": "Kenneth Bellweather",
+          "role": "suspect",
+          "avatarEmoji": "👨‍🔬"
+        }
+      ],
+      "clues": [
+        {
+          "kind": "person-distance",
+          "personA": "gregory-beaumont",
+          "direction": "W",
+          "personB": "jillian-ashworth",
+          "distance": 4,
+          "axis": "col",
+          "text": "Gregory Beaumont is exactly 4 column(s) west of Jillian Ashworth"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "dorothy-ainsworth",
+          "direction": "E",
+          "personB": "edgar-thornton",
+          "distance": 9,
+          "axis": "col",
+          "text": "Dorothy Ainsworth is exactly 9 column(s) east of Edgar Thornton"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "flora-nightingale",
+          "direction": "N",
+          "personB": "kenneth-bellweather",
+          "distance": 5,
+          "axis": "row",
+          "text": "Flora Nightingale is exactly 5 row(s) north of Kenneth Bellweather"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "flora-nightingale",
+          "direction": "E",
+          "personB": "ignatius-reed",
+          "distance": 1,
+          "axis": "col",
+          "text": "Flora Nightingale is exactly 1 column(s) east of Ignatius Reed"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "beatrice-hawthorne",
+          "direction": "S",
+          "personB": "edgar-thornton",
+          "distance": 1,
+          "axis": "row",
+          "text": "Beatrice Hawthorne is exactly 1 row(s) south of Edgar Thornton"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "edgar-thornton",
+          "direction": "N",
+          "personB": "ignatius-reed",
+          "distance": 7,
+          "axis": "row",
+          "text": "Edgar Thornton is exactly 7 row(s) north of Ignatius Reed"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "kenneth-bellweather",
+          "direction": "SE",
+          "personB": "hazel-cartwright",
+          "text": "Kenneth Bellweather is southeast of Hazel Cartwright"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "beatrice-hawthorne",
+          "direction": "W",
+          "personB": "hazel-cartwright",
+          "distance": 1,
+          "axis": "col",
+          "text": "Beatrice Hawthorne is exactly 1 column(s) west of Hazel Cartwright"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "edgar-thornton",
+          "direction": "N",
+          "personB": "jillian-ashworth",
+          "distance": 6,
+          "axis": "row",
+          "text": "Edgar Thornton is exactly 6 row(s) north of Jillian Ashworth"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "edgar-thornton",
+          "direction": "SW",
+          "personB": "gregory-beaumont",
+          "text": "Edgar Thornton is southwest of Gregory Beaumont"
+        },
+        {
+          "kind": "person-beside-object",
+          "person": "hazel-cartwright",
+          "objectKind": "plant",
+          "text": "Hazel Cartwright is beside a plant"
+        },
+        {
+          "kind": "person-alone-in-room",
+          "person": "cecil-blackwood",
+          "roomId": "director-s-office",
+          "text": "Cecil Blackwood is alone in the Director's Office"
+        },
+        {
+          "kind": "person-in-room-with",
+          "person": "jillian-ashworth",
+          "count": 8,
+          "text": "Jillian Ashworth is in a room with exactly 8 other people"
+        },
+        {
+          "kind": "persons-same-room",
+          "personA": "alistair-finch",
+          "personB": "beatrice-hawthorne",
+          "text": "Alistair Finch and Beatrice Hawthorne are in the same room"
+        },
+        {
+          "kind": "person-in-room-with",
+          "person": "ignatius-reed",
+          "count": 8,
+          "text": "Ignatius Reed is in a room with exactly 8 other people"
+        }
+      ],
+      "suspectSummaries": [
+        {
+          "personId": "alistair-finch",
+          "text": "Alistair Finch is in the same room as Beatrice Hawthorne."
+        },
+        {
+          "personId": "beatrice-hawthorne",
+          "text": "Beatrice Hawthorne is one row south of Edgar Thornton and one column west of Hazel Cartwright."
+        },
+        {
+          "personId": "cecil-blackwood",
+          "text": "Cecil Blackwood is alone in the Director's Office."
+        },
+        {
+          "personId": "dorothy-ainsworth",
+          "text": "Dorothy Ainsworth is nine columns east of Edgar Thornton."
+        },
+        {
+          "personId": "edgar-thornton",
+          "text": "Edgar Thornton is seven rows north of Ignatius Reed, six rows north of Jillian Ashworth, and southwest of Gregory Beaumont."
+        },
+        {
+          "personId": "flora-nightingale",
+          "text": "Flora Nightingale is five rows north of Kenneth Bellweather and one column east of Ignatius Reed."
+        },
+        {
+          "personId": "gregory-beaumont",
+          "text": "Gregory Beaumont is four columns west of Jillian Ashworth."
+        },
+        {
+          "personId": "hazel-cartwright",
+          "text": "Hazel Cartwright is beside a plant."
+        },
+        {
+          "personId": "ignatius-reed",
+          "text": "Ignatius Reed is in a room with eight other people."
+        },
+        {
+          "personId": "jillian-ashworth",
+          "text": "Jillian Ashworth is in a room with eight other people."
+        },
+        {
+          "personId": "kenneth-bellweather",
+          "text": "Kenneth Bellweather is southeast of Hazel Cartwright."
+        }
+      ],
+      "solution": {
+        "placements": [
+          {
+            "personId": "vivienne-sterling",
+            "coord": {
+              "row": 3,
+              "col": 1
+            }
+          },
+          {
+            "personId": "alistair-finch",
+            "coord": {
+              "row": 6,
+              "col": 3
+            }
+          },
+          {
+            "personId": "beatrice-hawthorne",
+            "coord": {
+              "row": 2,
+              "col": 7
+            }
+          },
+          {
+            "personId": "cecil-blackwood",
+            "coord": {
+              "row": 11,
+              "col": 2
+            }
+          },
+          {
+            "personId": "dorothy-ainsworth",
+            "coord": {
+              "row": 4,
+              "col": 9
+            }
+          },
+          {
+            "personId": "edgar-thornton",
+            "coord": {
+              "row": 1,
+              "col": 0
+            }
+          },
+          {
+            "personId": "flora-nightingale",
+            "coord": {
+              "row": 5,
+              "col": 5
+            }
+          },
+          {
+            "personId": "gregory-beaumont",
+            "coord": {
+              "row": 0,
+              "col": 6
+            }
+          },
+          {
+            "personId": "hazel-cartwright",
+            "coord": {
+              "row": 9,
+              "col": 8
+            }
+          },
+          {
+            "personId": "ignatius-reed",
+            "coord": {
+              "row": 8,
+              "col": 4
+            }
+          },
+          {
+            "personId": "jillian-ashworth",
+            "coord": {
+              "row": 7,
+              "col": 10
+            }
+          },
+          {
+            "personId": "kenneth-bellweather",
+            "coord": {
+              "row": 10,
+              "col": 11
+            }
+          }
+        ],
+        "murdererId": "edgar-thornton",
+        "victimId": "vivienne-sterling",
+        "murderRoom": "research-lab"
+      },
+      "generatedAt": "2026-03-04T23:25:31.008Z"
     }
   ]
 }

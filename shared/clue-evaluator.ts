@@ -1,41 +1,98 @@
 import { assertNever } from './types.js'
-import type { Clue, Coord, GridObject, Puzzle } from './types.js'
+import type { Clue, Coord, GridObject, ObjectKind, Puzzle } from './types.js'
 
 type EvalResult = 'satisfied' | 'violated' | 'unknown'
 
 type Assignment = Map<string, Coord>
 
+// ─── Per-puzzle cache ─────────────────────────────────────────────────────────
+//
+// Built once per Puzzle object (WeakMap allows GC when puzzle is no longer
+// referenced). Every evaluator uses these Maps for O(1) lookups instead of
+// scanning puzzle.rooms / puzzle.objects on every call.
+
+interface PuzzleCaches {
+  coordToRoomId: Map<string, string>               // "r,c" → roomId
+  coordToObjects: Map<string, GridObject[]>        // "r,c" → objects whose cells include this coord
+  coordToAdjacentKinds: Map<string, Set<ObjectKind>> // "r,c" → kinds of objects orthogonally adjacent in same room
+  occupiableCoordToObj: Map<string, GridObject>   // "r,c" → occupiable object at coord (for object-occupancy)
+}
+
+const puzzleCacheMap = new WeakMap<Puzzle, PuzzleCaches>()
+
+function buildCaches(puzzle: Puzzle): PuzzleCaches {
+  const coordToRoomId = new Map<string, string>()
+  for (const room of puzzle.rooms)
+    for (const cell of room.cells)
+      coordToRoomId.set(`${cell.row},${cell.col}`, room.id)
+
+  const coordToObjects = new Map<string, GridObject[]>()
+  const occupiableCoordToObj = new Map<string, GridObject>()
+  for (const obj of puzzle.objects) {
+    for (const cell of obj.cells) {
+      const key = `${cell.row},${cell.col}`
+      const list = coordToObjects.get(key)
+      if (list) list.push(obj)
+      else coordToObjects.set(key, [obj])
+      if (obj.occupiable === 'occupiable') occupiableCoordToObj.set(key, obj)
+    }
+  }
+
+  const coordToAdjacentKinds = new Map<string, Set<ObjectKind>>()
+  for (const room of puzzle.rooms) {
+    for (const cell of room.cells) {
+      const key = `${cell.row},${cell.col}`
+      // Objects that occupy this cell are "on", not "adjacent" — exclude them
+      const ownObjIds = new Set((coordToObjects.get(key) ?? []).map(o => o.id))
+      const kinds = new Set<ObjectKind>()
+      const r = cell.row, c = cell.col
+      for (const nKey of [`${r-1},${c}`, `${r+1},${c}`, `${r},${c-1}`, `${r},${c+1}`]) {
+        if (coordToRoomId.get(nKey) === room.id)
+          for (const obj of coordToObjects.get(nKey) ?? [])
+            if (!ownObjIds.has(obj.id))
+              kinds.add(obj.kind)
+      }
+      coordToAdjacentKinds.set(key, kinds)
+    }
+  }
+
+  return { coordToRoomId, coordToObjects, coordToAdjacentKinds, occupiableCoordToObj }
+}
+
+function getCaches(puzzle: Puzzle): PuzzleCaches {
+  let c = puzzleCacheMap.get(puzzle)
+  if (!c) { c = buildCaches(puzzle); puzzleCacheMap.set(puzzle, c) }
+  return c
+}
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getRoomId(coord: Coord, puzzle: Puzzle): string | undefined {
-  return puzzle.rooms.find(r =>
-    r.cells.some(c => c.row === coord.row && c.col === coord.col)
-  )?.id
+  return getCaches(puzzle).coordToRoomId.get(`${coord.row},${coord.col}`)
 }
 
 function getObjectsAtCoord(coord: Coord, puzzle: Puzzle): GridObject[] {
-  return puzzle.objects.filter(o =>
-    o.cells.some(c => c.row === coord.row && c.col === coord.col)
-  )
+  return getCaches(puzzle).coordToObjects.get(`${coord.row},${coord.col}`) ?? []
 }
 
 function getObjectsAdjacentInRoom(coord: Coord, puzzle: Puzzle): GridObject[] {
-  const roomId = getRoomId(coord, puzzle)
+  const { coordToRoomId, coordToObjects } = getCaches(puzzle)
+  const key = `${coord.row},${coord.col}`
+  const roomId = coordToRoomId.get(key)
   if (!roomId) return []
-  const neighbors: Coord[] = [
-    { row: coord.row - 1, col: coord.col },
-    { row: coord.row + 1, col: coord.col },
-    { row: coord.row, col: coord.col - 1 },
-    { row: coord.row, col: coord.col + 1 },
-  ]
-
-  // TODO  !getObjectsAtCoord
-  return puzzle.objects.filter(obj =>
-    obj.cells.some(cell => {
-      const inRoom = getRoomId(cell, puzzle) === roomId
-      return inRoom && neighbors.some(n => n.row === cell.row && n.col === cell.col)
-    })
-  )
+  const ownObjIds = new Set((coordToObjects.get(key) ?? []).map(o => o.id))
+  const seen = new Set<string>()
+  const result: GridObject[] = []
+  const r = coord.row, c = coord.col
+  for (const nKey of [`${r-1},${c}`, `${r+1},${c}`, `${r},${c-1}`, `${r},${c+1}`]) {
+    if (coordToRoomId.get(nKey) === roomId)
+      for (const obj of coordToObjects.get(nKey) ?? [])
+        if (!ownObjIds.has(obj.id) && !seen.has(obj.id)) {
+          seen.add(obj.id)
+          result.push(obj)
+        }
+  }
+  return result
 }
 
 // Returns direction from A to B
@@ -77,32 +134,75 @@ function isInDirection(a: Coord, b: Coord, dir: string): boolean {
 function evalPersonDirection(
   clue: Extract<Clue, { kind: 'person-direction' }>,
   assignment: Assignment,
+  puzzle: Puzzle,
 ): EvalResult {
   const a = assignment.get(clue.personA)
   const b = assignment.get(clue.personB)
-  if (!a || !b) return 'unknown'
-  return isInDirection(a, b, clue.direction) ? 'satisfied' : 'violated'
+  if (a && b) return isInDirection(a, b, clue.direction) ? 'satisfied' : 'violated'
+  const { rows, cols } = puzzle.gridSize
+  const dir = clue.direction
+  if (a) {
+    // A placed, B not: violated if A's position leaves no valid cell for B
+    if ((dir === 'N' || dir === 'NE' || dir === 'NW') && a.row >= rows - 1) return 'violated'
+    if ((dir === 'S' || dir === 'SE' || dir === 'SW') && a.row <= 0)        return 'violated'
+    if ((dir === 'E' || dir === 'NE' || dir === 'SE') && a.col <= 0)        return 'violated'
+    if ((dir === 'W' || dir === 'NW' || dir === 'SW') && a.col >= cols - 1) return 'violated'
+  } else if (b) {
+    // B placed, A not: violated if B's position leaves no valid cell for A
+    if ((dir === 'N' || dir === 'NE' || dir === 'NW') && b.row <= 0)        return 'violated'
+    if ((dir === 'S' || dir === 'SE' || dir === 'SW') && b.row >= rows - 1) return 'violated'
+    if ((dir === 'E' || dir === 'NE' || dir === 'SE') && b.col >= cols - 1) return 'violated'
+    if ((dir === 'W' || dir === 'NW' || dir === 'SW') && b.col <= 0)        return 'violated'
+  }
+  return 'unknown'
 }
 
 function evalPersonDistance(
   clue: Extract<Clue, { kind: 'person-distance' }>,
   assignment: Assignment,
+  puzzle: Puzzle,
 ): EvalResult {
   const a = assignment.get(clue.personA)
   const b = assignment.get(clue.personB)
-  if (!a || !b) return 'unknown'
-
-  if (clue.axis === 'col') {
-    const diff = a.col - b.col
-    if (clue.direction === 'E' && diff === clue.distance) return 'satisfied'
-    if (clue.direction === 'W' && diff === -clue.distance) return 'satisfied'
-    return 'violated'
-  } else {
-    const diff = a.row - b.row
-    if (clue.direction === 'N' && diff === -clue.distance) return 'satisfied'
-    if (clue.direction === 'S' && diff === clue.distance) return 'satisfied'
-    return 'violated'
+  if (a && b) {
+    if (clue.axis === 'col') {
+      const diff = a.col - b.col
+      if (clue.direction === 'E' && diff === clue.distance) return 'satisfied'
+      if (clue.direction === 'W' && diff === -clue.distance) return 'satisfied'
+      return 'violated'
+    } else {
+      const diff = a.row - b.row
+      if (clue.direction === 'N' && diff === -clue.distance) return 'satisfied'
+      if (clue.direction === 'S' && diff === clue.distance) return 'satisfied'
+      return 'violated'
+    }
   }
+  const { rows, cols } = puzzle.gridSize
+  const { axis, direction, distance } = clue
+  if (a) {
+    // Only A placed: violated if the required B position would be out of bounds
+    // 'E': A.col - B.col = distance  → B.col = A.col - distance
+    // 'W': A.col - B.col = -distance → B.col = A.col + distance
+    // 'N': A.row - B.row = -distance → B.row = A.row + distance
+    // 'S': A.row - B.row = distance  → B.row = A.row - distance
+    if (axis === 'col') {
+      if (direction === 'E' && a.col < distance)            return 'violated'
+      if (direction === 'W' && a.col > cols - 1 - distance) return 'violated'
+    } else {
+      if (direction === 'N' && a.row > rows - 1 - distance) return 'violated'
+      if (direction === 'S' && a.row < distance)            return 'violated'
+    }
+  } else if (b) {
+    // Only B placed: violated if the required A position would be out of bounds
+    if (axis === 'col') {
+      if (direction === 'E' && b.col > cols - 1 - distance) return 'violated'
+      if (direction === 'W' && b.col < distance)            return 'violated'
+    } else {
+      if (direction === 'N' && b.row < distance)            return 'violated'
+      if (direction === 'S' && b.row > rows - 1 - distance) return 'violated'
+    }
+  }
+  return 'unknown'
 }
 
 function evalPersonBesideObject(
@@ -112,8 +212,8 @@ function evalPersonBesideObject(
 ): EvalResult {
   const coord = assignment.get(clue.person)
   if (!coord) return 'unknown'
-  const adjacent = getObjectsAdjacentInRoom(coord, puzzle)
-  return adjacent.some(o => o.kind === clue.objectKind) ? 'satisfied' : 'violated'
+  const kinds = getCaches(puzzle).coordToAdjacentKinds.get(`${coord.row},${coord.col}`)
+  return kinds?.has(clue.objectKind) ? 'satisfied' : 'violated'
 }
 
 function evalPersonOnObject(
@@ -123,8 +223,8 @@ function evalPersonOnObject(
 ): EvalResult {
   const coord = assignment.get(clue.person)
   if (!coord) return 'unknown'
-  const objects = getObjectsAtCoord(coord, puzzle)
-  return objects.some(o => o.kind === clue.objectKind) ? 'satisfied' : 'violated'
+  const objs = getCaches(puzzle).coordToObjects.get(`${coord.row},${coord.col}`) ?? []
+  return objs.some(o => o.kind === clue.objectKind) ? 'satisfied' : 'violated'
 }
 
 function evalPersonInRoom(
@@ -134,7 +234,8 @@ function evalPersonInRoom(
 ): EvalResult {
   const coord = assignment.get(clue.person)
   if (!coord) return 'unknown'
-  return getRoomId(coord, puzzle) === clue.roomId ? 'satisfied' : 'violated'
+  return getCaches(puzzle).coordToRoomId.get(`${coord.row},${coord.col}`) === clue.roomId
+    ? 'satisfied' : 'violated'
 }
 
 function evalPersonsSameRoom(
@@ -145,8 +246,9 @@ function evalPersonsSameRoom(
   const a = assignment.get(clue.personA)
   const b = assignment.get(clue.personB)
   if (!a || !b) return 'unknown'
-  const ra = getRoomId(a, puzzle)
-  const rb = getRoomId(b, puzzle)
+  const { coordToRoomId } = getCaches(puzzle)
+  const ra = coordToRoomId.get(`${a.row},${a.col}`)
+  const rb = coordToRoomId.get(`${b.row},${b.col}`)
   if (!ra || !rb) return 'unknown'
   return ra === rb ? 'satisfied' : 'violated'
 }
@@ -157,19 +259,14 @@ function evalPersonAloneInRoom(
   puzzle: Puzzle,
   allPersonIds: string[],
 ): EvalResult {
-  // If anyone else is already placed in the room, violated immediately
+  const { coordToRoomId } = getCaches(puzzle)
   for (const [pid, c] of assignment) {
     if (pid === clue.person) continue
-    if (getRoomId(c, puzzle) === clue.roomId) return 'violated'
+    if (coordToRoomId.get(`${c.row},${c.col}`) === clue.roomId) return 'violated'
   }
-
   const coord = assignment.get(clue.person)
   if (!coord) return 'unknown'
-
-  // Person must be in the specified room
-  if (getRoomId(coord, puzzle) !== clue.roomId) return 'violated'
-
-  // Person is in the room and currently alone
+  if (coordToRoomId.get(`${coord.row},${coord.col}`) !== clue.roomId) return 'violated'
   if (assignment.size === allPersonIds.length) return 'satisfied'
   return 'unknown'
 }
@@ -180,18 +277,13 @@ function evalRoomPopulation(
   puzzle: Puzzle,
   allPersonIds: string[],
 ): EvalResult {
+  const { coordToRoomId } = getCaches(puzzle)
   let countInRoom = 0
-  for (const [, c] of assignment) {
-    if (getRoomId(c, puzzle) === clue.roomId) countInRoom++
-  }
-
+  for (const [, c] of assignment)
+    if (coordToRoomId.get(`${c.row},${c.col}`) === clue.roomId) countInRoom++
   if (countInRoom > clue.count) return 'violated'
-
-  const totalPeople = allPersonIds.length
-  const assignedCount = assignment.size
-  if (assignedCount === totalPeople) {
+  if (assignment.size === allPersonIds.length)
     return countInRoom === clue.count ? 'satisfied' : 'violated'
-  }
   return 'unknown'
 }
 
@@ -201,21 +293,16 @@ function evalObjectOccupancy(
   puzzle: Puzzle,
   allPersonIds: string[],
 ): EvalResult {
-  const matchingObjects = puzzle.objects.filter(o => o.kind === clue.objectKind && o.occupiable === 'occupiable')
-  let occupiedCount = 0
-  for (const obj of matchingObjects) {
-    const isOccupied = obj.cells.some(cell =>
-      [...assignment.values()].some(c => c.row === cell.row && c.col === cell.col)
-    )
-    if (isOccupied) occupiedCount++
+  const { occupiableCoordToObj } = getCaches(puzzle)
+  const occupiedObjIds = new Set<string>()
+  for (const [, c] of assignment) {
+    const obj = occupiableCoordToObj.get(`${c.row},${c.col}`)
+    if (obj && obj.kind === clue.objectKind) occupiedObjIds.add(obj.id)
   }
-
+  const occupiedCount = occupiedObjIds.size
   if (occupiedCount > clue.count) return 'violated'
-
-  const totalPeople = allPersonIds.length
-  if (assignment.size === totalPeople) {
+  if (assignment.size === allPersonIds.length)
     return occupiedCount === clue.count ? 'satisfied' : 'violated'
-  }
   return 'unknown'
 }
 
@@ -226,7 +313,8 @@ function evalPersonNotInRoom(
 ): EvalResult {
   const coord = assignment.get(clue.person)
   if (!coord) return 'unknown'
-  return getRoomId(coord, puzzle) !== clue.roomId ? 'satisfied' : 'violated'
+  return getCaches(puzzle).coordToRoomId.get(`${coord.row},${coord.col}`) !== clue.roomId
+    ? 'satisfied' : 'violated'
 }
 
 function evalPersonsNotSameRoom(
@@ -237,10 +325,33 @@ function evalPersonsNotSameRoom(
   const a = assignment.get(clue.personA)
   const b = assignment.get(clue.personB)
   if (!a || !b) return 'unknown'
-  const ra = getRoomId(a, puzzle)
-  const rb = getRoomId(b, puzzle)
+  const { coordToRoomId } = getCaches(puzzle)
+  const ra = coordToRoomId.get(`${a.row},${a.col}`)
+  const rb = coordToRoomId.get(`${b.row},${b.col}`)
   if (!ra || !rb) return 'unknown'
   return ra !== rb ? 'satisfied' : 'violated'
+}
+
+function evalPersonInRoomWith(
+  clue: Extract<Clue, { kind: 'person-in-room-with' }>,
+  assignment: Assignment,
+  puzzle: Puzzle,
+  allPersonIds: string[],
+): EvalResult {
+  const { coordToRoomId } = getCaches(puzzle)
+  const coord = assignment.get(clue.person)
+  if (!coord) return 'unknown'
+  const roomId = coordToRoomId.get(`${coord.row},${coord.col}`)
+  if (!roomId) return 'unknown'
+  let othersInRoom = 0
+  for (const [pid, c] of assignment) {
+    if (pid === clue.person) continue
+    if (coordToRoomId.get(`${c.row},${c.col}`) === roomId) othersInRoom++
+  }
+  if (othersInRoom > clue.count) return 'violated'
+  if (assignment.size === allPersonIds.length)
+    return othersInRoom === clue.count ? 'satisfied' : 'violated'
+  return 'unknown'
 }
 
 // ─── Main Evaluator ───────────────────────────────────────────────────────────
@@ -252,8 +363,8 @@ export function evaluateClue(
 ): EvalResult {
   const allPersonIds = puzzle.people.map(p => p.id)
   switch (clue.kind) {
-    case 'person-direction': return evalPersonDirection(clue, assignment)
-    case 'person-distance': return evalPersonDistance(clue, assignment)
+    case 'person-direction': return evalPersonDirection(clue, assignment, puzzle)
+    case 'person-distance': return evalPersonDistance(clue, assignment, puzzle)
     case 'person-beside-object': return evalPersonBesideObject(clue, assignment, puzzle)
     case 'person-on-object': return evalPersonOnObject(clue, assignment, puzzle)
     case 'person-in-room': return evalPersonInRoom(clue, assignment, puzzle)
@@ -263,6 +374,7 @@ export function evaluateClue(
     case 'object-occupancy': return evalObjectOccupancy(clue, assignment, puzzle, allPersonIds)
     case 'person-not-in-room': return evalPersonNotInRoom(clue, assignment, puzzle)
     case 'persons-not-same-room': return evalPersonsNotSameRoom(clue, assignment, puzzle)
+    case 'person-in-room-with': return evalPersonInRoomWith(clue, assignment, puzzle, allPersonIds)
     default: return assertNever(clue)
   }
 }

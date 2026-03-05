@@ -57,6 +57,7 @@ export type Clue =
   | { kind: 'object-occupancy'; objectKind: ObjectKind; count: number; text: string }
   | { kind: 'person-not-in-room'; person: string; roomId: string; text: string }
   | { kind: 'persons-not-same-room'; personA: string; personB: string; text: string }
+  | { kind: 'person-in-room-with'; person: string; count: number; text: string }
 
 // ─── Solution ─────────────────────────────────────────────────────────────────
 

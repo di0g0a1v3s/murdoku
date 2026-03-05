@@ -206,6 +206,7 @@ async function generatePuzzle(existingTitles: string[], n: number): Promise<Puzz
       case 'person-in-room':
       case 'person-alone-in-room':
       case 'person-not-in-room':
+      case 'person-in-room-with':
         return clue.person
       case 'room-population':
       case 'object-occupancy':
@@ -229,7 +230,6 @@ async function generatePuzzle(existingTitles: string[], n: number): Promise<Puzz
         )
         if (nonOccupiable) continue
         const assignment = new Map([[suspectId, { row, col }]])
-        // TODO: can do this instead of computeDomains ?
         const ok = suspectClues.every(c => evaluateClue(c, assignment, partialPuzzle) !== 'violated')
         if (ok && ++compatibleCount > 1) return false
       }

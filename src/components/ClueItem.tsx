@@ -12,6 +12,7 @@ const CLUE_ICONS: Record<Clue['kind'], string> = {
   'object-occupancy': '📦',
   'person-not-in-room': '🚫',
   'persons-not-same-room': '↔️',
+  'person-in-room-with': '🫂',
 }
 
 interface ClueItemProps {

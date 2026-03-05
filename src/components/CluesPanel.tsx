@@ -15,6 +15,7 @@ function getPrimaryPersonId(clue: Clue): string | null {
     case 'persons-same-room':
     case 'persons-not-same-room':
       return clue.personA
+    case 'person-in-room-with':
     case 'person-beside-object':
     case 'person-on-object':
     case 'person-in-room':

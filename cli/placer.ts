@@ -17,50 +17,6 @@ function isNonOccupiable(coord: Coord, objects: GridObject[]): boolean {
   )
 }
 
-function isLinear(cells: Coord[]): boolean {
-  const rows = new Set(cells.map(c => c.row))
-  const cols = new Set(cells.map(c => c.col))
-  return rows.size === 1 || cols.size === 1
-}
-
-function is2x2Block(cells: Coord[]): boolean {
-  if (cells.length !== 4) return false
-  const rows = new Set(cells.map(c => c.row))
-  const cols = new Set(cells.map(c => c.col))
-  return rows.size === 2 && cols.size === 2
-}
-
-// TODO can remove
-function checkObjectConstraints(
-  coord: Coord,
-  assignment: Map<string, Coord>,
-  reverseAssignment: Map<string, string>,
-  objects: GridObject[],
-): boolean {
-  const objectsHere = objects.filter(obj =>
-    obj.cells.some(c => c.row === coord.row && c.col === coord.col),
-  )
-  for (const obj of objectsHere) {
-    const occupants = obj.cells
-      .map(c => reverseAssignment.get(`${c.row},${c.col}`))
-      .filter((id): id is string => id !== undefined)
-
-    if (isLinear(obj.cells)) {
-      if (occupants.length > 1) return false
-    } else if (is2x2Block(obj.cells)) {
-      if (occupants.length > 2) return false
-      if (occupants.length === 2) {
-        const coords = occupants.map(id => assignment.get(id)!)
-        const bothPresent = coords.every(c => c !== undefined)
-        if (!bothPresent) return false
-        const [c1, c2] = coords
-        if (Math.abs(c1.row - c2.row) !== 1 || Math.abs(c1.col - c2.col) !== 1) return false
-      }
-    }
-  }
-  return true
-}
-
 // Pseudo-random shuffle using simple LCG
 function lcgShuffle<T>(arr: T[], seed: number): T[] {
   const a = [...arr]
@@ -107,7 +63,6 @@ export function placePeople(
   // Shuffle placement order for variety
   const personOrder = lcgShuffle([...people], seed)
 
-  // TODO: not necessary
   function backtrack(personIndex: number): boolean {
     if (personIndex === personOrder.length) {
       // Validate murder condition: victim's room must have exactly 2 people
@@ -133,8 +88,8 @@ export function placePeople(
       usedRows.add(coord.row)
       usedCols.add(coord.col)
 
-      if (checkObjectConstraints(coord, assignment, reverseAssignment, objects)) {
-        if (backtrack(personIndex + 1)) return true
+      if (backtrack(personIndex + 1)) {
+        return true
       }
 
       assignment.delete(person.id)
