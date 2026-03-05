@@ -24809,6 +24809,4306 @@
         "murderRoom": "research-lab"
       },
       "generatedAt": "2026-03-04T23:25:31.008Z"
+    },
+    {
+      "id": "cobalt-coast-casino-mmdypmq3",
+      "title": "Cobalt Coast Casino",
+      "subtitle": "Luck ran out.",
+      "gridSize": {
+        "rows": 12,
+        "cols": 12
+      },
+      "rooms": [
+        {
+          "id": "roulette-room",
+          "name": "Roulette Room",
+          "color": "#8B4513",
+          "cells": [
+            {
+              "row": 5,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 2
+            },
+            {
+              "row": 5,
+              "col": 3
+            },
+            {
+              "row": 5,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 5
+            },
+            {
+              "row": 5,
+              "col": 6
+            },
+            {
+              "row": 6,
+              "col": 0
+            },
+            {
+              "row": 6,
+              "col": 1
+            },
+            {
+              "row": 6,
+              "col": 2
+            },
+            {
+              "row": 6,
+              "col": 3
+            },
+            {
+              "row": 6,
+              "col": 4
+            },
+            {
+              "row": 6,
+              "col": 5
+            },
+            {
+              "row": 6,
+              "col": 6
+            },
+            {
+              "row": 7,
+              "col": 0
+            },
+            {
+              "row": 7,
+              "col": 1
+            },
+            {
+              "row": 7,
+              "col": 2
+            },
+            {
+              "row": 7,
+              "col": 3
+            },
+            {
+              "row": 7,
+              "col": 4
+            },
+            {
+              "row": 7,
+              "col": 5
+            },
+            {
+              "row": 8,
+              "col": 0
+            },
+            {
+              "row": 8,
+              "col": 1
+            },
+            {
+              "row": 8,
+              "col": 2
+            },
+            {
+              "row": 8,
+              "col": 3
+            },
+            {
+              "row": 8,
+              "col": 4
+            },
+            {
+              "row": 9,
+              "col": 0
+            },
+            {
+              "row": 9,
+              "col": 1
+            },
+            {
+              "row": 9,
+              "col": 2
+            },
+            {
+              "row": 9,
+              "col": 3
+            },
+            {
+              "row": 10,
+              "col": 0
+            },
+            {
+              "row": 10,
+              "col": 1
+            },
+            {
+              "row": 10,
+              "col": 2
+            },
+            {
+              "row": 11,
+              "col": 0
+            },
+            {
+              "row": 11,
+              "col": 1
+            },
+            {
+              "row": 11,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "private-suite",
+          "name": "Private Suite",
+          "color": "#A9A9A9",
+          "cells": [
+            {
+              "row": 4,
+              "col": 7
+            },
+            {
+              "row": 4,
+              "col": 8
+            },
+            {
+              "row": 5,
+              "col": 7
+            },
+            {
+              "row": 5,
+              "col": 8
+            },
+            {
+              "row": 6,
+              "col": 7
+            },
+            {
+              "row": 6,
+              "col": 8
+            },
+            {
+              "row": 7,
+              "col": 6
+            },
+            {
+              "row": 7,
+              "col": 7
+            },
+            {
+              "row": 7,
+              "col": 8
+            },
+            {
+              "row": 8,
+              "col": 5
+            },
+            {
+              "row": 8,
+              "col": 6
+            },
+            {
+              "row": 8,
+              "col": 7
+            },
+            {
+              "row": 8,
+              "col": 8
+            },
+            {
+              "row": 9,
+              "col": 4
+            },
+            {
+              "row": 9,
+              "col": 5
+            },
+            {
+              "row": 9,
+              "col": 6
+            },
+            {
+              "row": 9,
+              "col": 7
+            },
+            {
+              "row": 9,
+              "col": 8
+            },
+            {
+              "row": 9,
+              "col": 9
+            },
+            {
+              "row": 10,
+              "col": 3
+            },
+            {
+              "row": 10,
+              "col": 4
+            },
+            {
+              "row": 10,
+              "col": 5
+            },
+            {
+              "row": 10,
+              "col": 6
+            },
+            {
+              "row": 10,
+              "col": 7
+            },
+            {
+              "row": 10,
+              "col": 8
+            },
+            {
+              "row": 10,
+              "col": 9
+            },
+            {
+              "row": 10,
+              "col": 10
+            },
+            {
+              "row": 11,
+              "col": 3
+            },
+            {
+              "row": 11,
+              "col": 4
+            },
+            {
+              "row": 11,
+              "col": 5
+            },
+            {
+              "row": 11,
+              "col": 6
+            },
+            {
+              "row": 11,
+              "col": 7
+            },
+            {
+              "row": 11,
+              "col": 8
+            },
+            {
+              "row": 11,
+              "col": 9
+            },
+            {
+              "row": 11,
+              "col": 10
+            }
+          ]
+        },
+        {
+          "id": "high-stakes",
+          "name": "High Stakes",
+          "color": "#2F4F4F",
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 1,
+              "col": 2
+            },
+            {
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 2
+            },
+            {
+              "row": 2,
+              "col": 3
+            },
+            {
+              "row": 2,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 5
+            },
+            {
+              "row": 3,
+              "col": 0
+            },
+            {
+              "row": 3,
+              "col": 1
+            },
+            {
+              "row": 3,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 5
+            },
+            {
+              "row": 3,
+              "col": 6
+            },
+            {
+              "row": 4,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 1
+            },
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 4,
+              "col": 3
+            },
+            {
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 5
+            },
+            {
+              "row": 4,
+              "col": 6
+            }
+          ]
+        },
+        {
+          "id": "grand-bar",
+          "name": "Grand Bar",
+          "color": "#556B2F",
+          "cells": [
+            {
+              "row": 4,
+              "col": 11
+            },
+            {
+              "row": 5,
+              "col": 9
+            },
+            {
+              "row": 5,
+              "col": 10
+            },
+            {
+              "row": 5,
+              "col": 11
+            },
+            {
+              "row": 6,
+              "col": 9
+            },
+            {
+              "row": 6,
+              "col": 10
+            },
+            {
+              "row": 6,
+              "col": 11
+            },
+            {
+              "row": 7,
+              "col": 9
+            },
+            {
+              "row": 7,
+              "col": 10
+            },
+            {
+              "row": 7,
+              "col": 11
+            },
+            {
+              "row": 8,
+              "col": 9
+            },
+            {
+              "row": 8,
+              "col": 10
+            },
+            {
+              "row": 8,
+              "col": 11
+            },
+            {
+              "row": 9,
+              "col": 10
+            },
+            {
+              "row": 9,
+              "col": 11
+            },
+            {
+              "row": 10,
+              "col": 11
+            },
+            {
+              "row": 11,
+              "col": 11
+            }
+          ]
+        },
+        {
+          "id": "back-office",
+          "name": "Back Office",
+          "color": "#696969",
+          "cells": [
+            {
+              "row": 0,
+              "col": 4
+            },
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 0,
+              "col": 6
+            },
+            {
+              "row": 0,
+              "col": 7
+            },
+            {
+              "row": 0,
+              "col": 8
+            },
+            {
+              "row": 0,
+              "col": 9
+            },
+            {
+              "row": 0,
+              "col": 10
+            },
+            {
+              "row": 0,
+              "col": 11
+            },
+            {
+              "row": 1,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 6
+            },
+            {
+              "row": 1,
+              "col": 7
+            },
+            {
+              "row": 1,
+              "col": 8
+            },
+            {
+              "row": 1,
+              "col": 9
+            },
+            {
+              "row": 1,
+              "col": 10
+            },
+            {
+              "row": 1,
+              "col": 11
+            },
+            {
+              "row": 2,
+              "col": 6
+            },
+            {
+              "row": 2,
+              "col": 7
+            },
+            {
+              "row": 2,
+              "col": 8
+            },
+            {
+              "row": 2,
+              "col": 9
+            },
+            {
+              "row": 2,
+              "col": 10
+            },
+            {
+              "row": 2,
+              "col": 11
+            },
+            {
+              "row": 3,
+              "col": 7
+            },
+            {
+              "row": 3,
+              "col": 8
+            },
+            {
+              "row": 3,
+              "col": 9
+            },
+            {
+              "row": 3,
+              "col": 10
+            },
+            {
+              "row": 3,
+              "col": 11
+            },
+            {
+              "row": 4,
+              "col": 9
+            },
+            {
+              "row": 4,
+              "col": 10
+            }
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "table-roulette-room-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 11,
+              "col": 0
+            },
+            {
+              "row": 11,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "bed-private-suite-1",
+          "kind": "bed",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 9,
+              "col": 4
+            },
+            {
+              "row": 10,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "table-high-stakes-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 0,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "table-high-stakes-2",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "counter-grand-bar-1",
+          "kind": "counter",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 8,
+              "col": 10
+            },
+            {
+              "row": 8,
+              "col": 11
+            }
+          ]
+        },
+        {
+          "id": "counter-grand-bar-2",
+          "kind": "counter",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 9,
+              "col": 10
+            },
+            {
+              "row": 9,
+              "col": 11
+            }
+          ]
+        },
+        {
+          "id": "table-back-office-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 6
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "id": "valentina-rossi",
+          "name": "Valentina Rossi",
+          "role": "victim",
+          "avatarEmoji": "💃"
+        },
+        {
+          "id": "alphonse-dubois",
+          "name": "Alphonse Dubois",
+          "role": "suspect",
+          "avatarEmoji": "👨‍🎨"
+        },
+        {
+          "id": "bianca-moretti",
+          "name": "Bianca Moretti",
+          "role": "suspect",
+          "avatarEmoji": "👩‍🎤"
+        },
+        {
+          "id": "cecil-thornton",
+          "name": "Cecil Thornton",
+          "role": "suspect",
+          "avatarEmoji": "🤵"
+        },
+        {
+          "id": "delphine-leclerc",
+          "name": "Delphine Leclerc",
+          "role": "suspect",
+          "avatarEmoji": "👩‍🍳"
+        },
+        {
+          "id": "emile-devereaux",
+          "name": "Emile Devereaux",
+          "role": "suspect",
+          "avatarEmoji": "🕵️"
+        },
+        {
+          "id": "francine-chartrand",
+          "name": "Francine Chartrand",
+          "role": "suspect",
+          "avatarEmoji": "👩‍💼"
+        },
+        {
+          "id": "gaston-rivard",
+          "name": "Gaston Rivard",
+          "role": "suspect",
+          "avatarEmoji": "👨‍⚕️"
+        },
+        {
+          "id": "henrietta-dubois",
+          "name": "Henrietta Dubois",
+          "role": "suspect",
+          "avatarEmoji": "👩‍🎨"
+        },
+        {
+          "id": "isidore-beaulieu",
+          "name": "Isidore Beaulieu",
+          "role": "suspect",
+          "avatarEmoji": "👨‍💼"
+        },
+        {
+          "id": "jean-pierre-savoie",
+          "name": "Jean-Pierre Savoie",
+          "role": "suspect",
+          "avatarEmoji": "👨‍🍳"
+        },
+        {
+          "id": "kasimir-volkov",
+          "name": "Kasimir Volkov",
+          "role": "suspect",
+          "avatarEmoji": "💂"
+        }
+      ],
+      "clues": [
+        {
+          "kind": "person-direction",
+          "personA": "alphonse-dubois",
+          "direction": "E",
+          "personB": "francine-chartrand",
+          "text": "Alphonse Dubois is east of Francine Chartrand"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "cecil-thornton",
+          "direction": "E",
+          "personB": "jean-pierre-savoie",
+          "distance": 7,
+          "axis": "col",
+          "text": "Cecil Thornton is exactly 7 column(s) east of Jean-Pierre Savoie"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "alphonse-dubois",
+          "direction": "W",
+          "personB": "isidore-beaulieu",
+          "distance": 8,
+          "axis": "col",
+          "text": "Alphonse Dubois is exactly 8 column(s) west of Isidore Beaulieu"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "cecil-thornton",
+          "direction": "E",
+          "personB": "emile-devereaux",
+          "distance": 8,
+          "axis": "col",
+          "text": "Cecil Thornton is exactly 8 column(s) east of Emile Devereaux"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "henrietta-dubois",
+          "direction": "NE",
+          "personB": "jean-pierre-savoie",
+          "text": "Henrietta Dubois is northeast of Jean-Pierre Savoie"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "cecil-thornton",
+          "direction": "E",
+          "personB": "kasimir-volkov",
+          "distance": 6,
+          "axis": "col",
+          "text": "Cecil Thornton is exactly 6 column(s) east of Kasimir Volkov"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "isidore-beaulieu",
+          "direction": "N",
+          "personB": "jean-pierre-savoie",
+          "distance": 4,
+          "axis": "row",
+          "text": "Isidore Beaulieu is exactly 4 row(s) north of Jean-Pierre Savoie"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "bianca-moretti",
+          "direction": "N",
+          "personB": "jean-pierre-savoie",
+          "distance": 5,
+          "axis": "row",
+          "text": "Bianca Moretti is exactly 5 row(s) north of Jean-Pierre Savoie"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "delphine-leclerc",
+          "direction": "N",
+          "personB": "henrietta-dubois",
+          "text": "Delphine Leclerc is north of Henrietta Dubois"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "bianca-moretti",
+          "direction": "NE",
+          "personB": "henrietta-dubois",
+          "text": "Bianca Moretti is northeast of Henrietta Dubois"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "alphonse-dubois",
+          "direction": "S",
+          "personB": "delphine-leclerc",
+          "distance": 5,
+          "axis": "row",
+          "text": "Alphonse Dubois is exactly 5 row(s) south of Delphine Leclerc"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "bianca-moretti",
+          "direction": "S",
+          "personB": "valentina-rossi",
+          "text": "Bianca Moretti is south of Valentina Rossi"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "emile-devereaux",
+          "direction": "S",
+          "personB": "jean-pierre-savoie",
+          "distance": 1,
+          "axis": "row",
+          "text": "Emile Devereaux is exactly 1 row(s) south of Jean-Pierre Savoie"
+        },
+        {
+          "kind": "person-beside-object",
+          "person": "alphonse-dubois",
+          "objectKind": "table",
+          "text": "Alphonse Dubois is beside a table"
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "kasimir-volkov",
+          "roomId": "roulette-room",
+          "text": "Kasimir Volkov is NOT in the Roulette Room"
+        },
+        {
+          "kind": "persons-same-room",
+          "personA": "henrietta-dubois",
+          "personB": "kasimir-volkov",
+          "text": "Henrietta Dubois and Kasimir Volkov are in the same room"
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "francine-chartrand",
+          "roomId": "private-suite",
+          "text": "Francine Chartrand is NOT in the Private Suite"
+        },
+        {
+          "kind": "persons-not-same-room",
+          "personA": "jean-pierre-savoie",
+          "personB": "kasimir-volkov",
+          "text": "Jean-Pierre Savoie and Kasimir Volkov are NOT in the same room"
+        },
+        {
+          "kind": "persons-not-same-room",
+          "personA": "delphine-leclerc",
+          "personB": "kasimir-volkov",
+          "text": "Delphine Leclerc and Kasimir Volkov are NOT in the same room"
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "gaston-rivard",
+          "roomId": "private-suite",
+          "text": "Gaston Rivard is NOT in the Private Suite"
+        },
+        {
+          "kind": "persons-same-room",
+          "personA": "emile-devereaux",
+          "personB": "francine-chartrand",
+          "text": "Emile Devereaux and Francine Chartrand are in the same room"
+        }
+      ],
+      "suspectSummaries": [
+        {
+          "personId": "alphonse-dubois",
+          "text": "Alphonse Dubois is east of Francine Chartrand, exactly eight columns west of Isidore Beaulieu, exactly five rows south of Delphine Leclerc, and beside a table."
+        },
+        {
+          "personId": "bianca-moretti",
+          "text": "Bianca Moretti is exactly five rows north of Jean-Pierre Savoie, northeast of Henrietta Dubois, and south of Valentina Rossi."
+        },
+        {
+          "personId": "cecil-thornton",
+          "text": "Cecil Thornton is exactly seven columns east of Jean-Pierre Savoie, exactly eight columns east of Emile Devereaux, and exactly six columns east of Kasimir Volkov."
+        },
+        {
+          "personId": "delphine-leclerc",
+          "text": "Delphine Leclerc is north of Henrietta Dubois and not in the same room as Kasimir Volkov."
+        },
+        {
+          "personId": "emile-devereaux",
+          "text": "Emile Devereaux is exactly one row south of Jean-Pierre Savoie and in the same room as Francine Chartrand."
+        },
+        {
+          "personId": "francine-chartrand",
+          "text": "Francine Chartrand is not in the Private Suite."
+        },
+        {
+          "personId": "gaston-rivard",
+          "text": "Gaston Rivard is not in the Private Suite."
+        },
+        {
+          "personId": "henrietta-dubois",
+          "text": "Henrietta Dubois is northeast of Jean-Pierre Savoie and in the same room as Kasimir Volkov."
+        },
+        {
+          "personId": "isidore-beaulieu",
+          "text": "Isidore Beaulieu is exactly four rows north of Jean-Pierre Savoie."
+        },
+        {
+          "personId": "jean-pierre-savoie",
+          "text": "Jean-Pierre Savoie is not in the same room as Kasimir Volkov."
+        },
+        {
+          "personId": "kasimir-volkov",
+          "text": "Kasimir Volkov is not in the Roulette Room."
+        }
+      ],
+      "solution": {
+        "placements": [
+          {
+            "personId": "valentina-rossi",
+            "coord": {
+              "row": 1,
+              "col": 2
+            }
+          },
+          {
+            "personId": "alphonse-dubois",
+            "coord": {
+              "row": 10,
+              "col": 1
+            }
+          },
+          {
+            "personId": "bianca-moretti",
+            "coord": {
+              "row": 2,
+              "col": 8
+            }
+          },
+          {
+            "personId": "cecil-thornton",
+            "coord": {
+              "row": 0,
+              "col": 11
+            }
+          },
+          {
+            "personId": "delphine-leclerc",
+            "coord": {
+              "row": 5,
+              "col": 10
+            }
+          },
+          {
+            "personId": "emile-devereaux",
+            "coord": {
+              "row": 8,
+              "col": 3
+            }
+          },
+          {
+            "personId": "francine-chartrand",
+            "coord": {
+              "row": 9,
+              "col": 0
+            }
+          },
+          {
+            "personId": "gaston-rivard",
+            "coord": {
+              "row": 4,
+              "col": 6
+            }
+          },
+          {
+            "personId": "henrietta-dubois",
+            "coord": {
+              "row": 6,
+              "col": 7
+            }
+          },
+          {
+            "personId": "isidore-beaulieu",
+            "coord": {
+              "row": 3,
+              "col": 9
+            }
+          },
+          {
+            "personId": "jean-pierre-savoie",
+            "coord": {
+              "row": 7,
+              "col": 4
+            }
+          },
+          {
+            "personId": "kasimir-volkov",
+            "coord": {
+              "row": 11,
+              "col": 5
+            }
+          }
+        ],
+        "murdererId": "gaston-rivard",
+        "victimId": "valentina-rossi",
+        "murderRoom": "high-stakes"
+      },
+      "generatedAt": "2026-03-05T21:12:44.351Z"
+    },
+    {
+      "id": "kyoto-temple-mmdyv52b",
+      "title": "Kyoto Temple",
+      "subtitle": "Secrets Shrouded in Ancient Stone",
+      "gridSize": {
+        "rows": 12,
+        "cols": 12
+      },
+      "rooms": [
+        {
+          "id": "abbot-s-chamber",
+          "name": "Abbot's Chamber",
+          "color": "#D8BFD8",
+          "cells": [
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 2
+            },
+            {
+              "row": 2,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 0
+            },
+            {
+              "row": 3,
+              "col": 1
+            },
+            {
+              "row": 3,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 1
+            },
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 4,
+              "col": 3
+            },
+            {
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 2
+            },
+            {
+              "row": 5,
+              "col": 3
+            },
+            {
+              "row": 5,
+              "col": 4
+            },
+            {
+              "row": 6,
+              "col": 0
+            },
+            {
+              "row": 6,
+              "col": 1
+            },
+            {
+              "row": 6,
+              "col": 2
+            },
+            {
+              "row": 6,
+              "col": 3
+            },
+            {
+              "row": 7,
+              "col": 0
+            },
+            {
+              "row": 7,
+              "col": 1
+            },
+            {
+              "row": 7,
+              "col": 2
+            },
+            {
+              "row": 8,
+              "col": 0
+            },
+            {
+              "row": 8,
+              "col": 1
+            },
+            {
+              "row": 9,
+              "col": 0
+            },
+            {
+              "row": 10,
+              "col": 0
+            },
+            {
+              "row": 11,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "tea-room",
+          "name": "Tea Room",
+          "color": "#E9C4A6",
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 1,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "zen-garden",
+          "name": "Zen Garden",
+          "color": "#C8D6B1",
+          "cells": [
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 0,
+              "col": 4
+            },
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 0,
+              "col": 6
+            },
+            {
+              "row": 0,
+              "col": 7
+            },
+            {
+              "row": 0,
+              "col": 8
+            },
+            {
+              "row": 0,
+              "col": 9
+            },
+            {
+              "row": 0,
+              "col": 10
+            },
+            {
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 1,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 6
+            },
+            {
+              "row": 1,
+              "col": 7
+            },
+            {
+              "row": 1,
+              "col": 8
+            },
+            {
+              "row": 1,
+              "col": 9
+            },
+            {
+              "row": 2,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 5
+            },
+            {
+              "row": 2,
+              "col": 6
+            },
+            {
+              "row": 2,
+              "col": 7
+            },
+            {
+              "row": 2,
+              "col": 8
+            },
+            {
+              "row": 3,
+              "col": 5
+            },
+            {
+              "row": 3,
+              "col": 6
+            },
+            {
+              "row": 3,
+              "col": 7
+            },
+            {
+              "row": 4,
+              "col": 5
+            },
+            {
+              "row": 4,
+              "col": 6
+            },
+            {
+              "row": 5,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "library",
+          "name": "Library",
+          "color": "#A98D70",
+          "cells": [
+            {
+              "row": 5,
+              "col": 6
+            },
+            {
+              "row": 5,
+              "col": 7
+            },
+            {
+              "row": 6,
+              "col": 4
+            },
+            {
+              "row": 6,
+              "col": 5
+            },
+            {
+              "row": 6,
+              "col": 6
+            },
+            {
+              "row": 6,
+              "col": 7
+            },
+            {
+              "row": 6,
+              "col": 8
+            },
+            {
+              "row": 7,
+              "col": 3
+            },
+            {
+              "row": 7,
+              "col": 4
+            },
+            {
+              "row": 7,
+              "col": 5
+            },
+            {
+              "row": 7,
+              "col": 6
+            },
+            {
+              "row": 7,
+              "col": 7
+            },
+            {
+              "row": 7,
+              "col": 8
+            },
+            {
+              "row": 7,
+              "col": 9
+            },
+            {
+              "row": 8,
+              "col": 2
+            },
+            {
+              "row": 8,
+              "col": 3
+            },
+            {
+              "row": 8,
+              "col": 4
+            },
+            {
+              "row": 8,
+              "col": 5
+            },
+            {
+              "row": 8,
+              "col": 6
+            },
+            {
+              "row": 8,
+              "col": 7
+            },
+            {
+              "row": 8,
+              "col": 8
+            },
+            {
+              "row": 8,
+              "col": 9
+            },
+            {
+              "row": 8,
+              "col": 10
+            },
+            {
+              "row": 9,
+              "col": 1
+            },
+            {
+              "row": 9,
+              "col": 2
+            },
+            {
+              "row": 9,
+              "col": 3
+            },
+            {
+              "row": 9,
+              "col": 4
+            },
+            {
+              "row": 9,
+              "col": 5
+            },
+            {
+              "row": 9,
+              "col": 6
+            },
+            {
+              "row": 9,
+              "col": 7
+            },
+            {
+              "row": 9,
+              "col": 8
+            },
+            {
+              "row": 9,
+              "col": 9
+            },
+            {
+              "row": 9,
+              "col": 10
+            },
+            {
+              "row": 9,
+              "col": 11
+            },
+            {
+              "row": 10,
+              "col": 1
+            },
+            {
+              "row": 10,
+              "col": 2
+            },
+            {
+              "row": 10,
+              "col": 3
+            },
+            {
+              "row": 10,
+              "col": 4
+            },
+            {
+              "row": 10,
+              "col": 5
+            },
+            {
+              "row": 10,
+              "col": 6
+            },
+            {
+              "row": 10,
+              "col": 7
+            },
+            {
+              "row": 10,
+              "col": 8
+            },
+            {
+              "row": 10,
+              "col": 9
+            },
+            {
+              "row": 10,
+              "col": 10
+            },
+            {
+              "row": 10,
+              "col": 11
+            },
+            {
+              "row": 11,
+              "col": 1
+            },
+            {
+              "row": 11,
+              "col": 2
+            },
+            {
+              "row": 11,
+              "col": 3
+            },
+            {
+              "row": 11,
+              "col": 4
+            },
+            {
+              "row": 11,
+              "col": 5
+            },
+            {
+              "row": 11,
+              "col": 6
+            },
+            {
+              "row": 11,
+              "col": 7
+            },
+            {
+              "row": 11,
+              "col": 8
+            },
+            {
+              "row": 11,
+              "col": 9
+            },
+            {
+              "row": 11,
+              "col": 10
+            },
+            {
+              "row": 11,
+              "col": 11
+            }
+          ]
+        },
+        {
+          "id": "meditation-hall",
+          "name": "Meditation Hall",
+          "color": "#8B8000",
+          "cells": [
+            {
+              "row": 0,
+              "col": 11
+            },
+            {
+              "row": 1,
+              "col": 10
+            },
+            {
+              "row": 1,
+              "col": 11
+            },
+            {
+              "row": 2,
+              "col": 9
+            },
+            {
+              "row": 2,
+              "col": 10
+            },
+            {
+              "row": 2,
+              "col": 11
+            },
+            {
+              "row": 3,
+              "col": 8
+            },
+            {
+              "row": 3,
+              "col": 9
+            },
+            {
+              "row": 3,
+              "col": 10
+            },
+            {
+              "row": 3,
+              "col": 11
+            },
+            {
+              "row": 4,
+              "col": 7
+            },
+            {
+              "row": 4,
+              "col": 8
+            },
+            {
+              "row": 4,
+              "col": 9
+            },
+            {
+              "row": 4,
+              "col": 10
+            },
+            {
+              "row": 4,
+              "col": 11
+            },
+            {
+              "row": 5,
+              "col": 8
+            },
+            {
+              "row": 5,
+              "col": 9
+            },
+            {
+              "row": 5,
+              "col": 10
+            },
+            {
+              "row": 5,
+              "col": 11
+            },
+            {
+              "row": 6,
+              "col": 9
+            },
+            {
+              "row": 6,
+              "col": 10
+            },
+            {
+              "row": 6,
+              "col": 11
+            },
+            {
+              "row": 7,
+              "col": 10
+            },
+            {
+              "row": 7,
+              "col": 11
+            },
+            {
+              "row": 8,
+              "col": 11
+            }
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "bed-abbot-s-chamber-1",
+          "kind": "bed",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "table-tea-room-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 1,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "table-zen-garden-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 6
+            },
+            {
+              "row": 0,
+              "col": 7
+            }
+          ]
+        },
+        {
+          "id": "table-zen-garden-2",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 5
+            },
+            {
+              "row": 2,
+              "col": 6
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-library-1",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 11,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "plant-meditation-hall-1",
+          "kind": "plant",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 11
+            }
+          ]
+        },
+        {
+          "id": "plant-meditation-hall-2",
+          "kind": "plant",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 3,
+              "col": 10
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "id": "viscount-ito",
+          "name": "Viscount Ito",
+          "role": "victim",
+          "avatarEmoji": "🪭"
+        },
+        {
+          "id": "aiko",
+          "name": "Aiko",
+          "role": "suspect",
+          "avatarEmoji": "👘"
+        },
+        {
+          "id": "benkei",
+          "name": "Benkei",
+          "role": "suspect",
+          "avatarEmoji": "🪨"
+        },
+        {
+          "id": "chiyo",
+          "name": "Chiyo",
+          "role": "suspect",
+          "avatarEmoji": "🍶"
+        },
+        {
+          "id": "daiki",
+          "name": "Daiki",
+          "role": "suspect",
+          "avatarEmoji": "⚔️"
+        },
+        {
+          "id": "etsu",
+          "name": "Etsu",
+          "role": "suspect",
+          "avatarEmoji": "🎎"
+        },
+        {
+          "id": "fujiwara",
+          "name": "Fujiwara",
+          "role": "suspect",
+          "avatarEmoji": "🏮"
+        },
+        {
+          "id": "genji",
+          "name": "Genji",
+          "role": "suspect",
+          "avatarEmoji": "⛩️"
+        },
+        {
+          "id": "hideki",
+          "name": "Hideki",
+          "role": "suspect",
+          "avatarEmoji": "🏯"
+        },
+        {
+          "id": "ichiro",
+          "name": "Ichiro",
+          "role": "suspect",
+          "avatarEmoji": "🏞️"
+        },
+        {
+          "id": "junko",
+          "name": "Junko",
+          "role": "suspect",
+          "avatarEmoji": "🍵"
+        },
+        {
+          "id": "kenji",
+          "name": "Kenji",
+          "role": "suspect",
+          "avatarEmoji": "🪷"
+        }
+      ],
+      "clues": [
+        {
+          "kind": "person-distance",
+          "personA": "aiko",
+          "direction": "W",
+          "personB": "fujiwara",
+          "distance": 2,
+          "axis": "col",
+          "text": "Aiko is exactly 2 column(s) west of Fujiwara"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "benkei",
+          "direction": "W",
+          "personB": "genji",
+          "distance": 5,
+          "axis": "col",
+          "text": "Benkei is exactly 5 column(s) west of Genji"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "benkei",
+          "direction": "N",
+          "personB": "genji",
+          "text": "Benkei is north of Genji"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "benkei",
+          "direction": "E",
+          "personB": "daiki",
+          "distance": 2,
+          "axis": "col",
+          "text": "Benkei is exactly 2 column(s) east of Daiki"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "aiko",
+          "direction": "N",
+          "personB": "kenji",
+          "distance": 4,
+          "axis": "row",
+          "text": "Aiko is exactly 4 row(s) north of Kenji"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "daiki",
+          "direction": "S",
+          "personB": "fujiwara",
+          "distance": 5,
+          "axis": "row",
+          "text": "Daiki is exactly 5 row(s) south of Fujiwara"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "daiki",
+          "direction": "S",
+          "personB": "junko",
+          "distance": 8,
+          "axis": "row",
+          "text": "Daiki is exactly 8 row(s) south of Junko"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "chiyo",
+          "direction": "N",
+          "personB": "daiki",
+          "distance": 6,
+          "axis": "row",
+          "text": "Chiyo is exactly 6 row(s) north of Daiki"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "kenji",
+          "direction": "W",
+          "personB": "etsu",
+          "text": "Kenji is west of Etsu"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "aiko",
+          "direction": "W",
+          "personB": "chiyo",
+          "distance": 3,
+          "axis": "col",
+          "text": "Aiko is exactly 3 column(s) west of Chiyo"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "hideki",
+          "direction": "NW",
+          "personB": "chiyo",
+          "text": "Hideki is northwest of Chiyo"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "fujiwara",
+          "direction": "N",
+          "personB": "ichiro",
+          "distance": 2,
+          "axis": "row",
+          "text": "Fujiwara is exactly 2 row(s) north of Ichiro"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "daiki",
+          "direction": "W",
+          "personB": "junko",
+          "distance": 3,
+          "axis": "col",
+          "text": "Daiki is exactly 3 column(s) west of Junko"
+        },
+        {
+          "kind": "persons-same-room",
+          "personA": "etsu",
+          "personB": "junko",
+          "text": "Etsu and Junko are in the same room"
+        },
+        {
+          "kind": "person-in-room-with",
+          "person": "ichiro",
+          "count": 3,
+          "text": "Ichiro is in a room with exactly 3 other people"
+        },
+        {
+          "kind": "persons-not-same-room",
+          "personA": "junko",
+          "personB": "kenji",
+          "text": "Junko and Kenji are NOT in the same room"
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "benkei",
+          "roomId": "tea-room",
+          "text": "Benkei is NOT in the Tea Room"
+        },
+        {
+          "kind": "person-in-room-with",
+          "person": "fujiwara",
+          "count": 2,
+          "text": "Fujiwara is in a room with exactly 2 other people"
+        },
+        {
+          "kind": "person-in-room-with",
+          "person": "genji",
+          "count": 3,
+          "text": "Genji is in a room with exactly 3 other people"
+        }
+      ],
+      "suspectSummaries": [
+        {
+          "personId": "aiko",
+          "text": "Aiko is exactly two columns west of Fujiwara, exactly four rows north of Kenji, and exactly three columns west of Chiyo."
+        },
+        {
+          "personId": "benkei",
+          "text": "Benkei is exactly five columns west of Genji, north of Genji, exactly two columns east of Daiki, and not in the Tea Room."
+        },
+        {
+          "personId": "chiyo",
+          "text": "Chiyo is exactly six rows north of Daiki."
+        },
+        {
+          "personId": "daiki",
+          "text": "Daiki is exactly five rows south of Fujiwara, exactly eight rows south of Junko, and exactly three columns west of Junko."
+        },
+        {
+          "personId": "etsu",
+          "text": "Etsu and Junko are in the same room."
+        },
+        {
+          "personId": "fujiwara",
+          "text": "Fujiwara is exactly two rows north of Ichiro and in a room with exactly two other people."
+        },
+        {
+          "personId": "genji",
+          "text": "Genji is in a room with exactly three other people."
+        },
+        {
+          "personId": "hideki",
+          "text": "Hideki is northwest of Chiyo."
+        },
+        {
+          "personId": "ichiro",
+          "text": "Ichiro is in a room with exactly three other people."
+        },
+        {
+          "personId": "junko",
+          "text": "Junko and Kenji are not in the same room."
+        },
+        {
+          "personId": "kenji",
+          "text": "Kenji is west of Etsu."
+        }
+      ],
+      "solution": {
+        "placements": [
+          {
+            "personId": "viscount-ito",
+            "coord": {
+              "row": 7,
+              "col": 10
+            }
+          },
+          {
+            "personId": "aiko",
+            "coord": {
+              "row": 0,
+              "col": 0
+            }
+          },
+          {
+            "personId": "benkei",
+            "coord": {
+              "row": 9,
+              "col": 6
+            }
+          },
+          {
+            "personId": "chiyo",
+            "coord": {
+              "row": 5,
+              "col": 3
+            }
+          },
+          {
+            "personId": "daiki",
+            "coord": {
+              "row": 11,
+              "col": 4
+            }
+          },
+          {
+            "personId": "etsu",
+            "coord": {
+              "row": 1,
+              "col": 9
+            }
+          },
+          {
+            "personId": "fujiwara",
+            "coord": {
+              "row": 6,
+              "col": 2
+            }
+          },
+          {
+            "personId": "genji",
+            "coord": {
+              "row": 10,
+              "col": 11
+            }
+          },
+          {
+            "personId": "hideki",
+            "coord": {
+              "row": 2,
+              "col": 1
+            }
+          },
+          {
+            "personId": "ichiro",
+            "coord": {
+              "row": 8,
+              "col": 5
+            }
+          },
+          {
+            "personId": "junko",
+            "coord": {
+              "row": 3,
+              "col": 7
+            }
+          },
+          {
+            "personId": "kenji",
+            "coord": {
+              "row": 4,
+              "col": 8
+            }
+          }
+        ],
+        "murdererId": "kenji",
+        "victimId": "viscount-ito",
+        "murderRoom": "meditation-hall"
+      },
+      "generatedAt": "2026-03-05T21:16:56.254Z"
+    },
+    {
+      "id": "haunted-hacienda-mme26s5i",
+      "title": "Haunted Hacienda",
+      "subtitle": "Secrets behind adobe walls.",
+      "gridSize": {
+        "rows": 12,
+        "cols": 12
+      },
+      "rooms": [
+        {
+          "id": "great-room",
+          "name": "Great Room",
+          "color": "#A9927D",
+          "cells": [
+            {
+              "row": 6,
+              "col": 9
+            },
+            {
+              "row": 6,
+              "col": 10
+            },
+            {
+              "row": 6,
+              "col": 11
+            },
+            {
+              "row": 7,
+              "col": 4
+            },
+            {
+              "row": 7,
+              "col": 5
+            },
+            {
+              "row": 7,
+              "col": 6
+            },
+            {
+              "row": 7,
+              "col": 7
+            },
+            {
+              "row": 7,
+              "col": 8
+            },
+            {
+              "row": 7,
+              "col": 9
+            },
+            {
+              "row": 7,
+              "col": 10
+            },
+            {
+              "row": 7,
+              "col": 11
+            },
+            {
+              "row": 8,
+              "col": 5
+            },
+            {
+              "row": 8,
+              "col": 6
+            },
+            {
+              "row": 8,
+              "col": 7
+            },
+            {
+              "row": 8,
+              "col": 8
+            },
+            {
+              "row": 8,
+              "col": 9
+            },
+            {
+              "row": 8,
+              "col": 10
+            },
+            {
+              "row": 8,
+              "col": 11
+            },
+            {
+              "row": 9,
+              "col": 6
+            },
+            {
+              "row": 9,
+              "col": 7
+            },
+            {
+              "row": 9,
+              "col": 8
+            },
+            {
+              "row": 9,
+              "col": 9
+            },
+            {
+              "row": 9,
+              "col": 10
+            },
+            {
+              "row": 9,
+              "col": 11
+            },
+            {
+              "row": 10,
+              "col": 7
+            },
+            {
+              "row": 10,
+              "col": 8
+            },
+            {
+              "row": 10,
+              "col": 9
+            },
+            {
+              "row": 10,
+              "col": 10
+            },
+            {
+              "row": 10,
+              "col": 11
+            },
+            {
+              "row": 11,
+              "col": 8
+            },
+            {
+              "row": 11,
+              "col": 9
+            },
+            {
+              "row": 11,
+              "col": 10
+            },
+            {
+              "row": 11,
+              "col": 11
+            }
+          ]
+        },
+        {
+          "id": "old-chapel",
+          "name": "Old Chapel",
+          "color": "#7B6D58",
+          "cells": [
+            {
+              "row": 6,
+              "col": 0
+            },
+            {
+              "row": 6,
+              "col": 1
+            },
+            {
+              "row": 6,
+              "col": 2
+            },
+            {
+              "row": 6,
+              "col": 3
+            },
+            {
+              "row": 7,
+              "col": 0
+            },
+            {
+              "row": 7,
+              "col": 1
+            },
+            {
+              "row": 7,
+              "col": 2
+            },
+            {
+              "row": 7,
+              "col": 3
+            },
+            {
+              "row": 8,
+              "col": 0
+            },
+            {
+              "row": 8,
+              "col": 1
+            },
+            {
+              "row": 8,
+              "col": 2
+            },
+            {
+              "row": 8,
+              "col": 3
+            },
+            {
+              "row": 8,
+              "col": 4
+            },
+            {
+              "row": 9,
+              "col": 0
+            },
+            {
+              "row": 9,
+              "col": 1
+            },
+            {
+              "row": 9,
+              "col": 2
+            },
+            {
+              "row": 9,
+              "col": 3
+            },
+            {
+              "row": 9,
+              "col": 4
+            },
+            {
+              "row": 9,
+              "col": 5
+            },
+            {
+              "row": 10,
+              "col": 0
+            },
+            {
+              "row": 10,
+              "col": 1
+            },
+            {
+              "row": 10,
+              "col": 2
+            },
+            {
+              "row": 10,
+              "col": 3
+            },
+            {
+              "row": 10,
+              "col": 4
+            },
+            {
+              "row": 10,
+              "col": 5
+            },
+            {
+              "row": 10,
+              "col": 6
+            },
+            {
+              "row": 11,
+              "col": 0
+            },
+            {
+              "row": 11,
+              "col": 1
+            },
+            {
+              "row": 11,
+              "col": 2
+            },
+            {
+              "row": 11,
+              "col": 3
+            },
+            {
+              "row": 11,
+              "col": 4
+            },
+            {
+              "row": 11,
+              "col": 5
+            },
+            {
+              "row": 11,
+              "col": 6
+            },
+            {
+              "row": 11,
+              "col": 7
+            }
+          ]
+        },
+        {
+          "id": "west-wing",
+          "name": "West Wing",
+          "color": "#8C7853",
+          "cells": [
+            {
+              "row": 3,
+              "col": 8
+            },
+            {
+              "row": 3,
+              "col": 9
+            },
+            {
+              "row": 3,
+              "col": 10
+            },
+            {
+              "row": 3,
+              "col": 11
+            },
+            {
+              "row": 4,
+              "col": 7
+            },
+            {
+              "row": 4,
+              "col": 8
+            },
+            {
+              "row": 4,
+              "col": 9
+            },
+            {
+              "row": 4,
+              "col": 10
+            },
+            {
+              "row": 4,
+              "col": 11
+            },
+            {
+              "row": 5,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 5
+            },
+            {
+              "row": 5,
+              "col": 6
+            },
+            {
+              "row": 5,
+              "col": 7
+            },
+            {
+              "row": 5,
+              "col": 8
+            },
+            {
+              "row": 5,
+              "col": 9
+            },
+            {
+              "row": 5,
+              "col": 10
+            },
+            {
+              "row": 5,
+              "col": 11
+            },
+            {
+              "row": 6,
+              "col": 4
+            },
+            {
+              "row": 6,
+              "col": 5
+            },
+            {
+              "row": 6,
+              "col": 6
+            },
+            {
+              "row": 6,
+              "col": 7
+            },
+            {
+              "row": 6,
+              "col": 8
+            }
+          ]
+        },
+        {
+          "id": "wine-cellar",
+          "name": "Wine Cellar",
+          "color": "#6D5B41",
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 0,
+              "col": 4
+            },
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 1,
+              "col": 2
+            },
+            {
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 1,
+              "col": 5
+            },
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 2
+            },
+            {
+              "row": 2,
+              "col": 3
+            },
+            {
+              "row": 2,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 0
+            },
+            {
+              "row": 3,
+              "col": 1
+            },
+            {
+              "row": 3,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 1
+            },
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 4,
+              "col": 3
+            },
+            {
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 2
+            },
+            {
+              "row": 5,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "back-porch",
+          "name": "Back Porch",
+          "color": "#988D80",
+          "cells": [
+            {
+              "row": 0,
+              "col": 6
+            },
+            {
+              "row": 0,
+              "col": 7
+            },
+            {
+              "row": 0,
+              "col": 8
+            },
+            {
+              "row": 0,
+              "col": 9
+            },
+            {
+              "row": 0,
+              "col": 10
+            },
+            {
+              "row": 0,
+              "col": 11
+            },
+            {
+              "row": 1,
+              "col": 6
+            },
+            {
+              "row": 1,
+              "col": 7
+            },
+            {
+              "row": 1,
+              "col": 8
+            },
+            {
+              "row": 1,
+              "col": 9
+            },
+            {
+              "row": 1,
+              "col": 10
+            },
+            {
+              "row": 1,
+              "col": 11
+            },
+            {
+              "row": 2,
+              "col": 5
+            },
+            {
+              "row": 2,
+              "col": 6
+            },
+            {
+              "row": 2,
+              "col": 7
+            },
+            {
+              "row": 2,
+              "col": 8
+            },
+            {
+              "row": 2,
+              "col": 9
+            },
+            {
+              "row": 2,
+              "col": 10
+            },
+            {
+              "row": 2,
+              "col": 11
+            },
+            {
+              "row": 3,
+              "col": 5
+            },
+            {
+              "row": 3,
+              "col": 6
+            },
+            {
+              "row": 3,
+              "col": 7
+            },
+            {
+              "row": 4,
+              "col": 5
+            },
+            {
+              "row": 4,
+              "col": 6
+            }
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "fireplace-great-room-1",
+          "kind": "fireplace",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 7,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "fireplace-great-room-2",
+          "kind": "fireplace",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 11,
+              "col": 8
+            }
+          ]
+        },
+        {
+          "id": "chair-old-chapel-1",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 8,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "chair-old-chapel-2",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 11,
+              "col": 7
+            }
+          ]
+        },
+        {
+          "id": "bed-west-wing-1",
+          "kind": "bed",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 3,
+              "col": 8
+            },
+            {
+              "row": 4,
+              "col": 8
+            }
+          ]
+        },
+        {
+          "id": "table-wine-cellar-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "chair-back-porch-1",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 5
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "id": "valentina-ramirez",
+          "name": "Valentina Ramirez",
+          "role": "victim",
+          "avatarEmoji": "💃"
+        },
+        {
+          "id": "antonio-vargas",
+          "name": "Antonio Vargas",
+          "role": "suspect",
+          "avatarEmoji": "👨"
+        },
+        {
+          "id": "beatriz-sandoval",
+          "name": "Beatriz Sandoval",
+          "role": "suspect",
+          "avatarEmoji": "👩"
+        },
+        {
+          "id": "carlos-herrera",
+          "name": "Carlos Herrera",
+          "role": "suspect",
+          "avatarEmoji": "🧔"
+        },
+        {
+          "id": "dolores-garcia",
+          "name": "Dolores Garcia",
+          "role": "suspect",
+          "avatarEmoji": "👵"
+        },
+        {
+          "id": "emilio-fuentes",
+          "name": "Emilio Fuentes",
+          "role": "suspect",
+          "avatarEmoji": "👴"
+        },
+        {
+          "id": "fernanda-diaz",
+          "name": "Fernanda Diaz",
+          "role": "suspect",
+          "avatarEmoji": "👩‍🦰"
+        },
+        {
+          "id": "gregorio-alarc-n",
+          "name": "Gregorio Alarcón",
+          "role": "suspect",
+          "avatarEmoji": "👨‍🌾"
+        },
+        {
+          "id": "hern-n-mendoza",
+          "name": "Hernán Mendoza",
+          "role": "suspect",
+          "avatarEmoji": "👨‍🍳"
+        },
+        {
+          "id": "isabela-guzman",
+          "name": "Isabela Guzman",
+          "role": "suspect",
+          "avatarEmoji": "👩‍⚕️"
+        },
+        {
+          "id": "javier-l-pez",
+          "name": "Javier López",
+          "role": "suspect",
+          "avatarEmoji": "👨‍💼"
+        },
+        {
+          "id": "karina-pe-a",
+          "name": "Karina Peña",
+          "role": "suspect",
+          "avatarEmoji": "👩‍🍳"
+        }
+      ],
+      "clues": [
+        {
+          "kind": "person-distance",
+          "personA": "hern-n-mendoza",
+          "direction": "N",
+          "personB": "karina-pe-a",
+          "distance": 2,
+          "axis": "row",
+          "text": "Hernán Mendoza is exactly 2 row(s) north of Karina Peña"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "antonio-vargas",
+          "direction": "S",
+          "personB": "carlos-herrera",
+          "distance": 2,
+          "axis": "row",
+          "text": "Antonio Vargas is exactly 2 row(s) south of Carlos Herrera"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "carlos-herrera",
+          "direction": "W",
+          "personB": "isabela-guzman",
+          "distance": 1,
+          "axis": "col",
+          "text": "Carlos Herrera is exactly 1 column(s) west of Isabela Guzman"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "fernanda-diaz",
+          "direction": "E",
+          "personB": "javier-l-pez",
+          "distance": 5,
+          "axis": "col",
+          "text": "Fernanda Diaz is exactly 5 column(s) east of Javier López"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "beatriz-sandoval",
+          "direction": "N",
+          "personB": "dolores-garcia",
+          "distance": 8,
+          "axis": "row",
+          "text": "Beatriz Sandoval is exactly 8 row(s) north of Dolores Garcia"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "emilio-fuentes",
+          "direction": "W",
+          "personB": "karina-pe-a",
+          "distance": 3,
+          "axis": "col",
+          "text": "Emilio Fuentes is exactly 3 column(s) west of Karina Peña"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "fernanda-diaz",
+          "direction": "SW",
+          "personB": "dolores-garcia",
+          "text": "Fernanda Diaz is southwest of Dolores Garcia"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "antonio-vargas",
+          "direction": "E",
+          "personB": "beatriz-sandoval",
+          "distance": 6,
+          "axis": "col",
+          "text": "Antonio Vargas is exactly 6 column(s) east of Beatriz Sandoval"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "gregorio-alarc-n",
+          "direction": "W",
+          "personB": "karina-pe-a",
+          "distance": 9,
+          "axis": "col",
+          "text": "Gregorio Alarcón is exactly 9 column(s) west of Karina Peña"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "emilio-fuentes",
+          "direction": "N",
+          "personB": "valentina-ramirez",
+          "text": "Emilio Fuentes is north of Valentina Ramirez"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "carlos-herrera",
+          "direction": "N",
+          "personB": "emilio-fuentes",
+          "distance": 5,
+          "axis": "row",
+          "text": "Carlos Herrera is exactly 5 row(s) north of Emilio Fuentes"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "beatriz-sandoval",
+          "direction": "NW",
+          "personB": "carlos-herrera",
+          "text": "Beatriz Sandoval is northwest of Carlos Herrera"
+        },
+        {
+          "kind": "person-beside-object",
+          "person": "hern-n-mendoza",
+          "objectKind": "bed",
+          "text": "Hernán Mendoza is beside a bed"
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "karina-pe-a",
+          "roomId": "wine-cellar",
+          "text": "Karina Peña is NOT in the Wine Cellar"
+        },
+        {
+          "kind": "persons-same-room",
+          "personA": "beatriz-sandoval",
+          "personB": "isabela-guzman",
+          "text": "Beatriz Sandoval and Isabela Guzman are in the same room"
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "emilio-fuentes",
+          "roomId": "west-wing",
+          "text": "Emilio Fuentes is NOT in the West Wing"
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "isabela-guzman",
+          "roomId": "great-room",
+          "text": "Isabela Guzman is NOT in the Great Room"
+        },
+        {
+          "kind": "persons-not-same-room",
+          "personA": "hern-n-mendoza",
+          "personB": "karina-pe-a",
+          "text": "Hernán Mendoza and Karina Peña are NOT in the same room"
+        },
+        {
+          "kind": "person-in-room",
+          "person": "javier-l-pez",
+          "roomId": "old-chapel",
+          "text": "Javier López is in the Old Chapel"
+        },
+        {
+          "kind": "persons-not-same-room",
+          "personA": "dolores-garcia",
+          "personB": "isabela-guzman",
+          "text": "Dolores Garcia and Isabela Guzman are NOT in the same room"
+        }
+      ],
+      "suspectSummaries": [
+        {
+          "personId": "antonio-vargas",
+          "text": "Antonio Vargas is exactly two rows south of Carlos Herrera and exactly six columns east of Beatriz Sandoval."
+        },
+        {
+          "personId": "beatriz-sandoval",
+          "text": "Beatriz Sandoval is exactly eight rows north of Dolores Garcia, northwest of Carlos Herrera, and in the same room as Isabela Guzman."
+        },
+        {
+          "personId": "carlos-herrera",
+          "text": "Carlos Herrera is exactly one column west of Isabela Guzman and exactly five rows north of Emilio Fuentes."
+        },
+        {
+          "personId": "dolores-garcia",
+          "text": "Dolores Garcia and Isabela Guzman are not in the same room."
+        },
+        {
+          "personId": "emilio-fuentes",
+          "text": "Emilio Fuentes is exactly three columns west of Karina Peña, north of Valentina Ramirez, and not in the West Wing."
+        },
+        {
+          "personId": "fernanda-diaz",
+          "text": "Fernanda Diaz is exactly five columns east of Javier López and southwest of Dolores Garcia."
+        },
+        {
+          "personId": "gregorio-alarc-n",
+          "text": "Gregorio Alarcón is exactly nine columns west of Karina Peña."
+        },
+        {
+          "personId": "hern-n-mendoza",
+          "text": "Hernán Mendoza is exactly two rows north of Karina Peña, beside a bed, and not in the same room as Karina Peña."
+        },
+        {
+          "personId": "isabela-guzman",
+          "text": "Isabela Guzman is not in the Great Room."
+        },
+        {
+          "personId": "javier-l-pez",
+          "text": "Javier López is in the Old Chapel."
+        },
+        {
+          "personId": "karina-pe-a",
+          "text": "Karina Peña is not in the Wine Cellar."
+        }
+      ],
+      "solution": {
+        "placements": [
+          {
+            "personId": "valentina-ramirez",
+            "coord": {
+              "row": 11,
+              "col": 2
+            }
+          },
+          {
+            "personId": "antonio-vargas",
+            "coord": {
+              "row": 5,
+              "col": 6
+            }
+          },
+          {
+            "personId": "beatriz-sandoval",
+            "coord": {
+              "row": 1,
+              "col": 0
+            }
+          },
+          {
+            "personId": "carlos-herrera",
+            "coord": {
+              "row": 3,
+              "col": 4
+            }
+          },
+          {
+            "personId": "dolores-garcia",
+            "coord": {
+              "row": 9,
+              "col": 11
+            }
+          },
+          {
+            "personId": "emilio-fuentes",
+            "coord": {
+              "row": 8,
+              "col": 7
+            }
+          },
+          {
+            "personId": "fernanda-diaz",
+            "coord": {
+              "row": 10,
+              "col": 8
+            }
+          },
+          {
+            "personId": "gregorio-alarc-n",
+            "coord": {
+              "row": 2,
+              "col": 1
+            }
+          },
+          {
+            "personId": "hern-n-mendoza",
+            "coord": {
+              "row": 4,
+              "col": 9
+            }
+          },
+          {
+            "personId": "isabela-guzman",
+            "coord": {
+              "row": 0,
+              "col": 5
+            }
+          },
+          {
+            "personId": "javier-l-pez",
+            "coord": {
+              "row": 7,
+              "col": 3
+            }
+          },
+          {
+            "personId": "karina-pe-a",
+            "coord": {
+              "row": 6,
+              "col": 10
+            }
+          }
+        ],
+        "murdererId": "javier-l-pez",
+        "victimId": "valentina-ramirez",
+        "murderRoom": "old-chapel"
+      },
+      "generatedAt": "2026-03-05T22:50:08.237Z"
+    },
+    {
+      "id": "samhain-circle-mme27p69",
+      "title": "Samhain Circle",
+      "subtitle": "Secrets unearthed, magic betrayed, a coven's darkest night.",
+      "gridSize": {
+        "rows": 12,
+        "cols": 12
+      },
+      "rooms": [
+        {
+          "id": "stone-circle",
+          "name": "Stone Circle",
+          "color": "#4A4E4D",
+          "cells": [
+            {
+              "row": 5,
+              "col": 1
+            },
+            {
+              "row": 6,
+              "col": 0
+            },
+            {
+              "row": 6,
+              "col": 1
+            },
+            {
+              "row": 7,
+              "col": 0
+            },
+            {
+              "row": 7,
+              "col": 1
+            },
+            {
+              "row": 7,
+              "col": 2
+            },
+            {
+              "row": 8,
+              "col": 0
+            },
+            {
+              "row": 8,
+              "col": 1
+            },
+            {
+              "row": 8,
+              "col": 2
+            },
+            {
+              "row": 8,
+              "col": 3
+            },
+            {
+              "row": 9,
+              "col": 0
+            },
+            {
+              "row": 9,
+              "col": 1
+            },
+            {
+              "row": 9,
+              "col": 2
+            },
+            {
+              "row": 9,
+              "col": 3
+            },
+            {
+              "row": 10,
+              "col": 0
+            },
+            {
+              "row": 10,
+              "col": 1
+            },
+            {
+              "row": 10,
+              "col": 2
+            },
+            {
+              "row": 10,
+              "col": 3
+            },
+            {
+              "row": 11,
+              "col": 0
+            },
+            {
+              "row": 11,
+              "col": 1
+            },
+            {
+              "row": 11,
+              "col": 2
+            },
+            {
+              "row": 11,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "ritual-chamber",
+          "name": "Ritual Chamber",
+          "color": "#556B2F",
+          "cells": [
+            {
+              "row": 0,
+              "col": 4
+            },
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 0,
+              "col": 6
+            },
+            {
+              "row": 0,
+              "col": 7
+            },
+            {
+              "row": 0,
+              "col": 8
+            },
+            {
+              "row": 0,
+              "col": 9
+            },
+            {
+              "row": 0,
+              "col": 10
+            },
+            {
+              "row": 0,
+              "col": 11
+            },
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 1,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 6
+            },
+            {
+              "row": 1,
+              "col": 7
+            },
+            {
+              "row": 1,
+              "col": 8
+            },
+            {
+              "row": 1,
+              "col": 9
+            },
+            {
+              "row": 1,
+              "col": 10
+            },
+            {
+              "row": 1,
+              "col": 11
+            },
+            {
+              "row": 2,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 5
+            },
+            {
+              "row": 2,
+              "col": 6
+            },
+            {
+              "row": 2,
+              "col": 7
+            },
+            {
+              "row": 2,
+              "col": 8
+            },
+            {
+              "row": 2,
+              "col": 9
+            },
+            {
+              "row": 2,
+              "col": 10
+            },
+            {
+              "row": 2,
+              "col": 11
+            },
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 5
+            },
+            {
+              "row": 3,
+              "col": 6
+            },
+            {
+              "row": 3,
+              "col": 7
+            },
+            {
+              "row": 3,
+              "col": 8
+            },
+            {
+              "row": 3,
+              "col": 9
+            },
+            {
+              "row": 3,
+              "col": 10
+            },
+            {
+              "row": 3,
+              "col": 11
+            },
+            {
+              "row": 4,
+              "col": 5
+            },
+            {
+              "row": 4,
+              "col": 6
+            },
+            {
+              "row": 4,
+              "col": 7
+            },
+            {
+              "row": 4,
+              "col": 8
+            },
+            {
+              "row": 4,
+              "col": 9
+            },
+            {
+              "row": 4,
+              "col": 10
+            },
+            {
+              "row": 4,
+              "col": 11
+            },
+            {
+              "row": 5,
+              "col": 6
+            },
+            {
+              "row": 5,
+              "col": 7
+            },
+            {
+              "row": 5,
+              "col": 8
+            },
+            {
+              "row": 5,
+              "col": 9
+            },
+            {
+              "row": 5,
+              "col": 10
+            },
+            {
+              "row": 5,
+              "col": 11
+            },
+            {
+              "row": 6,
+              "col": 7
+            },
+            {
+              "row": 6,
+              "col": 8
+            },
+            {
+              "row": 6,
+              "col": 9
+            },
+            {
+              "row": 6,
+              "col": 10
+            },
+            {
+              "row": 6,
+              "col": 11
+            },
+            {
+              "row": 7,
+              "col": 7
+            },
+            {
+              "row": 7,
+              "col": 8
+            },
+            {
+              "row": 7,
+              "col": 9
+            },
+            {
+              "row": 7,
+              "col": 10
+            },
+            {
+              "row": 7,
+              "col": 11
+            },
+            {
+              "row": 8,
+              "col": 7
+            },
+            {
+              "row": 8,
+              "col": 8
+            },
+            {
+              "row": 8,
+              "col": 9
+            },
+            {
+              "row": 8,
+              "col": 10
+            },
+            {
+              "row": 8,
+              "col": 11
+            },
+            {
+              "row": 9,
+              "col": 7
+            },
+            {
+              "row": 9,
+              "col": 8
+            },
+            {
+              "row": 9,
+              "col": 9
+            },
+            {
+              "row": 9,
+              "col": 10
+            },
+            {
+              "row": 9,
+              "col": 11
+            },
+            {
+              "row": 10,
+              "col": 7
+            },
+            {
+              "row": 10,
+              "col": 8
+            },
+            {
+              "row": 10,
+              "col": 9
+            },
+            {
+              "row": 10,
+              "col": 10
+            },
+            {
+              "row": 10,
+              "col": 11
+            },
+            {
+              "row": 11,
+              "col": 7
+            },
+            {
+              "row": 11,
+              "col": 8
+            },
+            {
+              "row": 11,
+              "col": 9
+            },
+            {
+              "row": 11,
+              "col": 10
+            },
+            {
+              "row": 11,
+              "col": 11
+            }
+          ]
+        },
+        {
+          "id": "herb-garden",
+          "name": "Herb Garden",
+          "color": "#8FBC8F",
+          "cells": [
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 4,
+              "col": 3
+            },
+            {
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 2
+            },
+            {
+              "row": 5,
+              "col": 3
+            },
+            {
+              "row": 5,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 5
+            },
+            {
+              "row": 6,
+              "col": 2
+            },
+            {
+              "row": 6,
+              "col": 3
+            },
+            {
+              "row": 6,
+              "col": 4
+            },
+            {
+              "row": 6,
+              "col": 5
+            },
+            {
+              "row": 6,
+              "col": 6
+            },
+            {
+              "row": 7,
+              "col": 3
+            },
+            {
+              "row": 7,
+              "col": 4
+            },
+            {
+              "row": 7,
+              "col": 5
+            },
+            {
+              "row": 7,
+              "col": 6
+            },
+            {
+              "row": 8,
+              "col": 4
+            },
+            {
+              "row": 8,
+              "col": 5
+            },
+            {
+              "row": 8,
+              "col": 6
+            },
+            {
+              "row": 9,
+              "col": 4
+            },
+            {
+              "row": 9,
+              "col": 5
+            },
+            {
+              "row": 9,
+              "col": 6
+            },
+            {
+              "row": 10,
+              "col": 4
+            },
+            {
+              "row": 10,
+              "col": 5
+            },
+            {
+              "row": 10,
+              "col": 6
+            },
+            {
+              "row": 11,
+              "col": 4
+            },
+            {
+              "row": 11,
+              "col": 5
+            },
+            {
+              "row": 11,
+              "col": 6
+            }
+          ]
+        },
+        {
+          "id": "library",
+          "name": "Library",
+          "color": "#A0522D",
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 1,
+              "col": 2
+            },
+            {
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 2
+            },
+            {
+              "row": 2,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 0
+            },
+            {
+              "row": 3,
+              "col": 1
+            },
+            {
+              "row": 3,
+              "col": 2
+            },
+            {
+              "row": 4,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 0
+            }
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "fireplace-stone-circle-1",
+          "kind": "fireplace",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 11,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-ritual-chamber-1",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-ritual-chamber-2",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 9,
+              "col": 11
+            }
+          ]
+        },
+        {
+          "id": "plant-herb-garden-1",
+          "kind": "plant",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 11,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "plant-herb-garden-2",
+          "kind": "plant",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 10,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-library-1",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-library-2",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 0
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "id": "vivienne-blackwood",
+          "name": "Vivienne Blackwood",
+          "role": "victim",
+          "avatarEmoji": "🧙‍♀️"
+        },
+        {
+          "id": "alistair-croft",
+          "name": "Alistair Croft",
+          "role": "suspect",
+          "avatarEmoji": "🧝‍♂️"
+        },
+        {
+          "id": "bronwyn-davies",
+          "name": "Bronwyn Davies",
+          "role": "suspect",
+          "avatarEmoji": "🌿"
+        },
+        {
+          "id": "caitlin-evans",
+          "name": "Caitlin Evans",
+          "role": "suspect",
+          "avatarEmoji": "🕯️"
+        },
+        {
+          "id": "dylan-faulkner",
+          "name": "Dylan Faulkner",
+          "role": "suspect",
+          "avatarEmoji": "🦉"
+        },
+        {
+          "id": "esme-griffiths",
+          "name": "Esme Griffiths",
+          "role": "suspect",
+          "avatarEmoji": "🔮"
+        },
+        {
+          "id": "finley-hayes",
+          "name": "Finley Hayes",
+          "role": "suspect",
+          "avatarEmoji": "🍂"
+        },
+        {
+          "id": "gwendolyn-ingram",
+          "name": "Gwendolyn Ingram",
+          "role": "suspect",
+          "avatarEmoji": "🐈‍⬛"
+        },
+        {
+          "id": "hazel-jenkins",
+          "name": "Hazel Jenkins",
+          "role": "suspect",
+          "avatarEmoji": "🍄"
+        },
+        {
+          "id": "isadora-knight",
+          "name": "Isadora Knight",
+          "role": "suspect",
+          "avatarEmoji": "🌙"
+        },
+        {
+          "id": "jasper-lloyd",
+          "name": "Jasper Lloyd",
+          "role": "suspect",
+          "avatarEmoji": "🦇"
+        },
+        {
+          "id": "kennedy-miles",
+          "name": "Kennedy Miles",
+          "role": "suspect",
+          "avatarEmoji": "🐺"
+        }
+      ],
+      "clues": [
+        {
+          "kind": "person-distance",
+          "personA": "hazel-jenkins",
+          "direction": "S",
+          "personB": "jasper-lloyd",
+          "distance": 2,
+          "axis": "row",
+          "text": "Hazel Jenkins is exactly 2 row(s) south of Jasper Lloyd"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "alistair-croft",
+          "direction": "NW",
+          "personB": "vivienne-blackwood",
+          "text": "Alistair Croft is northwest of Vivienne Blackwood"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "dylan-faulkner",
+          "direction": "E",
+          "personB": "hazel-jenkins",
+          "distance": 5,
+          "axis": "col",
+          "text": "Dylan Faulkner is exactly 5 column(s) east of Hazel Jenkins"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "alistair-croft",
+          "direction": "N",
+          "personB": "esme-griffiths",
+          "distance": 10,
+          "axis": "row",
+          "text": "Alistair Croft is exactly 10 row(s) north of Esme Griffiths"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "bronwyn-davies",
+          "direction": "S",
+          "personB": "dylan-faulkner",
+          "distance": 2,
+          "axis": "row",
+          "text": "Bronwyn Davies is exactly 2 row(s) south of Dylan Faulkner"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "esme-griffiths",
+          "direction": "W",
+          "personB": "jasper-lloyd",
+          "text": "Esme Griffiths is west of Jasper Lloyd"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "dylan-faulkner",
+          "direction": "SE",
+          "personB": "gwendolyn-ingram",
+          "text": "Dylan Faulkner is southeast of Gwendolyn Ingram"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "isadora-knight",
+          "direction": "N",
+          "personB": "kennedy-miles",
+          "distance": 4,
+          "axis": "row",
+          "text": "Isadora Knight is exactly 4 row(s) north of Kennedy Miles"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "gwendolyn-ingram",
+          "direction": "N",
+          "personB": "caitlin-evans",
+          "text": "Gwendolyn Ingram is north of Caitlin Evans"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "hazel-jenkins",
+          "direction": "W",
+          "personB": "kennedy-miles",
+          "distance": 9,
+          "axis": "col",
+          "text": "Hazel Jenkins is exactly 9 column(s) west of Kennedy Miles"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "bronwyn-davies",
+          "direction": "W",
+          "personB": "caitlin-evans",
+          "distance": 3,
+          "axis": "col",
+          "text": "Bronwyn Davies is exactly 3 column(s) west of Caitlin Evans"
+        },
+        {
+          "kind": "person-direction",
+          "personA": "kennedy-miles",
+          "direction": "SE",
+          "personB": "hazel-jenkins",
+          "text": "Kennedy Miles is southeast of Hazel Jenkins"
+        },
+        {
+          "kind": "person-distance",
+          "personA": "caitlin-evans",
+          "direction": "E",
+          "personB": "isadora-knight",
+          "distance": 5,
+          "axis": "col",
+          "text": "Caitlin Evans is exactly 5 column(s) east of Isadora Knight"
+        },
+        {
+          "kind": "person-beside-object",
+          "person": "kennedy-miles",
+          "objectKind": "bookshelf",
+          "text": "Kennedy Miles is beside a bookshelf"
+        },
+        {
+          "kind": "room-population",
+          "roomId": "library",
+          "count": 1,
+          "text": "The Library has exactly one person."
+        },
+        {
+          "kind": "person-not-in-room",
+          "person": "jasper-lloyd",
+          "roomId": "stone-circle",
+          "text": "Jasper Lloyd is NOT in the Stone Circle"
+        },
+        {
+          "kind": "persons-same-room",
+          "personA": "bronwyn-davies",
+          "personB": "finley-hayes",
+          "text": "Bronwyn Davies and Finley Hayes are in the same room"
+        },
+        {
+          "kind": "persons-not-same-room",
+          "personA": "finley-hayes",
+          "personB": "hazel-jenkins",
+          "text": "Finley Hayes and Hazel Jenkins are NOT in the same room"
+        },
+        {
+          "kind": "persons-not-same-room",
+          "personA": "bronwyn-davies",
+          "personB": "jasper-lloyd",
+          "text": "Bronwyn Davies and Jasper Lloyd are NOT in the same room"
+        }
+      ],
+      "suspectSummaries": [
+        {
+          "personId": "alistair-croft",
+          "text": "Alistair Croft is northwest of Vivienne Blackwood and exactly ten rows north of Esme Griffiths."
+        },
+        {
+          "personId": "bronwyn-davies",
+          "text": "Bronwyn Davies is exactly two rows south of Dylan Faulkner, exactly three columns west of Caitlin Evans, and in the same room as Finley Hayes but not Jasper Lloyd."
+        },
+        {
+          "personId": "caitlin-evans",
+          "text": "Caitlin Evans is exactly five columns east of Isadora Knight."
+        },
+        {
+          "personId": "dylan-faulkner",
+          "text": "Dylan Faulkner is exactly five columns east of Hazel Jenkins and southeast of Gwendolyn Ingram."
+        },
+        {
+          "personId": "esme-griffiths",
+          "text": "Esme Griffiths is west of Jasper Lloyd."
+        },
+        {
+          "personId": "finley-hayes",
+          "text": "Finley Hayes and Hazel Jenkins are not in the same room."
+        },
+        {
+          "personId": "gwendolyn-ingram",
+          "text": "Gwendolyn Ingram is north of Caitlin Evans."
+        },
+        {
+          "personId": "hazel-jenkins",
+          "text": "Hazel Jenkins is exactly two rows south of Jasper Lloyd and exactly nine columns west of Kennedy Miles."
+        },
+        {
+          "personId": "isadora-knight",
+          "text": "Isadora Knight is exactly four rows north of Kennedy Miles."
+        },
+        {
+          "personId": "jasper-lloyd",
+          "text": "Jasper Lloyd is not in the Stone Circle."
+        },
+        {
+          "personId": "kennedy-miles",
+          "text": "Kennedy Miles is southeast of Hazel Jenkins and beside a bookshelf."
+        }
+      ],
+      "solution": {
+        "placements": [
+          {
+            "personId": "vivienne-blackwood",
+            "coord": {
+              "row": 8,
+              "col": 1
+            }
+          },
+          {
+            "personId": "alistair-croft",
+            "coord": {
+              "row": 1,
+              "col": 0
+            }
+          },
+          {
+            "personId": "bronwyn-davies",
+            "coord": {
+              "row": 5,
+              "col": 5
+            }
+          },
+          {
+            "personId": "caitlin-evans",
+            "coord": {
+              "row": 2,
+              "col": 8
+            }
+          },
+          {
+            "personId": "dylan-faulkner",
+            "coord": {
+              "row": 3,
+              "col": 7
+            }
+          },
+          {
+            "personId": "esme-griffiths",
+            "coord": {
+              "row": 11,
+              "col": 9
+            }
+          },
+          {
+            "personId": "finley-hayes",
+            "coord": {
+              "row": 4,
+              "col": 4
+            }
+          },
+          {
+            "personId": "gwendolyn-ingram",
+            "coord": {
+              "row": 0,
+              "col": 6
+            }
+          },
+          {
+            "personId": "hazel-jenkins",
+            "coord": {
+              "row": 9,
+              "col": 2
+            }
+          },
+          {
+            "personId": "isadora-knight",
+            "coord": {
+              "row": 6,
+              "col": 3
+            }
+          },
+          {
+            "personId": "jasper-lloyd",
+            "coord": {
+              "row": 7,
+              "col": 10
+            }
+          },
+          {
+            "personId": "kennedy-miles",
+            "coord": {
+              "row": 10,
+              "col": 11
+            }
+          }
+        ],
+        "murdererId": "hazel-jenkins",
+        "victimId": "vivienne-blackwood",
+        "murderRoom": "stone-circle"
+      },
+      "generatedAt": "2026-03-05T22:50:39.731Z"
     }
   ]
 }
