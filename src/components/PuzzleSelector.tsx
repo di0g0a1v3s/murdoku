@@ -1,30 +1,30 @@
-import type { Puzzle } from '@shared/types'
+import type { Puzzle } from '@shared/types';
 
 interface PuzzleSelectorProps {
-	puzzles: Puzzle[]
-	selectedId: string
-	onSelect: (id: string) => void
-	completedIds: Set<string>
+	puzzles: Puzzle[];
+	selectedId: string;
+	onSelect: (id: string) => void;
+	completedIds: Set<string>;
 }
 
 function getDifficulty(puzzle: Puzzle): 'Easy' | 'Medium' | 'Hard' {
-	const n = puzzle.people.length
+	const n = puzzle.people.length;
 	if (n <= 6) {
-		return 'Easy'
+		return 'Easy';
 	}
 	if (n <= 9) {
-		return 'Medium'
+		return 'Medium';
 	}
-	return 'Hard'
+	return 'Hard';
 }
 
-const DIFFICULTY_ORDER = ['Easy', 'Medium', 'Hard'] as const
+const DIFFICULTY_ORDER = ['Easy', 'Medium', 'Hard'] as const;
 
 const DIFFICULTY_COLOR: Record<string, string> = {
 	Easy: '#16a34a',
 	Medium: '#d97706',
 	Hard: '#dc2626',
-}
+};
 
 export function PuzzleSelector({
 	puzzles,
@@ -33,13 +33,13 @@ export function PuzzleSelector({
 	completedIds,
 }: PuzzleSelectorProps) {
 	if (puzzles.length <= 1) {
-		return null
+		return null;
 	}
 
 	const groups = DIFFICULTY_ORDER.map((label) => ({
 		label,
 		puzzles: puzzles.filter((p) => getDifficulty(p) === label),
-	})).filter((g) => g.puzzles.length > 0)
+	})).filter((g) => g.puzzles.length > 0);
 
 	return (
 		<div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -60,8 +60,8 @@ export function PuzzleSelector({
 					</div>
 					<div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
 						{group.map((puzzle) => {
-							const isSelected = puzzle.id === selectedId
-							const isCompleted = completedIds.has(puzzle.id)
+							const isSelected = puzzle.id === selectedId;
+							const isCompleted = completedIds.has(puzzle.id);
 							return (
 								<button
 									key={puzzle.id}
@@ -87,11 +87,11 @@ export function PuzzleSelector({
 									{isCompleted && '✓ '}
 									{puzzle.title}
 								</button>
-							)
+							);
 						})}
 					</div>
 				</div>
 			))}
 		</div>
-	)
+	);
 }

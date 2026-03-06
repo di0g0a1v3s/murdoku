@@ -1,68 +1,68 @@
-import { useMemo } from 'react'
-import type { Coord, Puzzle, Room } from '@shared/types'
-import { Cell } from './Cell'
-import { ObjectSprite } from './ObjectSprite'
+import { useMemo } from 'react';
+import type { Coord, Puzzle, Room } from '@shared/types';
+import { Cell } from './Cell';
+import { ObjectSprite } from './ObjectSprite';
 
 interface GridCanvasProps {
-	puzzle: Puzzle
-	cellSize: number
-	cellMarks?: Map<string, Set<string>>
-	onCellClick?: (row: number, col: number, e: React.MouseEvent) => void
+	puzzle: Puzzle;
+	cellSize: number;
+	cellMarks?: Map<string, Set<string>>;
+	onCellClick?: (row: number, col: number, e: React.MouseEvent) => void;
 }
 
 function getRoomAt(coord: Coord, rooms: Room[]): Room | undefined {
-	return rooms.find((r) => r.cells.some((c) => c.row === coord.row && c.col === coord.col))
+	return rooms.find((r) => r.cells.some((c) => c.row === coord.row && c.col === coord.col));
 }
 
 export function GridCanvas({ puzzle, cellSize, cellMarks, onCellClick }: GridCanvasProps) {
-	const { gridSize, rooms, objects, people } = puzzle
-	const { rows, cols } = gridSize
+	const { gridSize, rooms, objects, people } = puzzle;
+	const { rows, cols } = gridSize;
 
 	const nonOccupiable = useMemo(() => {
-		const s = new Set<string>()
+		const s = new Set<string>();
 		for (const obj of objects) {
 			if (obj.occupiable === 'non-occupiable') {
 				for (const c of obj.cells) {
-					s.add(`${c.row},${c.col}`)
+					s.add(`${c.row},${c.col}`);
 				}
 			}
 		}
-		return s
-	}, [objects])
+		return s;
+	}, [objects]);
 
 	// Compute borders for each cell
 	const cellBorders = useMemo(() => {
 		return Array.from({ length: rows }, (_, row) =>
 			Array.from({ length: cols }, (_, col) => {
-				const coord = { row, col }
-				const room = getRoomAt(coord, rooms)
-				const topRoom = getRoomAt({ row: row - 1, col }, rooms)
-				const rightRoom = getRoomAt({ row, col: col + 1 }, rooms)
-				const bottomRoom = getRoomAt({ row: row + 1, col }, rooms)
-				const leftRoom = getRoomAt({ row, col: col - 1 }, rooms)
+				const coord = { row, col };
+				const room = getRoomAt(coord, rooms);
+				const topRoom = getRoomAt({ row: row - 1, col }, rooms);
+				const rightRoom = getRoomAt({ row, col: col + 1 }, rooms);
+				const bottomRoom = getRoomAt({ row: row + 1, col }, rooms);
+				const leftRoom = getRoomAt({ row, col: col - 1 }, rooms);
 
 				return {
 					top: !topRoom || topRoom.id !== room?.id,
 					right: !rightRoom || rightRoom.id !== room?.id,
 					bottom: !bottomRoom || bottomRoom.id !== room?.id,
 					left: !leftRoom || leftRoom.id !== room?.id,
-				}
+				};
 			}),
-		)
-	}, [rows, cols, rooms])
+		);
+	}, [rows, cols, rooms]);
 
 	// Room label positions — topmost-leftmost cell actually in the room
 	const roomLabels = useMemo(() => {
 		return rooms.map((room) => {
 			const sorted = [...room.cells].sort((a, b) =>
 				a.row !== b.row ? a.row - b.row : a.col - b.col,
-			)
-			const { row, col } = sorted[0]!
+			);
+			const { row, col } = sorted[0]!;
 			// Number of room cells in the label row at or right of the label column
-			const spanInRow = room.cells.filter((c) => c.row === row && c.col >= col).length
-			return { room, row, col, spanInRow }
-		})
-	}, [rooms])
+			const spanInRow = room.cells.filter((c) => c.row === row && c.col >= col).length;
+			return { room, row, col, spanInRow };
+		});
+	}, [rooms]);
 
 	const gridStyle = {
 		display: 'grid',
@@ -72,7 +72,7 @@ export function GridCanvas({ puzzle, cellSize, cellMarks, onCellClick }: GridCan
 		width: cellSize * cols,
 		height: cellSize * rows,
 		userSelect: 'none' as const,
-	}
+	};
 
 	return (
 		<div style={gridStyle}>
@@ -118,7 +118,7 @@ export function GridCanvas({ puzzle, cellSize, cellMarks, onCellClick }: GridCan
 			{/* Layer 3: Cell borders + click targets */}
 			{Array.from({ length: rows }, (_, row) =>
 				Array.from({ length: cols }, (_, col) => {
-					const clickable = onCellClick && !nonOccupiable.has(`${row},${col}`)
+					const clickable = onCellClick && !nonOccupiable.has(`${row},${col}`);
 					return (
 						<Cell
 							key={`cell-${row}-${col}`}
@@ -131,7 +131,7 @@ export function GridCanvas({ puzzle, cellSize, cellMarks, onCellClick }: GridCan
 								background: 'transparent',
 							}}
 						/>
-					)
+					);
 				}),
 			)}
 
@@ -168,12 +168,12 @@ export function GridCanvas({ puzzle, cellSize, cellMarks, onCellClick }: GridCan
 					}}
 				>
 					{Array.from(cellMarks.entries()).map(([key, marks]) => {
-						const [row, col] = key.split(',').map(Number)
-						const isX = marks.has('X')
-						const personIds = [...marks].filter((m) => m !== 'X')
-						const count = isX ? 1 : personIds.length
+						const [row, col] = key.split(',').map(Number);
+						const isX = marks.has('X');
+						const personIds = [...marks].filter((m) => m !== 'X');
+						const count = isX ? 1 : personIds.length;
 						const fontSize =
-							count <= 2 ? cellSize * 0.3 : count <= 4 ? cellSize * 0.23 : cellSize * 0.18
+							count <= 2 ? cellSize * 0.3 : count <= 4 ? cellSize * 0.23 : cellSize * 0.18;
 						return (
 							<div
 								key={key}
@@ -201,9 +201,9 @@ export function GridCanvas({ puzzle, cellSize, cellMarks, onCellClick }: GridCan
 									</span>
 								) : (
 									personIds.map((pid) => {
-										const person = people.find((p) => p.id === pid)
+										const person = people.find((p) => p.id === pid);
 										if (!person) {
-											return null
+											return null;
 										}
 										return (
 											<span
@@ -217,14 +217,14 @@ export function GridCanvas({ puzzle, cellSize, cellMarks, onCellClick }: GridCan
 											>
 												{person.name[0].toUpperCase()}
 											</span>
-										)
+										);
 									})
 								)}
 							</div>
-						)
+						);
 					})}
 				</div>
 			)}
 		</div>
-	)
+	);
 }

@@ -1,5 +1,5 @@
-import type { CSSProperties } from 'react'
-import type { GridObject, ObjectKind } from '@shared/types'
+import type { CSSProperties } from 'react';
+import type { GridObject, ObjectKind } from '@shared/types';
 import {
 	Armchair,
 	BedDouble,
@@ -12,7 +12,7 @@ import {
 	Archive,
 	Flame,
 	type LucideIcon,
-} from 'lucide-react'
+} from 'lucide-react';
 
 const OBJECT_ICONS: Record<ObjectKind, LucideIcon> = {
 	chair: Armchair,
@@ -25,31 +25,31 @@ const OBJECT_ICONS: Record<ObjectKind, LucideIcon> = {
 	counter: ChefHat,
 	wardrobe: Archive,
 	fireplace: Flame,
-}
+};
 
 interface ObjectSpriteProps {
-	object: GridObject
-	cellSize: number
+	object: GridObject;
+	cellSize: number;
 }
 
 export function ObjectSprite({ object, cellSize }: ObjectSpriteProps) {
-	const minRow = Math.min(...object.cells.map((c) => c.row))
-	const minCol = Math.min(...object.cells.map((c) => c.col))
-	const maxRow = Math.max(...object.cells.map((c) => c.row))
-	const maxCol = Math.max(...object.cells.map((c) => c.col))
+	const minRow = Math.min(...object.cells.map((c) => c.row));
+	const minCol = Math.min(...object.cells.map((c) => c.col));
+	const maxRow = Math.max(...object.cells.map((c) => c.row));
+	const maxCol = Math.max(...object.cells.map((c) => c.col));
 
-	const spanRows = maxRow - minRow + 1
-	const spanCols = maxCol - minCol + 1
-	const isWide = spanCols > spanRows // e.g. sofa, table (2 cols × 1 row)
-	const isTall = spanRows > spanCols // e.g. bed (1 col × 2 rows)
-	const isOccupiable = object.occupiable === 'occupiable'
+	const spanRows = maxRow - minRow + 1;
+	const spanCols = maxCol - minCol + 1;
+	const isWide = spanCols > spanRows; // e.g. sofa, table (2 cols × 1 row)
+	const isTall = spanRows > spanCols; // e.g. bed (1 col × 2 rows)
+	const isOccupiable = object.occupiable === 'occupiable';
 
 	// Scale icon to make better use of the available span
 	const iconSize = isTall
 		? Math.round(Math.min(spanRows * cellSize * 0.28, cellSize * 0.58))
-		: Math.round(cellSize * 0.38)
+		: Math.round(cellSize * 0.38);
 
-	const inset = Math.round(cellSize * 0.06)
+	const inset = Math.round(cellSize * 0.06);
 
 	const style: CSSProperties = {
 		gridColumn: `${minCol + 1} / span ${spanCols}`,
@@ -67,10 +67,10 @@ export function ObjectSprite({ object, cellSize }: ObjectSpriteProps) {
 		pointerEvents: 'none',
 		zIndex: 2,
 		overflow: 'hidden',
-	}
+	};
 
-	const Icon = OBJECT_ICONS[object.kind]
-	const iconColor = isOccupiable ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.35)'
+	const Icon = OBJECT_ICONS[object.kind];
+	const iconColor = isOccupiable ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.35)';
 
 	return (
 		<div style={style}>
@@ -89,5 +89,5 @@ export function ObjectSprite({ object, cellSize }: ObjectSpriteProps) {
 				{object.kind}
 			</span>
 		</div>
-	)
+	);
 }

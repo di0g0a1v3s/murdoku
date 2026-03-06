@@ -1,10 +1,10 @@
-import type { Person, Room } from '@shared/types'
+import type { Person, Room } from '@shared/types';
 
 interface MurdererRevealProps {
-	murderer: Person
-	victim: Person
-	murderRoom: Room | undefined
-	onClose: () => void
+	murderer: Person;
+	victim: Person;
+	murderRoom: Room | undefined;
+	onClose: () => void;
 }
 
 export function MurdererReveal({ murderer, victim, murderRoom, onClose }: MurdererRevealProps) {
@@ -106,5 +106,5 @@ export function MurdererReveal({ murderer, victim, murderRoom, onClose }: Murder
 				</button>
 			</div>
 		</div>
-	)
+	);
 }

@@ -1,4 +1,4 @@
-import type { Clue } from '@shared/types'
+import type { Clue } from '@shared/types';
 
 const CLUE_ICONS: Record<Clue['kind'], string> = {
 	'person-direction': '🧭',
@@ -13,10 +13,10 @@ const CLUE_ICONS: Record<Clue['kind'], string> = {
 	'person-not-in-room': '🚫',
 	'persons-not-same-room': '↔️',
 	'person-in-room-with': '🫂',
-}
+};
 
 interface ClueItemProps {
-	clue: Clue
+	clue: Clue;
 }
 
 export function ClueItem({ clue }: ClueItemProps) {
@@ -43,5 +43,5 @@ export function ClueItem({ clue }: ClueItemProps) {
 				{clue.text}
 			</p>
 		</div>
-	)
+	);
 }

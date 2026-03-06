@@ -1,21 +1,21 @@
-import type { Person } from '@shared/types'
+import type { Person } from '@shared/types';
 
 interface CellPopupProps {
-	people: Person[]
-	marks: Set<string>
-	position: { x: number; y: number }
-	onToggle: (mark: string) => void
-	onClose: () => void
+	people: Person[];
+	marks: Set<string>;
+	position: { x: number; y: number };
+	onToggle: (mark: string) => void;
+	onClose: () => void;
 }
 
 // TODO: button to "commit" position
 export function CellPopup({ people, marks, position, onToggle, onClose }: CellPopupProps) {
-	const POPUP_W = 44 * Math.min(people.length + 1, 6) + 16
-	const POPUP_H = people.length + 1 > 6 ? 108 : 60
+	const POPUP_W = 44 * Math.min(people.length + 1, 6) + 16;
+	const POPUP_H = people.length + 1 > 6 ? 108 : 60;
 
-	const left = Math.max(8, Math.min(position.x - POPUP_W / 2, window.innerWidth - POPUP_W - 8))
+	const left = Math.max(8, Math.min(position.x - POPUP_W / 2, window.innerWidth - POPUP_W - 8));
 	const top =
-		position.y + 12 + POPUP_H > window.innerHeight ? position.y - POPUP_H - 12 : position.y + 12
+		position.y + 12 + POPUP_H > window.innerHeight ? position.y - POPUP_H - 12 : position.y + 12;
 
 	return (
 		<>
@@ -42,10 +42,10 @@ export function CellPopup({ people, marks, position, onToggle, onClose }: CellPo
 			>
 				{people.map((person) => {
 					// TODO: victim at the end
-					const initial = person.name[0].toUpperCase()
-					const active = marks.has(person.id)
-					const isVictim = person.role === 'victim'
-					const activeColor = isVictim ? '#dc2626' : '#7c3aed'
+					const initial = person.name[0].toUpperCase();
+					const active = marks.has(person.id);
+					const isVictim = person.role === 'victim';
+					const activeColor = isVictim ? '#dc2626' : '#7c3aed';
 					return (
 						<button
 							key={person.id}
@@ -70,7 +70,7 @@ export function CellPopup({ people, marks, position, onToggle, onClose }: CellPo
 						>
 							{initial}
 						</button>
-					)
+					);
 				})}
 				{/* X button */}
 				<button
@@ -97,5 +97,5 @@ export function CellPopup({ people, marks, position, onToggle, onClose }: CellPo
 				</button>
 			</div>
 		</>
-	)
+	);
 }

@@ -1,55 +1,55 @@
-import { useState } from 'react'
-import type { PuzzleCollection } from '@shared/types'
-import puzzleData from './puzzles/puzzles.json'
-import { PuzzleView } from './components/PuzzleView'
-import { PuzzleSelector } from './components/PuzzleSelector'
+import { useState } from 'react';
+import type { PuzzleCollection } from '@shared/types';
+import puzzleData from './puzzles/puzzles.json';
+import { PuzzleView } from './components/PuzzleView';
+import { PuzzleSelector } from './components/PuzzleSelector';
 
-const collection = puzzleData as PuzzleCollection
+const collection = puzzleData as PuzzleCollection;
 
 export function App() {
-	const puzzles = collection.puzzles
-	const [selectedId, setSelectedId] = useState(puzzles[0]?.id ?? '')
+	const puzzles = collection.puzzles;
+	const [selectedId, setSelectedId] = useState(puzzles[0]?.id ?? '');
 	const [completedIds, setCompletedIds] = useState<Set<string>>(() => {
 		try {
-			const stored = localStorage.getItem('murdoku-completed')
-			return new Set(stored ? (JSON.parse(stored) as string[]) : [])
+			const stored = localStorage.getItem('murdoku-completed');
+			return new Set(stored ? (JSON.parse(stored) as string[]) : []);
 		} catch {
-			return new Set()
+			return new Set();
 		}
-	})
+	});
 
 	function handleComplete(id: string) {
 		setCompletedIds((prev) => {
-			const next = new Set(prev)
-			next.add(id)
+			const next = new Set(prev);
+			next.add(id);
 			try {
-				localStorage.setItem('murdoku-completed', JSON.stringify([...next]))
+				localStorage.setItem('murdoku-completed', JSON.stringify([...next]));
 			} catch {
 				/* ignore */
 			}
-			return next
-		})
+			return next;
+		});
 	}
 
 	function handleReset(id: string) {
 		setCompletedIds((prev) => {
-			const next = new Set(prev)
-			next.delete(id)
+			const next = new Set(prev);
+			next.delete(id);
 			try {
-				localStorage.setItem('murdoku-completed', JSON.stringify([...next]))
+				localStorage.setItem('murdoku-completed', JSON.stringify([...next]));
 			} catch {
 				/* ignore */
 			}
-			return next
-		})
+			return next;
+		});
 		try {
-			localStorage.removeItem(`murdoku-progress-${id}`)
+			localStorage.removeItem(`murdoku-progress-${id}`);
 		} catch {
 			/* ignore */
 		}
 	}
 
-	const selectedPuzzle = puzzles.find((p) => p.id === selectedId) ?? puzzles[0]
+	const selectedPuzzle = puzzles.find((p) => p.id === selectedId) ?? puzzles[0];
 
 	if (puzzles.length === 0) {
 		return (
@@ -83,7 +83,7 @@ export function App() {
 					to create one.
 				</p>
 			</div>
-		)
+		);
 	}
 
 	return (
@@ -136,7 +136,7 @@ export function App() {
 				/>
 			)}
 		</div>
-	)
+	);
 }
 
-export default App
+export default App;

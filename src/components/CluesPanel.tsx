@@ -1,11 +1,11 @@
-import { assertNever } from '@shared/types'
-import type { Clue, Person } from '@shared/types'
-import { ClueItem } from './ClueItem'
+import { assertNever } from '@shared/types';
+import type { Clue, Person } from '@shared/types';
+import { ClueItem } from './ClueItem';
 
 interface CluesPanelProps {
-	clues: Clue[]
-	people: Person[]
-	suspectSummaries: { personId: string; text: string }[]
+	clues: Clue[];
+	people: Person[];
+	suspectSummaries: { personId: string; text: string }[];
 }
 // TODO: remove duplication with getPrimaryPersonId and getCluePersonId
 function getPrimaryPersonId(clue: Clue): string | null {
@@ -14,32 +14,32 @@ function getPrimaryPersonId(clue: Clue): string | null {
 		case 'person-distance':
 		case 'persons-same-room':
 		case 'persons-not-same-room':
-			return clue.personA
+			return clue.personA;
 		case 'person-in-room-with':
 		case 'person-beside-object':
 		case 'person-on-object':
 		case 'person-in-room':
 		case 'person-alone-in-room':
 		case 'person-not-in-room':
-			return clue.person
+			return clue.person;
 		case 'room-population':
 		case 'object-occupancy':
-			return null
+			return null;
 		default:
-			return assertNever(clue)
+			return assertNever(clue);
 	}
 }
 
 // TODO: checkmark besides characters
 export function CluesPanel({ clues, people, suspectSummaries }: CluesPanelProps) {
-	const victim = people.find((p) => p.role === 'victim')!
-	const summaryMap = new Map(suspectSummaries.map((s) => [s.personId, s.text]))
-	const generalClues = clues.filter((c) => getPrimaryPersonId(c) === null)
+	const victim = people.find((p) => p.role === 'victim')!;
+	const summaryMap = new Map(suspectSummaries.map((s) => [s.personId, s.text]));
+	const generalClues = clues.filter((c) => getPrimaryPersonId(c) === null);
 
 	const suspectSections = people
 		.filter((p) => p.role === 'suspect')
 		.map((p) => ({ person: p, summary: summaryMap.get(p.id) }))
-		.filter((s): s is { person: Person; summary: string } => s.summary !== undefined)
+		.filter((s): s is { person: Person; summary: string } => s.summary !== undefined);
 
 	return (
 		<div
@@ -179,5 +179,5 @@ export function CluesPanel({ clues, people, suspectSummaries }: CluesPanelProps)
 				</div>
 			)}
 		</div>
-	)
+	);
 }

@@ -1,178 +1,178 @@
-import { useState, useEffect, useMemo } from 'react'
-import type { Puzzle } from '@shared/types'
-import { GridCanvas } from './GridCanvas'
-import { CluesPanel } from './CluesPanel'
-import { MurdererReveal } from './MurdererReveal'
-import { CellPopup } from './CellPopup'
+import { useState, useEffect, useMemo } from 'react';
+import type { Puzzle } from '@shared/types';
+import { GridCanvas } from './GridCanvas';
+import { CluesPanel } from './CluesPanel';
+import { MurdererReveal } from './MurdererReveal';
+import { CellPopup } from './CellPopup';
 
 interface PuzzleViewProps {
-	puzzle: Puzzle
-	isCompleted: boolean
-	onComplete: () => void
-	onReset: () => void
+	puzzle: Puzzle;
+	isCompleted: boolean;
+	onComplete: () => void;
+	onReset: () => void;
 }
 
 function useWindowWidth() {
-	const [width, setWidth] = useState(window.innerWidth)
+	const [width, setWidth] = useState(window.innerWidth);
 	useEffect(() => {
-		const handler = () => setWidth(window.innerWidth)
-		window.addEventListener('resize', handler)
-		return () => window.removeEventListener('resize', handler)
-	}, [])
-	return width
+		const handler = () => setWidth(window.innerWidth);
+		window.addEventListener('resize', handler);
+		return () => window.removeEventListener('resize', handler);
+	}, []);
+	return width;
 }
 
-const PROGRESS_KEY = (id: string) => `murdoku-progress-${id}`
+const PROGRESS_KEY = (id: string) => `murdoku-progress-${id}`;
 
 function loadMarks(puzzleId: string): Map<string, Set<string>> {
 	try {
-		const stored = localStorage.getItem(PROGRESS_KEY(puzzleId))
+		const stored = localStorage.getItem(PROGRESS_KEY(puzzleId));
 		if (!stored) {
-			return new Map()
+			return new Map();
 		}
-		const parsed = JSON.parse(stored) as Record<string, string[]>
-		return new Map(Object.entries(parsed).map(([k, v]) => [k, new Set(v)]))
+		const parsed = JSON.parse(stored) as Record<string, string[]>;
+		return new Map(Object.entries(parsed).map(([k, v]) => [k, new Set(v)]));
 	} catch {
-		return new Map()
+		return new Map();
 	}
 }
 
 export function PuzzleView({ puzzle, isCompleted, onComplete, onReset }: PuzzleViewProps) {
-	const [showSolution, setShowSolution] = useState(false)
-	const [showRevealModal, setShowRevealModal] = useState(false)
+	const [showSolution, setShowSolution] = useState(false);
+	const [showRevealModal, setShowRevealModal] = useState(false);
 	// cellMarks: "row,col" → Set of personId | 'X'
 	// Initialized from localStorage; component remounts when puzzle changes (key={puzzle.id} in App)
-	const [cellMarks, setCellMarks] = useState<Map<string, Set<string>>>(() => loadMarks(puzzle.id))
+	const [cellMarks, setCellMarks] = useState<Map<string, Set<string>>>(() => loadMarks(puzzle.id));
 	const [popup, setPopup] = useState<{ row: number; col: number; x: number; y: number } | null>(
 		null,
-	)
+	);
 	const [verifyResult, setVerifyResult] = useState<'correct' | 'wrong' | null>(
 		isCompleted ? 'correct' : null,
-	)
+	);
 
 	// Persist marks to localStorage whenever they change
 	useEffect(() => {
 		try {
 			if (cellMarks.size === 0) {
-				localStorage.removeItem(PROGRESS_KEY(puzzle.id))
+				localStorage.removeItem(PROGRESS_KEY(puzzle.id));
 			} else {
-				const obj = Object.fromEntries([...cellMarks].map(([k, v]) => [k, [...v]]))
-				localStorage.setItem(PROGRESS_KEY(puzzle.id), JSON.stringify(obj))
+				const obj = Object.fromEntries([...cellMarks].map(([k, v]) => [k, [...v]]));
+				localStorage.setItem(PROGRESS_KEY(puzzle.id), JSON.stringify(obj));
 			}
 		} catch {
 			/* ignore quota/private-mode errors */
 		}
-	}, [cellMarks, puzzle.id])
+	}, [cellMarks, puzzle.id]);
 
-	const windowWidth = useWindowWidth()
+	const windowWidth = useWindowWidth();
 
 	function handleCellClick(row: number, col: number, e: React.MouseEvent) {
 		setPopup((prev) =>
 			prev?.row === row && prev?.col === col ? null : { row, col, x: e.clientX, y: e.clientY },
-		)
+		);
 	}
 
 	function handleToggleMark(mark: string) {
 		if (!popup) {
-			return
+			return;
 		}
-		const key = `${popup.row},${popup.col}`
+		const key = `${popup.row},${popup.col}`;
 		setCellMarks((prev) => {
-			const next = new Map(prev)
-			const cell = new Set(prev.get(key) ?? [])
+			const next = new Map(prev);
+			const cell = new Set(prev.get(key) ?? []);
 			if (mark === 'X') {
 				if (cell.has('X')) {
-					cell.delete('X')
+					cell.delete('X');
 				} else {
-					cell.clear()
-					cell.add('X')
+					cell.clear();
+					cell.add('X');
 				}
 			} else {
 				if (cell.has(mark)) {
-					cell.delete(mark)
+					cell.delete(mark);
 				} else {
-					cell.delete('X')
-					cell.add(mark)
+					cell.delete('X');
+					cell.add(mark);
 				}
 			}
 			if (cell.size === 0) {
-				next.delete(key)
+				next.delete(key);
 			} else {
-				next.set(key, cell)
+				next.set(key, cell);
 			}
-			return next
-		})
-		setVerifyResult(null)
-		setPopup(null)
+			return next;
+		});
+		setVerifyResult(null);
+		setPopup(null);
 	}
 
 	function handleVerify() {
-		const { placements } = puzzle.solution
+		const { placements } = puzzle.solution;
 
 		// Collect all person marks from cellMarks (ignore X)
-		const userPlacements: { personId: string; key: string }[] = []
+		const userPlacements: { personId: string; key: string }[] = [];
 		for (const [key, marks] of cellMarks) {
-			const personIds = [...marks].filter((m) => m !== 'X')
+			const personIds = [...marks].filter((m) => m !== 'X');
 			if (personIds.length > 1) {
-				setVerifyResult('wrong')
-				return
+				setVerifyResult('wrong');
+				return;
 			}
 			if (personIds.length === 1) {
-				userPlacements.push({ personId: personIds[0]!, key })
+				userPlacements.push({ personId: personIds[0]!, key });
 			}
 		}
 
 		// Must have exactly one mark per solution placement, nothing extra
 		if (userPlacements.length !== placements.length) {
-			setVerifyResult('wrong')
-			return
+			setVerifyResult('wrong');
+			return;
 		}
 
 		for (const { personId, coord } of placements) {
-			const key = `${coord.row},${coord.col}`
+			const key = `${coord.row},${coord.col}`;
 			if (!userPlacements.some((u) => u.key === key && u.personId === personId)) {
-				setVerifyResult('wrong')
-				return
+				setVerifyResult('wrong');
+				return;
 			}
 		}
 
-		setVerifyResult('correct')
-		onComplete()
+		setVerifyResult('correct');
+		onComplete();
 	}
 
 	function handleReset() {
-		setCellMarks(new Map())
-		setVerifyResult(null)
-		onReset()
+		setCellMarks(new Map());
+		setVerifyResult(null);
+		onReset();
 	}
 
-	const isMobile = windowWidth < 640
-	const availableWidth = Math.min(windowWidth - 32, isMobile ? windowWidth - 32 : 400)
-	const cellSize = Math.floor(availableWidth / puzzle.gridSize.cols)
+	const isMobile = windowWidth < 640;
+	const availableWidth = Math.min(windowWidth - 32, isMobile ? windowWidth - 32 : 400);
+	const cellSize = Math.floor(availableWidth / puzzle.gridSize.cols);
 
 	const solutionMarks = useMemo(() => {
-		const m = new Map<string, Set<string>>()
+		const m = new Map<string, Set<string>>();
 		for (const p of puzzle.solution.placements) {
-			m.set(`${p.coord.row},${p.coord.col}`, new Set([p.personId]))
+			m.set(`${p.coord.row},${p.coord.col}`, new Set([p.personId]));
 		}
-		return m
-	}, [puzzle.solution.placements])
+		return m;
+	}, [puzzle.solution.placements]);
 
-	const effectiveMarks = showSolution ? solutionMarks : cellMarks
+	const effectiveMarks = showSolution ? solutionMarks : cellMarks;
 
-	const murderer = puzzle.people.find((p) => p.id === puzzle.solution.murdererId)!
-	const victim = puzzle.people.find((p) => p.id === puzzle.solution.victimId)!
-	const murderRoom = puzzle.rooms.find((r) => r.id === puzzle.solution.murderRoom)
+	const murderer = puzzle.people.find((p) => p.id === puzzle.solution.murdererId)!;
+	const victim = puzzle.people.find((p) => p.id === puzzle.solution.victimId)!;
+	const murderRoom = puzzle.rooms.find((r) => r.id === puzzle.solution.murderRoom);
 
 	function handleReveal() {
-		setShowSolution(true)
-		setShowRevealModal(true)
-		setPopup(null)
+		setShowSolution(true);
+		setShowRevealModal(true);
+		setPopup(null);
 	}
 
 	function handleHide() {
-		setShowSolution(false)
-		setShowRevealModal(false)
+		setShowSolution(false);
+		setShowRevealModal(false);
 	}
 
 	return (
@@ -440,5 +440,5 @@ export function PuzzleView({ puzzle, isCompleted, onComplete, onReset }: PuzzleV
 			)}
 			{/* TODO: rules section */}
 		</div>
-	)
+	);
 }

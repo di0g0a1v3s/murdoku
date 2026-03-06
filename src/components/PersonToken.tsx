@@ -1,14 +1,14 @@
-import type { CSSProperties } from 'react'
-import type { Person } from '@shared/types'
-import { User } from 'lucide-react'
+import type { CSSProperties } from 'react';
+import type { Person } from '@shared/types';
+import { User } from 'lucide-react';
 
 interface PersonTokenProps {
-	person: Person
-	col: number
-	row: number
-	cellSize: number
-	isVictim: boolean
-	isMurderer: boolean
+	person: Person;
+	col: number;
+	row: number;
+	cellSize: number;
+	isVictim: boolean;
+	isMurderer: boolean;
 }
 
 export function PersonToken({
@@ -29,11 +29,11 @@ export function PersonToken({
 		zIndex: 4,
 		pointerEvents: 'none',
 		gap: 1,
-	}
+	};
 
-	const tokenSize = cellSize * 0.55
-	const bgColor = isVictim ? '#dc2626' : isMurderer ? '#7c3aed' : '#1d4ed8'
-	const iconSize = Math.round(tokenSize * 0.5)
+	const tokenSize = cellSize * 0.55;
+	const bgColor = isVictim ? '#dc2626' : isMurderer ? '#7c3aed' : '#1d4ed8';
+	const iconSize = Math.round(tokenSize * 0.5);
 
 	return (
 		<div style={style}>
@@ -71,5 +71,5 @@ export function PersonToken({
 				{person.name.split(' ')[0]}
 			</div>
 		</div>
-	)
+	);
 }

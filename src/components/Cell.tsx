@@ -1,20 +1,20 @@
-import type { CSSProperties } from 'react'
+import type { CSSProperties } from 'react';
 
 interface CellBorders {
-	top: boolean
-	right: boolean
-	bottom: boolean
-	left: boolean
+	top: boolean;
+	right: boolean;
+	bottom: boolean;
+	left: boolean;
 }
 
 interface CellProps {
-	borders: CellBorders
-	style?: CSSProperties
-	onClick?: (e: React.MouseEvent) => void
+	borders: CellBorders;
+	style?: CSSProperties;
+	onClick?: (e: React.MouseEvent) => void;
 }
 
-const ROOM_BORDER = '3px solid rgba(0,0,0,0.6)'
-const CELL_BORDER = '1px solid rgba(0,0,0,0.15)'
+const ROOM_BORDER = '3px solid rgba(0,0,0,0.6)';
+const CELL_BORDER = '1px solid rgba(0,0,0,0.15)';
 
 export function Cell({ borders, style, onClick }: CellProps) {
 	return (
@@ -29,5 +29,5 @@ export function Cell({ borders, style, onClick }: CellProps) {
 				...style,
 			}}
 		/>
-	)
+	);
 }
