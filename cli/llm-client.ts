@@ -53,9 +53,11 @@ export interface PuzzleTheme {
 	rooms: (Pick<Room, 'id' | 'name' | 'color'> & {
 		allowedObjects: ObjectKind[]
 		requiredObjects: ObjectKind[]
+		sizePercentage: number
 	})[]
 }
 
+// TODO: checkered and striped rooms
 export async function generateTheme(
 	n: number,
 	existingTitles: string[] = [],
@@ -76,10 +78,16 @@ export async function generateTheme(
 				z.object({
 					name: z.string().describe('Room name, at most 2 words'),
 					color: z.string().describe('Hex color code (e.g. #F5E6D3) — muted and atmospheric'),
+					sizePercentage: z
+						.number()
+						.int()
+						.min(5)
+						.max(60)
+						.describe(
+							'Relative size of this room as a percentage of the total grid area. All rooms should sum to roughly 100.',
+						),
 					allowedObjects: z
 						.array(z.enum(OBJECT_KIND_VALUES))
-						.min(2)
-						.max(5)
 						.describe(
 							`2–5 object kinds that could realistically appear in this room. Choose from: ${OBJECT_KIND_VALUES.join(', ')}`,
 						),
@@ -121,8 +129,6 @@ export async function generateTheme(
 		)
 		.join('\n')
 
-	// TODO: for room names, avoid positional names like "West wing"
-	// TODO: ask ai percentage of space for each room
 	const prompt = `You are designing a murder mystery logic puzzle called Murdoku.
 Create a unique and atmospheric theme for a ${n}-person puzzle set in an interesting location.
 
@@ -132,7 +138,9 @@ Requirements:
   Avoid generic dark words like "Shadow", "Blood", "Crimson", "Midnight", "Dark"${avoidLine}
 - Setting can be any interesting location (manor, ship, library, theatre, casino, monastery, etc.)
 - Room names must be at most 2 words and fit the setting naturally
-  Good examples: "Wine Cellar", "Ballroom", "East Wing", "Ship Deck", "Reading Room"
+  Good examples: "Wine Cellar", "Ballroom", "Ship Deck", "Reading Room", "Boiler Room"
+  Avoid directional/positional names like "East Wing", "North Hall", "West Room"
+- For each room, provide a sizePercentage (integer, all rooms sum to ~100) reflecting how large the room should be relative to the total floor plan. Small rooms (bathroom, closet): 5–10. Medium rooms (bedroom, office): 15–20. Large rooms (ballroom, hall): 25–40.
 - For each room, provide:
   - allowedObjects: 2–5 object kinds that could realistically appear there
   - requiredObjects: 0–2 objects that are definitionally part of the room (subset of allowedObjects)
@@ -160,6 +168,7 @@ Make it creative and varied — avoid clichés.`
 		id: r.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
 		name: r.name,
 		color: r.color,
+		sizePercentage: r.sizePercentage,
 		allowedObjects: r.allowedObjects as ObjectKind[],
 		requiredObjects: r.requiredObjects as ObjectKind[],
 	}))

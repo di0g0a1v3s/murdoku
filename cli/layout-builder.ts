@@ -34,7 +34,7 @@ export function buildRooms(
 	const rng = makePrng(seed)
 	const numRooms = theme.rooms.length
 
-	// Pick random seed cells (one per room)
+	// One seed per room (preserves contiguity)
 	const allCells: Coord[] = []
 	for (let r = 0; r < gridRows; r++) {
 		for (let c = 0; c < gridCols; c++) {
@@ -43,18 +43,25 @@ export function buildRooms(
 	}
 
 	const shuffled = shuffle(allCells, rng)
-	const seeds = shuffled.slice(0, numRooms)
+	const seedCoords = shuffled.slice(0, numRooms)
 
-	// Voronoi BFS assignment
+	// Weighted BFS — each step expands the room most behind its size target.
+	// This keeps rooms contiguous while approximating sizePercentage proportions.
 	const assignment: (number | null)[][] = Array.from({ length: gridRows }, () =>
 		Array(gridCols).fill(null),
 	)
-	const queue: { coord: Coord; roomIndex: number }[] = []
+	const roomQueues: Coord[][] = Array.from({ length: numRooms }, () => [])
+	const roomHeads = new Array<number>(numRooms).fill(0)
+	const roomSizes = new Array<number>(numRooms).fill(0)
 
-	seeds.forEach((seed, i) => {
-		assignment[seed.row][seed.col] = i
-		queue.push({ coord: seed, roomIndex: i })
+	seedCoords.forEach((coord, i) => {
+		assignment[coord.row][coord.col] = i
+		roomQueues[i].push(coord)
+		roomSizes[i] = 1
 	})
+
+	const totalWeight = theme.rooms.reduce((s, r) => s + r.sizePercentage, 0)
+	const roomWeights = theme.rooms.map((r) => r.sizePercentage / totalWeight)
 
 	const neighbors = (c: Coord): Coord[] =>
 		[
@@ -64,13 +71,31 @@ export function buildRooms(
 			{ row: c.row, col: c.col + 1 },
 		].filter((n) => n.row >= 0 && n.row < gridRows && n.col >= 0 && n.col < gridCols)
 
-	let head = 0
-	while (head < queue.length) {
-		const { coord, roomIndex } = queue[head++]
+	while (true) {
+		// Pick the room most underrepresented relative to its target weight
+		const totalClaimed = roomSizes.reduce((a, b) => a + b, 0)
+		let nextRoom = -1
+		let bestDeficit = -Infinity
+		for (let i = 0; i < numRooms; i++) {
+			if (roomHeads[i] >= roomQueues[i].length) {
+				continue
+			}
+			const deficit = roomWeights[i]! - roomSizes[i]! / totalClaimed
+			if (deficit > bestDeficit) {
+				bestDeficit = deficit
+				nextRoom = i
+			}
+		}
+		if (nextRoom === -1) {
+			break
+		}
+
+		const coord = roomQueues[nextRoom][roomHeads[nextRoom]++]!
 		for (const n of shuffle(neighbors(coord), rng)) {
 			if (assignment[n.row][n.col] === null) {
-				assignment[n.row][n.col] = roomIndex
-				queue.push({ coord: n, roomIndex })
+				assignment[n.row][n.col] = nextRoom
+				roomQueues[nextRoom].push(n)
+				roomSizes[nextRoom]++
 			}
 		}
 	}
