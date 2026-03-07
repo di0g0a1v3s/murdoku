@@ -75,7 +75,7 @@ murdoku/
 │   ├── generate.ts            # Entry: npm run generate [--count=N] [--people=N] [--debug]
 │   ├── llm-client.ts          # Vercel AI SDK + Gemini (theme + all clue texts)
 │   ├── layout-builder.ts      # Voronoi BFS room partitioning + object placement
-│   ├── placer.ts              # Latin-square backtracking placer
+│   ├── placer.ts              # Latin-square backtracking placer; assigns people to cells after backtracking
 │   ├── clue-generator.ts      # computeAllFacts() — derives all true facts
 │   └── output.ts              # Read/write src/puzzles/puzzles.json
 │
@@ -147,7 +147,9 @@ GEMINI_API_KEY=your_key npm run generate -- --debug              # Print all LLM
              places optional objects (~1 per 4 room cells)
 3. Algo → valid placement (backtracking Latin-square placer)
            enforces: 1/row, 1/col, no non-occupiable cells,
-           victim's room has exactly 2 people (victim + murderer)
+           some room has exactly 2 people; after backtracking, people are
+           assigned to cells: victim+murderer → the 2-person room (murderer
+           chosen randomly from suspects), remaining suspects → other cells
 4. Algo → computeAllFacts() — exhaustive list of all true statements (victim facts excluded)
            facts are weighted and sorted: person-direction/distance (weight 1) first,
            all others (weight 5) last

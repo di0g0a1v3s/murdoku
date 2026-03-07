@@ -53,7 +53,7 @@ export function placePeople(
 		}
 	}
 
-	const assignment = new Map<string, Coord>();
+	const occupiedCells = new Set<string>();
 	const usedRows = new Set<number>();
 	const usedCols = new Set<number>();
 
@@ -66,24 +66,26 @@ export function placePeople(
 		}
 	}
 
-	const personOrder = lcgShuffle([...people], seed);
 	const candidates = lcgShuffle(allCells, seed);
-	// TODO: build victimCandidates: collection of cells belonging to rooms that can have 2 or more people
+	const shuffledRooms = lcgShuffle(rooms, seed);
 
-	function backtrack(personIndex: number): boolean {
-		if (personIndex === personOrder.length) {
+	function backtrack(): boolean {
+		if (occupiedCells.size === people.length) {
 			// Murder condition: victim's room must have exactly 2 people
-			const victimCoord = assignment.get(victimId)!;
-			const victimRoom = coordToRoomId.get(`${victimCoord.row},${victimCoord.col}`)!;
-			const count = [...assignment.values()].filter(
-				(c) => coordToRoomId.get(`${c.row},${c.col}`) === victimRoom,
-			).length;
-			return count === 2;
+			const roomWithTwoPeople = shuffledRooms.find((room) => {
+				const occupiedCellsInRoomCount = [...occupiedCells].filter(
+					(occupiedCell) => coordToRoomId.get(occupiedCell) === room.id,
+				).length;
+				return occupiedCellsInRoomCount === 2;
+			});
+			return roomWithTwoPeople != null;
 		}
 
-		const person = personOrder[personIndex]!;
-
 		for (const coord of candidates) {
+			const cellKey = `${coord.row},${coord.col}`;
+			if (occupiedCells.has(cellKey)) {
+				continue;
+			}
 			if (usedRows.has(coord.row) || usedCols.has(coord.col)) {
 				continue;
 			}
@@ -91,35 +93,63 @@ export function placePeople(
 				continue;
 			}
 
-			assignment.set(person.id, coord);
+			occupiedCells.add(cellKey);
 			usedRows.add(coord.row);
 			usedCols.add(coord.col);
 
-			if (backtrack(personIndex + 1)) {
+			if (backtrack()) {
 				return true;
 			}
 
-			assignment.delete(person.id);
+			occupiedCells.delete(cellKey);
 			usedRows.delete(coord.row);
 			usedCols.delete(coord.col);
 		}
 		return false;
 	}
 
-	if (!backtrack(0)) {
+	if (!backtrack()) {
 		return null;
 	}
 
-	const victimCoord = assignment.get(victimId)!;
-	const victimRoom = coordToRoomId.get(`${victimCoord.row},${victimCoord.col}`)!;
-	const murdererId = [...assignment.entries()].find(
-		([pid, c]) => pid !== victimId && coordToRoomId.get(`${c.row},${c.col}`) === victimRoom,
-	)![0]!;
+	const murderRoom = shuffledRooms.find((room) => {
+		const occupiedCellsInRoomCount = [...occupiedCells].filter(
+			(occupiedCell) => coordToRoomId.get(occupiedCell) === room.id,
+		).length;
+		return occupiedCellsInRoomCount === 2;
+	});
+	const [victimPosition, murderedPosition] = [...occupiedCells].filter(
+		(cell) => coordToRoomId.get(cell) === murderRoom!.id,
+	);
 
-	const placements: PlacedPerson[] = people.map((p) => ({
+	// Choose a suspect at random to be the murderer
+	const murderer = lcgShuffle(
+		people.filter((p) => p.role === 'suspect'),
+		seed,
+	)[0];
+
+	const notGuiltySuspects = people.filter((p) => p.role === 'suspect' && p.id != murderer.id);
+	const notGuiltySuspectsPositions = [...occupiedCells].filter(
+		(c) => c !== victimPosition && c !== murderedPosition,
+	);
+	const keyToCoord = (pos: string): { row: number; col: number } => {
+		const [row, col] = pos.split(',').map(Number);
+
+		return { row, col };
+	};
+
+	const placements: PlacedPerson[] = notGuiltySuspects.map((p, i) => ({
 		personId: p.id,
-		coord: assignment.get(p.id)!,
+		coord: keyToCoord(notGuiltySuspectsPositions[i]),
 	}));
+	placements.push({
+		personId: murderer.id,
+		coord: keyToCoord(murderedPosition),
+	});
+	placements.push({
+		personId: victimId,
+		coord: keyToCoord(victimPosition),
+	});
 
-	return { placements, murdererId, victimId, murderRoom: victimRoom };
+	return { placements, murdererId: murderer.id, victimId, murderRoom: murderRoom!.id };
 }
