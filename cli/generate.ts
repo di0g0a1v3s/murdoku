@@ -295,6 +295,7 @@ async function generatePuzzle(existingTitles: string[], n: number): Promise<Puzz
 					continue;
 				}
 				const candidate = [...clues.slice(0, i), ...clues.slice(i + 1)];
+				// TODO: should not check covered here. If de-pinning leaves no clue for a suspect, throw error - level is not valid
 				const covered = new Set(candidate.map((c) => getCluePersonId(c)).filter(Boolean));
 				if (!covered.has(suspect.id)) {
 					continue;

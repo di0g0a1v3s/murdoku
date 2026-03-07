@@ -45,6 +45,7 @@ export function buildRooms(
 	const shuffled = shuffle(allCells, rng);
 	const seedCoords = shuffled.slice(0, numRooms);
 
+	// TODO: this isnt working. Room sizes differ very much from sizePercentage
 	// Weighted BFS — each step expands the room most behind its size target.
 	// This keeps rooms contiguous while approximating sizePercentage proportions.
 	const assignment: (number | null)[][] = Array.from({ length: gridRows }, () =>

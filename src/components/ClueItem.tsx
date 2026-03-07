@@ -23,11 +23,14 @@ const CLUE_ICONS: Record<Clue['kind'], string> = {
 
 interface ClueItemProps {
 	clue: Clue;
+	checked?: boolean;
+	onToggle?: () => void;
 }
 
-export function ClueItem({ clue }: ClueItemProps) {
+export function ClueItem({ clue, checked, onToggle }: ClueItemProps) {
 	return (
 		<div
+			onClick={onToggle}
 			style={{
 				display: 'flex',
 				gap: 10,
@@ -35,19 +38,28 @@ export function ClueItem({ clue }: ClueItemProps) {
 				borderRadius: 8,
 				background: 'rgba(0,0,0,0.03)',
 				borderLeft: '3px solid rgba(0,0,0,0.12)',
+				opacity: checked ? 0.45 : 1,
+				cursor: onToggle ? 'pointer' : undefined,
+				userSelect: 'none',
 			}}
 		>
 			<span style={{ fontSize: 19, lineHeight: 1.4, flexShrink: 0 }}>{CLUE_ICONS[clue.kind]}</span>
-			<p
-				style={{
-					margin: 0,
-					fontSize: 15,
-					lineHeight: 1.5,
-					color: '#1a1a2e',
-				}}
-			>
+			<p style={{ margin: 0, fontSize: 15, lineHeight: 1.5, color: '#1a1a2e', flex: 1 }}>
 				{clue.text}
 			</p>
+			{onToggle && (
+				<span
+					style={{
+						fontSize: 15,
+						lineHeight: 1.4,
+						flexShrink: 0,
+						color: checked ? '#16a34a' : 'rgba(0,0,0,0.15)',
+						fontWeight: 700,
+					}}
+				>
+					✓
+				</span>
+			)}
 		</div>
 	);
 }

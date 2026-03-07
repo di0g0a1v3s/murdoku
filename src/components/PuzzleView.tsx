@@ -8,6 +8,8 @@ import { CellPopup } from './CellPopup';
 interface PuzzleViewProps {
 	puzzle: Puzzle;
 	isCompleted: boolean;
+	undoStack: Map<string, Set<string>>[];
+	onUndoStackChange: (stack: Map<string, Set<string>>[]) => void;
 	onComplete: () => void;
 	onReset: () => void;
 }
@@ -37,9 +39,17 @@ function loadMarks(puzzleId: string): Map<string, Set<string>> {
 	}
 }
 
-export function PuzzleView({ puzzle, isCompleted, onComplete, onReset }: PuzzleViewProps) {
+export function PuzzleView({
+	puzzle,
+	isCompleted,
+	undoStack,
+	onUndoStackChange,
+	onComplete,
+	onReset,
+}: PuzzleViewProps) {
 	const [showSolution, setShowSolution] = useState(false);
 	const [showRevealModal, setShowRevealModal] = useState(false);
+	const [howToPlayOpen, setHowToPlayOpen] = useState(false);
 	// cellMarks: "row,col" → Set of personId | 'X'
 	// Initialized from localStorage; component remounts when puzzle changes (key={puzzle.id} in App)
 	const [cellMarks, setCellMarks] = useState<Map<string, Set<string>>>(() => loadMarks(puzzle.id));
@@ -77,6 +87,7 @@ export function PuzzleView({ puzzle, isCompleted, onComplete, onReset }: PuzzleV
 			return;
 		}
 		const key = `${popup.row},${popup.col}`;
+		onUndoStackChange([...undoStack, cellMarks]);
 		setCellMarks((prev) => {
 			const next = new Map(prev);
 			const cell = new Set(prev.get(key) ?? []);
@@ -105,6 +116,28 @@ export function PuzzleView({ puzzle, isCompleted, onComplete, onReset }: PuzzleV
 		setVerifyResult(null);
 		setPopup(null);
 	}
+
+	function handleUndo() {
+		if (undoStack.length === 0) {
+			return;
+		}
+		const next = [...undoStack];
+		const last = next.pop()!;
+		setCellMarks(last);
+		setVerifyResult(null);
+		onUndoStackChange(next);
+	}
+
+	useEffect(() => {
+		function onKeyDown(e: KeyboardEvent) {
+			if ((e.metaKey || e.ctrlKey) && e.key === 'z' && !e.shiftKey) {
+				e.preventDefault();
+				handleUndo();
+			}
+		}
+		window.addEventListener('keydown', onKeyDown);
+		return () => window.removeEventListener('keydown', onKeyDown);
+	});
 
 	function handleVerify() {
 		const { placements } = puzzle.solution;
@@ -140,8 +173,15 @@ export function PuzzleView({ puzzle, isCompleted, onComplete, onReset }: PuzzleV
 		onComplete();
 	}
 
+	function handleClear() {
+		setCellMarks(new Map());
+		onUndoStackChange([]);
+		setVerifyResult(null);
+	}
+
 	function handleReset() {
 		setCellMarks(new Map());
+		onUndoStackChange([]);
 		setVerifyResult(null);
 		onReset();
 	}
@@ -229,27 +269,29 @@ export function PuzzleView({ puzzle, isCompleted, onComplete, onReset }: PuzzleV
 						marginBottom: 16,
 					}}
 				>
-					{puzzle.people.map((person) => (
-						<div
-							key={person.id}
-							style={{
-								display: 'flex',
-								alignItems: 'center',
-								gap: 5,
-								padding: '4px 10px',
-								borderRadius: 20,
-								background: person.role === 'victim' ? '#fee2e2' : '#f1f5f9',
-								border: `1px solid ${person.role === 'victim' ? '#fca5a5' : 'rgba(0,0,0,0.1)'}`,
-								fontSize: 14,
-								fontWeight: 600,
-								color: person.role === 'victim' ? '#dc2626' : '#334155',
-							}}
-						>
-							<span>{person.avatarEmoji}</span>
-							<span>{person.name}</span>
-							{person.role === 'victim' && <span style={{ opacity: 0.6 }}>· victim</span>}
-						</div>
-					))}
+					{[...puzzle.people]
+						.sort((a, b) => (a.role === 'victim' ? 1 : 0) - (b.role === 'victim' ? 1 : 0))
+						.map((person) => (
+							<div
+								key={person.id}
+								style={{
+									display: 'flex',
+									alignItems: 'center',
+									gap: 5,
+									padding: '4px 10px',
+									borderRadius: 20,
+									background: person.role === 'victim' ? '#fee2e2' : '#f1f5f9',
+									border: `1px solid ${person.role === 'victim' ? '#fca5a5' : 'rgba(0,0,0,0.1)'}`,
+									fontSize: 14,
+									fontWeight: 600,
+									color: person.role === 'victim' ? '#dc2626' : '#334155',
+								}}
+							>
+								<span>{person.avatarEmoji}</span>
+								<span>{person.name}</span>
+								{person.role === 'victim' && <span style={{ opacity: 0.6 }}>· victim</span>}
+							</div>
+						))}
 				</div>
 			</div>
 
@@ -334,22 +376,59 @@ export function PuzzleView({ puzzle, isCompleted, onComplete, onReset }: PuzzleV
 							<div
 								style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}
 							>
-								<button
-									onClick={handleVerify}
-									style={{
-										padding: '10px 28px',
-										background: '#1a1a2e',
-										color: 'white',
-										border: 'none',
-										borderRadius: 8,
-										fontSize: 17,
-										fontWeight: 700,
-										cursor: 'pointer',
-										boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-									}}
-								>
-									Verify Solution
-								</button>
+								<div style={{ display: 'flex', gap: 8 }}>
+									<button
+										onClick={handleVerify}
+										style={{
+											padding: '10px 28px',
+											background: '#1a1a2e',
+											color: 'white',
+											border: 'none',
+											borderRadius: 8,
+											fontSize: 17,
+											fontWeight: 700,
+											cursor: 'pointer',
+											boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+										}}
+									>
+										Verify Solution
+									</button>
+									<button
+										onClick={handleUndo}
+										disabled={undoStack.length === 0}
+										title="Undo (⌘Z)"
+										style={{
+											padding: '10px 14px',
+											background: 'transparent',
+											color: undoStack.length === 0 ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.5)',
+											border: '1px solid',
+											borderColor: undoStack.length === 0 ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.2)',
+											borderRadius: 8,
+											fontSize: 17,
+											cursor: undoStack.length === 0 ? 'default' : 'pointer',
+										}}
+									>
+										↩
+									</button>
+									<button
+										onClick={handleClear}
+										disabled={cellMarks.size === 0}
+										title="Clear board"
+										style={{
+											padding: '10px 14px',
+											background: 'transparent',
+											color: cellMarks.size === 0 ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.5)',
+											border: '1px solid',
+											borderColor: cellMarks.size === 0 ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.2)',
+											borderRadius: 8,
+											fontSize: 13,
+											fontWeight: 600,
+											cursor: cellMarks.size === 0 ? 'default' : 'pointer',
+										}}
+									>
+										Clear
+									</button>
+								</div>
 								{verifyResult === 'wrong' && (
 									<div
 										style={{
@@ -407,7 +486,6 @@ export function PuzzleView({ puzzle, isCompleted, onComplete, onReset }: PuzzleV
 						flex: 1,
 						minWidth: 0,
 						width: isMobile ? '100%' : undefined,
-						maxHeight: isMobile ? 'none' : cellSize * puzzle.gridSize.rows + 60,
 					}}
 				>
 					<CluesPanel
@@ -417,6 +495,67 @@ export function PuzzleView({ puzzle, isCompleted, onComplete, onReset }: PuzzleV
 					/>
 				</div>
 			</div>
+
+			{/* How to play */}
+			{/* TODO: mention that "besides" an object implies in the same room*/}
+			<details
+				onToggle={(e) => setHowToPlayOpen((e.currentTarget as HTMLDetailsElement).open)}
+				style={{
+					width: '100%',
+					padding: '0 16px 24px',
+					boxSizing: 'border-box',
+				}}
+			>
+				<summary
+					style={{
+						cursor: 'pointer',
+						fontSize: 13,
+						fontWeight: 700,
+						color: 'rgba(0,0,0,0.35)',
+						letterSpacing: '0.04em',
+						textTransform: 'uppercase',
+						userSelect: 'none',
+						listStyle: 'none',
+						display: 'flex',
+						alignItems: 'center',
+						gap: 5,
+					}}
+				>
+					<span style={{ fontSize: 11 }}>{howToPlayOpen ? '▼' : '▶'}</span>
+					How to play
+				</summary>
+				<div
+					style={{
+						marginTop: 10,
+						padding: '12px 14px',
+						background: 'rgba(0,0,0,0.03)',
+						borderRadius: 8,
+						border: '1px solid rgba(0,0,0,0.08)',
+						fontSize: 13,
+						lineHeight: 1.6,
+						color: '#1a1a2e',
+						display: 'flex',
+						flexDirection: 'column',
+						gap: 7,
+					}}
+				>
+					<p style={{ margin: 0 }}>
+						Place every suspect (and the victim) on the grid — one per row, one per column, just
+						like Sudoku. People cannot stand on non-occupiable objects (tables, plants,
+						bookshelves…).
+					</p>
+					<p style={{ margin: 0 }}>
+						The <strong>murderer</strong> is the suspect who ends up{' '}
+						<strong>alone in the same room as the victim</strong> — exactly two people in that room,
+						no one else.
+					</p>
+					<p style={{ margin: 0 }}>
+						Click any cell to annotate it with a suspect's initial (or ✕ to rule someone out). Use
+						the clues to narrow down who goes where, then hit <strong>Verify Solution</strong> when
+						you're confident.
+					</p>
+				</div>
+			</details>
 
 			{/* Cell mark popup */}
 			{popup && (
@@ -438,7 +577,6 @@ export function PuzzleView({ puzzle, isCompleted, onComplete, onReset }: PuzzleV
 					onClose={() => setShowRevealModal(false)}
 				/>
 			)}
-			{/* TODO: rules section */}
 		</div>
 	);
 }

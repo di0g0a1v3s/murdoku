@@ -116,7 +116,7 @@ murdoku/
 - **LLM:** Google Gemini (`gemini-2.0-flash`) — requires `GEMINI_API_KEY`
 - **Hosting:** GitHub Pages (single `index.html`)
 - **PWA:** manual manifest + cache-first service worker; no extra plugin (avoids conflict with `viteSingleFile`); all URLs relative (`./`) so works under the `/murdoku/` subpath without a Vite `base` change
-- **Linting:** `eslint-plugin-prettier` (prettier as ESLint rule — single `npm run lint` command); tabs, single quotes, semicolons, 100-char print width. Pre-commit hook runs `lint-fix`; pre-push hook runs `lint` (via Husky).
+- **Linting:** `eslint-plugin-prettier` (prettier as ESLint rule — single `npm run lint` command); tabs, single quotes, semicolons, 100-char print width. Pre-commit hook runs `lint-fix`; pre-push hook runs `lint` (via Husky). When editing TSX/TS files directly, just make the change and run `npm run lint-fix` at the end — no need to match exact tab indentation in edits.
 
 ---
 
@@ -244,13 +244,14 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 - [x] Single-file build deployable to GitHub Pages
 - [x] GitHub Actions auto-deploy on push to main
 - [x] PWA — installable, works offline after first visit
+- [x] Clear board button — wipes marks without affecting completed state
+- [x] How to play collapsible section in the puzzle UI
 
 ## Future Ideas
 
-- Higher res icon
+- App icon
+- Object sprites
 - More object types: rug, tv, car
 - Non-square grids
 - Hint system using the solver
 - Daily puzzle
-- Undo
-- Clean board

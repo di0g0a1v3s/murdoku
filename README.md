@@ -21,8 +21,10 @@ Murdoku presents you with a grid divided into named rooms, each with a distinct 
 **Solving:**
 - Tap any empty cell to open a popup — select a person's initial to mark them there, or ✕ to mark the cell empty
 - Tap again to remove a mark
+- Use **Clear** to wipe all your marks and start fresh (without losing your completed puzzles)
 - When you've placed everyone, hit **Verify Solution** to check your answer
 - Stuck? Use **Reveal Solution** to see the answer
+- Expand **How to play** at the bottom for a quick rule reminder
 
 **Clue types:**
 - Directional — *"A is north of B"* (row comparison), *"A is northeast of B"* (both row and column)

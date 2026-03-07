@@ -40,38 +40,39 @@ export function CellPopup({ people, marks, position, onToggle, onClose }: CellPo
 				}}
 				onClick={(e) => e.stopPropagation()}
 			>
-				{people.map((person) => {
-					// TODO: victim at the end
-					const initial = person.name[0].toUpperCase();
-					const active = marks.has(person.id);
-					const isVictim = person.role === 'victim';
-					const activeColor = isVictim ? '#dc2626' : '#7c3aed';
-					return (
-						<button
-							key={person.id}
-							onClick={() => onToggle(person.id)}
-							style={{
-								width: 38,
-								height: 38,
-								borderRadius: 8,
-								border: '2px solid',
-								borderColor: active ? activeColor : 'rgba(0,0,0,0.15)',
-								background: active ? activeColor : 'white',
-								color: active ? 'white' : '#333',
-								fontSize: 15,
-								fontWeight: 700,
-								cursor: 'pointer',
-								display: 'flex',
-								alignItems: 'center',
-								justifyContent: 'center',
-								lineHeight: 1,
-							}}
-							title={person.name}
-						>
-							{initial}
-						</button>
-					);
-				})}
+				{[...people]
+					.sort((a, b) => (a.role === 'victim' ? 1 : 0) - (b.role === 'victim' ? 1 : 0))
+					.map((person) => {
+						const initial = person.name[0].toUpperCase();
+						const active = marks.has(person.id);
+						const isVictim = person.role === 'victim';
+						const activeColor = isVictim ? '#dc2626' : '#7c3aed';
+						return (
+							<button
+								key={person.id}
+								onClick={() => onToggle(person.id)}
+								style={{
+									width: 38,
+									height: 38,
+									borderRadius: 8,
+									border: '2px solid',
+									borderColor: active ? activeColor : 'rgba(0,0,0,0.15)',
+									background: active ? activeColor : 'white',
+									color: active ? 'white' : '#333',
+									fontSize: 15,
+									fontWeight: 700,
+									cursor: 'pointer',
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									lineHeight: 1,
+								}}
+								title={person.name}
+							>
+								{initial}
+							</button>
+						);
+					})}
 				{/* X button */}
 				<button
 					onClick={() => onToggle('X')}

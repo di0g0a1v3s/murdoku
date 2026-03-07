@@ -9,6 +9,8 @@ const collection = puzzleData as PuzzleCollection;
 export function App() {
 	const puzzles = collection.puzzles;
 	const [selectedId, setSelectedId] = useState(puzzles[0]?.id ?? '');
+	const [undoStacks, setUndoStacks] = useState<Map<string, Map<string, Set<string>>[]>>(new Map());
+
 	const [completedIds, setCompletedIds] = useState<Set<string>>(() => {
 		try {
 			const stored = localStorage.getItem('murdoku-completed');
@@ -31,7 +33,16 @@ export function App() {
 		});
 	}
 
+	function handleUndoStackChange(id: string, stack: Map<string, Set<string>>[]) {
+		setUndoStacks((prev) => new Map(prev).set(id, stack));
+	}
+
 	function handleReset(id: string) {
+		setUndoStacks((prev) => {
+			const next = new Map(prev);
+			next.delete(id);
+			return next;
+		});
 		setCompletedIds((prev) => {
 			const next = new Set(prev);
 			next.delete(id);
@@ -131,6 +142,8 @@ export function App() {
 					key={selectedPuzzle.id}
 					puzzle={selectedPuzzle}
 					isCompleted={completedIds.has(selectedPuzzle.id)}
+					undoStack={undoStacks.get(selectedPuzzle.id) ?? []}
+					onUndoStackChange={(stack) => handleUndoStackChange(selectedPuzzle.id, stack)}
 					onComplete={() => handleComplete(selectedPuzzle.id)}
 					onReset={() => handleReset(selectedPuzzle.id)}
 				/>

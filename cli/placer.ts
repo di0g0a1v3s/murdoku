@@ -68,6 +68,7 @@ export function placePeople(
 
 	const personOrder = lcgShuffle([...people], seed);
 	const candidates = lcgShuffle(allCells, seed);
+	// TODO: build victimCandidates: collection of cells belonging to rooms that can have 2 or more people
 
 	function backtrack(personIndex: number): boolean {
 		if (personIndex === personOrder.length) {
