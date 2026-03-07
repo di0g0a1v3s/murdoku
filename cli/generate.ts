@@ -249,20 +249,30 @@ async function generatePuzzle(existingTitles: string[], n: number): Promise<Puzz
 	//     (evaluated in isolation). No uniqueness check here — we have many facts to spare.
 	// (b) Minimize: greedily remove redundant clues (uniqueness + coverage only).
 	console.log('\n✂️  Step 5: Minimizing clue set...');
-  // TODO: weight for every Clue kind
 	// Lower weight = sorted to front = tried for removal first = less likely to survive.
-	const CLUE_WEIGHT: Partial<Record<Clue['kind'], number>> = {
+	const CLUE_WEIGHT: Record<Clue['kind'], number> = {
 		'person-direction': 1,
 		'person-distance': 1,
 		'person-in-row': 2,
 		'person-in-col': 2,
 		'person-in-corner': 3,
 		'person-in-room-corner': 3,
+		'person-beside-object': 4,
+		'person-on-object': 4,
+		'person-not-in-room': 4,
+		'persons-not-same-room': 4,
+		'person-in-room': 5,
+		'persons-same-room': 5,
+		'person-alone-in-room': 5,
+		'person-in-room-with': 5,
+		'person-sole-occupant': 5,
+		'room-population': 5,
+		'object-occupancy': 5,
+		'empty-rooms': 5,
 	};
-	const DEFAULT_WEIGHT = 5;
 
 	let clues = shuffle(nonVictimFacts.map((f) => ({ ...f.clue, text: f.description }) as Clue)).sort(
-		(a, b) => (CLUE_WEIGHT[a.kind] ?? DEFAULT_WEIGHT) - (CLUE_WEIGHT[b.kind] ?? DEFAULT_WEIGHT),
+		(a, b) => CLUE_WEIGHT[a.kind] - CLUE_WEIGHT[b.kind],
 	);
 	console.log(`  Starting with ${clues.length} candidate clues`);
 	auditClues('all facts', clues);

@@ -1,7 +1,26 @@
 import { useMemo } from 'react';
-import type { Coord, Puzzle, Room } from '@shared/types';
+import type { Coord, Puzzle, Room, RoomPattern } from '@shared/types';
 import { Cell } from './Cell';
 import { ObjectSprite } from './ObjectSprite';
+
+const ROOM_ALPHA = '88'; // hex alpha for room tint
+
+function getCellBackground(pattern: RoomPattern): string {
+	if (pattern.kind === 'solid') {
+		return pattern.color + ROOM_ALPHA;
+	}
+	const a = pattern.colorA + ROOM_ALPHA;
+	const b = pattern.colorB + ROOM_ALPHA;
+	if (pattern.kind === 'striped') {
+		// 4 equal horizontal bands alternating colorA / colorB
+		return `linear-gradient(to right, ${a} 25%, ${b} 25%, ${b} 50%, ${a} 50%, ${a} 75%, ${b} 75%)`;
+	}
+	// checkered: 2×2 grid — TL+BR = colorA, TR+BL = colorB
+	return [
+		`linear-gradient(to right, ${a} 50%, ${b} 50%) top / 100% 50% no-repeat`,
+		`linear-gradient(to right, ${b} 50%, ${a} 50%) bottom / 100% 50% no-repeat`,
+	].join(', ');
+}
 
 interface GridCanvasProps {
 	puzzle: Puzzle;
@@ -84,7 +103,7 @@ export function GridCanvas({ puzzle, cellSize, cellMarks, onCellClick }: GridCan
 						style={{
 							gridColumn: cell.col + 1,
 							gridRow: cell.row + 1,
-							background: room.color + '55',
+							background: getCellBackground(room.pattern),
 							zIndex: 0,
 						}}
 					/>

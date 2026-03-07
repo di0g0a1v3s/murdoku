@@ -10,7 +10,7 @@
 
 ## How to Play
 
-Murdoku presents you with a grid divided into rooms. Your goal is to place all suspects (and the victim) on the grid using the clues provided.
+Murdoku presents you with a grid divided into named rooms, each with a distinct visual pattern (solid color, vertical stripes, or checkered). Your goal is to place all suspects (and the victim) on the grid using the clues provided.
 
 **Rules:**
 - One person per row, one per column (like Sudoku)

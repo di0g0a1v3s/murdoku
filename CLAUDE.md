@@ -137,7 +137,7 @@ GEMINI_API_KEY=your_key npm run generate -- --debug              # Print all LLM
 ## CLI Generation Pipeline
 
 ```
-1. LLM  → theme (title, subtitle, room names, colors, character names/emojis)
+1. LLM  → theme (title, subtitle, room names, patterns, character names/emojis)
            victim name starts with V; suspects start with A, B, C, D, E
            temperature=1.5 for maximum variety
 2. Algo → grid layout (weighted Voronoi BFS room partitioning + object placement)
@@ -174,7 +174,7 @@ GEMINI_API_KEY=your_key npm run generate -- --debug              # Print all LLM
 ```typescript
 Puzzle {
   id, title, subtitle, gridSize, generatedAt
-  rooms: Room[]          // each room owns its cells + has a CSS color
+  rooms: Room[]          // each room owns its cells + has a RoomPattern (solid | striped | checkered)
   objects: GridObject[]  // kind, occupiable|non-occupiable, cells[]
   people: Person[]       // role: 'victim' | 'suspect', avatarEmoji
   clues: Clue[]          // discriminated union; each clue's .text = raw description (used by solver audit)
@@ -216,7 +216,7 @@ Puzzle {
 ## Frontend Rendering
 
 Grid uses **layered CSS Grid** (not SVG/Canvas):
-1. Room background fills (color at ~33% opacity)
+1. Room background fills — pattern rendered per-cell via CSS gradients (`solid` = flat tint, `striped` = 4 vertical bands, `checkered` = 2×2 quad split); `ROOM_ALPHA = '88'` (~53% opacity) appended to each hex color
 2. Room name labels (topmost-leftmost actual room cell — never outside the room)
 3. Cell borders (thick = room boundary, thin = intra-room) + click targets
 4. Object sprites (Lucide icon + label, spanning correct grid cells)
@@ -247,7 +247,6 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 
 ## Future Ideas
 
-- Generate less positional clues
 - Higher res icon
 - More object types: rug, tv, car
 - Non-square grids

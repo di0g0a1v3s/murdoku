@@ -104,7 +104,7 @@ export function buildRooms(
 	return theme.rooms.map((r, i) => ({
 		id: r.id,
 		name: r.name,
-		color: r.color,
+		pattern: r.pattern,
 		cells: allCells.filter((c) => assignment[c.row][c.col] === i),
 	}));
 }

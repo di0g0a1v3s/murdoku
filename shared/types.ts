@@ -36,11 +36,16 @@ export interface GridObject {
 
 // ─── Rooms ────────────────────────────────────────────────────────────────────
 
+export type RoomPattern =
+	| { kind: 'solid'; color: string }
+	| { kind: 'striped'; colorA: string; colorB: string }
+	| { kind: 'checkered'; colorA: string; colorB: string };
+
 export interface Room {
 	id: string;
 	name: string;
 	cells: Coord[];
-	color: string; // CSS hex color for background tint
+	pattern: RoomPattern;
 }
 
 // ─── People ───────────────────────────────────────────────────────────────────

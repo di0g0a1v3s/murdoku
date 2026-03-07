@@ -2,7 +2,7 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateObject } from 'ai';
 import { z } from 'zod';
 import { OBJECT_KIND_VALUES } from '../shared/types.js';
-import type { ObjectKind, Person, Room } from '../shared/types.js';
+import type { ObjectKind, Person, Room, RoomPattern } from '../shared/types.js';
 import { trackUsage } from './cost-tracker.js';
 
 const google = createGoogleGenerativeAI({
@@ -50,14 +50,13 @@ export interface PuzzleTheme {
 	subtitle: string;
 	setting: string;
 	people: Person[];
-	rooms: (Pick<Room, 'id' | 'name' | 'color'> & {
+	rooms: (Pick<Room, 'id' | 'name' | 'pattern'> & {
 		allowedObjects: ObjectKind[];
 		requiredObjects: ObjectKind[];
 		sizePercentage: number;
 	})[];
 }
 
-// TODO: checkered and striped rooms
 export async function generateTheme(
 	n: number,
 	existingTitles: string[] = [],
@@ -77,7 +76,17 @@ export async function generateTheme(
 			.array(
 				z.object({
 					name: z.string().describe('Room name, at most 2 words'),
-					color: z.string().describe('Hex color code (e.g. #F5E6D3) — muted and atmospheric'),
+					patternKind: z
+						.enum(['solid', 'striped', 'checkered'])
+						.describe(
+							'Visual pattern: solid (single color), striped (alternating rows), checkered (alternating cells). Use striped or checkered for variety.',
+						),
+					colorA: z.string().describe('Primary hex color (e.g. #F5E6D3) — muted and atmospheric'),
+					colorB: z
+						.string()
+						.describe(
+							'Secondary hex color for striped/checkered; for solid rooms use the same value as colorA',
+						),
 					sizePercentage: z
 						.number()
 						.int()
@@ -151,7 +160,7 @@ Requirements:
     Bar       → allowed: [counter, sofa, chair, table], required: [counter]
     Library   → allowed: [bookshelf, chair, table, plant], required: [bookshelf]
     Ballroom  → allowed: [chair, sofa, plant, fireplace], required: []
-- Room colors should be distinct and evoke the mood (hex codes)
+- Room patterns: choose patternKind (solid/striped/checkered) and two colors (colorA, colorB). For solid rooms colorB equals colorA. Use striped or checkered for roughly half the rooms to add visual variety. Colors should be distinct across rooms and evoke the mood (muted hex codes)
 - ${n} people with specific naming rules:
 ${peopleRules}
 - Names should be memorable and fit the setting's era/style
@@ -164,14 +173,22 @@ Make it creative and varied — avoid clichés.`;
 	trackUsage('Theme generation', usage);
 	debugLog('generateTheme', prompt, object);
 
-	const rooms = object.rooms.map((r) => ({
-		id: r.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-		name: r.name,
-		color: r.color,
-		sizePercentage: r.sizePercentage,
-		allowedObjects: r.allowedObjects as ObjectKind[],
-		requiredObjects: r.requiredObjects as ObjectKind[],
-	}));
+	const rooms = object.rooms.map((r) => {
+		const pattern: RoomPattern =
+			r.patternKind === 'solid'
+				? { kind: 'solid', color: r.colorA }
+				: r.patternKind === 'striped'
+					? { kind: 'striped', colorA: r.colorA, colorB: r.colorB }
+					: { kind: 'checkered', colorA: r.colorA, colorB: r.colorB };
+		return {
+			id: r.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+			name: r.name,
+			pattern,
+			sizePercentage: r.sizePercentage,
+			allowedObjects: r.allowedObjects as ObjectKind[],
+			requiredObjects: r.requiredObjects as ObjectKind[],
+		};
+	});
 
 	const people: Person[] = object.people.map((p, i) => {
 		const initial = allInitials[i]!;
@@ -222,7 +239,6 @@ export async function generateAllTexts(
 			? `\nGeneral clues:\n${generalClues.map((g, i) => `${i + 1}. [${g.kind}] ${g.description}`).join('\n')}`
 			: '';
 
-	// TODO: Delilah is in column 12.
 	const prompt = `You are writing clue text for a Murdoku murder mystery logic puzzle.
 
 For each suspect, write exactly ONE natural sentence covering ALL of their listed facts.
@@ -233,6 +249,7 @@ Rules:
 - Natural word order: "alone in the Library" not "in the Library and alone"
 - When combining "alone in a room" with other facts, join with "and": "Anya is alone in the Server Room and south of Chen Wei" — never use a comma clause like "Anya, alone in the Server Room, is south of Chen Wei"
 - "in a room with 0 other people" means alone — write "alone in a room", not "in a room with exactly 0 other people"
+- Row/column numbers use ordinals: "in the 3rd row" / "in the 4th column", not "in row 3" / "in column 4"
 - Use "sitting in a chair" not "occupying a chair"
 - Keep suspect names and room/object names exactly as given
 
