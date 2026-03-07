@@ -222,8 +222,7 @@ export async function generateAllTexts(
 			? `\nGeneral clues:\n${generalClues.map((g, i) => `${i + 1}. [${g.kind}] ${g.description}`).join('\n')}`
 			: '';
 
-	// TODO: "Anya, alone is the Server Room, is south of Chen Wei" -> should be "Anya is alone in the Server Room and south of Chen Wei"
-	// TODO: "in a room with exactly 0 other people." -> "Alone in a room"
+	// TODO: Delilah is in column 12.
 	const prompt = `You are writing clue text for a Murdoku murder mystery logic puzzle.
 
 For each suspect, write exactly ONE natural sentence covering ALL of their listed facts.
@@ -232,6 +231,8 @@ For each general clue, rewrite the description as a natural sentence.
 Rules:
 - Plain factual English — no mystery prose, no metaphors
 - Natural word order: "alone in the Library" not "in the Library and alone"
+- When combining "alone in a room" with other facts, join with "and": "Anya is alone in the Server Room and south of Chen Wei" — never use a comma clause like "Anya, alone in the Server Room, is south of Chen Wei"
+- "in a room with 0 other people" means alone — write "alone in a room", not "in a room with exactly 0 other people"
 - Use "sitting in a chair" not "occupying a chair"
 - Keep suspect names and room/object names exactly as given
 

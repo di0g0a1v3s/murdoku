@@ -174,14 +174,40 @@ const OBJECT_MUST_TOUCH_WALL: Record<ObjectKind, boolean> = {
 	toilet: true, // always against a wall
 };
 
-const OBJECT_TEMPLATES: ObjectTemplate[] = OBJECT_KIND_VALUES.map((kind) => ({
-	kind,
-	offsets: OBJECT_OFFSETS[kind],
-	minFreeAdjacent: OBJECT_MIN_FREE_ADJACENT[kind],
-	mustTouchWall: OBJECT_MUST_TOUCH_WALL[kind],
-}));
+function rotateOffsets90(offsets: Coord[]): Coord[] {
+	// 90° clockwise: (r, c) → (c, -r), then normalize to origin
+	const rotated = offsets.map(({ row, col }) => ({ row: col, col: -row }));
+	const minRow = Math.min(...rotated.map((c) => c.row));
+	const minCol = Math.min(...rotated.map((c) => c.col));
+	return rotated.map(({ row, col }) => ({ row: row - minRow, col: col - minCol }));
+}
 
-// TODO: allow rotation
+function getAllRotations(offsets: Coord[]): Coord[][] {
+	const result: Coord[][] = [];
+	let current = offsets;
+	for (let i = 0; i < 4; i++) {
+		const key = JSON.stringify([...current].sort((a, b) => a.row - b.row || a.col - b.col));
+		if (
+			!result.some(
+				(r) => JSON.stringify([...r].sort((a, b) => a.row - b.row || a.col - b.col)) === key,
+			)
+		) {
+			result.push(current);
+		}
+		current = rotateOffsets90(current);
+	}
+	return result;
+}
+
+const OBJECT_TEMPLATES: ObjectTemplate[] = OBJECT_KIND_VALUES.flatMap((kind) =>
+	getAllRotations(OBJECT_OFFSETS[kind]).map((offsets) => ({
+		kind,
+		offsets,
+		minFreeAdjacent: OBJECT_MIN_FREE_ADJACENT[kind],
+		mustTouchWall: OBJECT_MUST_TOUCH_WALL[kind],
+	})),
+);
+
 function getCellsForTemplate(anchor: Coord, template: ObjectTemplate): Coord[] {
 	return template.offsets.map((o) => ({ row: anchor.row + o.row, col: anchor.col + o.col }));
 }

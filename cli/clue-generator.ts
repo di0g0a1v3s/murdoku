@@ -72,6 +72,51 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
 			clue: { kind: 'person-in-room', person: personId, roomId: room.id, text: '' },
 		});
 
+		// Row and column position (1-indexed for display)
+		facts.push({
+			description: `${name} is in row ${coord.row + 1}`,
+			clue: { kind: 'person-in-row', person: personId, row: coord.row, text: '' },
+		});
+		facts.push({
+			description: `${name} is in column ${coord.col + 1}`,
+			clue: { kind: 'person-in-col', person: personId, col: coord.col, text: '' },
+		});
+
+		// Grid corner position
+		const { rows, cols } = puzzle.gridSize;
+		if (
+			(coord.row === 0 || coord.row === rows - 1) &&
+			(coord.col === 0 || coord.col === cols - 1)
+		) {
+			facts.push({
+				description: `${name} is in a corner of the grid`,
+				clue: { kind: 'person-in-corner', person: personId, text: '' },
+			});
+		}
+
+		// Room corner position (two perpendicular walls)
+		const roomForCorner = puzzle.rooms.find((r) =>
+			r.cells.some((c) => c.row === coord.row && c.col === coord.col),
+		);
+		if (roomForCorner) {
+			const roomCellKeys = new Set(roomForCorner.cells.map((c) => `${c.row},${c.col}`));
+			const isWall = (nr: number, nc: number) =>
+				nr < 0 || nr >= rows || nc < 0 || nc >= cols || !roomCellKeys.has(`${nr},${nc}`);
+			const r = coord.row;
+			const c = coord.col;
+			const isRoomCorner =
+				(isWall(r - 1, c) && isWall(r, c - 1)) ||
+				(isWall(r - 1, c) && isWall(r, c + 1)) ||
+				(isWall(r + 1, c) && isWall(r, c - 1)) ||
+				(isWall(r + 1, c) && isWall(r, c + 1));
+			if (isRoomCorner) {
+				facts.push({
+					description: `${name} is in a corner of the ${roomForCorner.name}`,
+					clue: { kind: 'person-in-room-corner', person: personId, text: '' },
+				});
+			}
+		}
+
 		// Object at cell (occupied)
 		const objectsOnCell = getObjectsAtCoord(coord, puzzle);
 		for (const obj of objectsOnCell) {
@@ -336,6 +381,36 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
 		}
 	}
 
+	// Sole-occupant facts: person is the only one on any instance of their object kind
+	for (const placement of placements) {
+		const { personId, coord } = placement;
+		const name = personName(personId);
+		const objectsOnCell = getObjectsAtCoord(coord, puzzle);
+		for (const obj of objectsOnCell) {
+			if (obj.occupiable !== 'occupiable') {
+				continue;
+			}
+			const othersOnSameKind = placements.some((other) => {
+				if (other.personId === personId) {
+					return false;
+				}
+				const otherObjs = getObjectsAtCoord(other.coord, puzzle);
+				return otherObjs.some((o) => o.kind === obj.kind && o.occupiable === 'occupiable');
+			});
+			if (!othersOnSameKind) {
+				facts.push({
+					description: `${name} is the only person on a ${obj.kind}`,
+					clue: {
+						kind: 'person-sole-occupant',
+						person: personId,
+						objectKind: obj.kind as ObjectKind,
+						text: '',
+					},
+				});
+			}
+		}
+	}
+
 	// Object occupancy facts
 	const kindGroups = new Map<string, { total: number; occupied: number }>();
 	for (const obj of puzzle.objects) {
@@ -365,6 +440,25 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
 				},
 			});
 		}
+	}
+
+	// Empty rooms fact
+	const occupiedRoomIds = new Set(
+		placements
+			.map((p) => {
+				const r = puzzle.rooms.find((r) =>
+					r.cells.some((c) => c.row === p.coord.row && c.col === p.coord.col),
+				);
+				return r?.id;
+			})
+			.filter(Boolean),
+	);
+	const emptyCount = puzzle.rooms.filter((r) => !occupiedRoomIds.has(r.id)).length;
+	if (emptyCount > 0) {
+		facts.push({
+			description: `Exactly ${emptyCount} room(s) are empty`,
+			clue: { kind: 'empty-rooms', count: emptyCount, text: '' },
+		});
 	}
 
 	// Deduplicate by clue JSON

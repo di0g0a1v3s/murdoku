@@ -55,12 +55,18 @@ export function solve(puzzle: Puzzle, clues: Clue[]): SolveResult {
 			case 'person-on-object':
 			case 'person-in-room':
 			case 'person-not-in-room':
+			case 'person-in-row':
+			case 'person-in-col':
+			case 'person-in-corner':
+			case 'person-in-room-corner':
+			case 'person-sole-occupant':
 				cluesByPerson.get(clue.person)?.push(clue);
 				break;
 			case 'room-population':
 			case 'object-occupancy':
 			case 'person-alone-in-room':
 			case 'person-in-room-with':
+			case 'empty-rooms':
 				globalClues.push(clue);
 				break;
 			default:

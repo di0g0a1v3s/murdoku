@@ -27,9 +27,10 @@ Murdoku presents you with a grid divided into rooms. Your goal is to place all s
 **Clue types:**
 - Directional — *"A is north of B"* (row comparison), *"A is northeast of B"* (both row and column)
 - Distance — *"A is 2 columns east of B"* (column distance only, any row)
-- Object-relative — *"A is beside a chair"*, *"A is sitting in a chair"*
-- Room-based — *"A is in the library"*, *"A is in the same room as B"*, *"A is alone in the library"*, *"A is in a room with exactly 2 other people"*
-- General — *"Exactly one chair is occupied"*
+- Grid position — *"A is in row 3"*, *"A is in column 2"*, *"A is in a corner of the grid"*
+- Object-relative — *"A is beside a chair"*, *"A is sitting in a chair"*, *"A is the only person on a sofa"*
+- Room-based — *"A is in the library"*, *"A is in the same room as B"*, *"A is alone in the library"*, *"A is in a corner of the Library"*, *"A is in a room with exactly 2 other people"*
+- General — *"Exactly one chair is occupied"*, *"Exactly 2 rooms are empty"*
 
 ---
 

@@ -13,6 +13,12 @@ const CLUE_ICONS: Record<Clue['kind'], string> = {
 	'person-not-in-room': '🚫',
 	'persons-not-same-room': '↔️',
 	'person-in-room-with': '🫂',
+	'person-in-row': '↕️',
+	'person-in-col': '↔️',
+	'person-in-corner': '📐',
+	'person-in-room-corner': '📐',
+	'person-sole-occupant': '🪑',
+	'empty-rooms': '🏚️',
 };
 
 interface ClueItemProps {

@@ -82,7 +82,13 @@ export type Clue =
 	| { kind: 'object-occupancy'; objectKind: ObjectKind; count: number; text: string }
 	| { kind: 'person-not-in-room'; person: string; roomId: string; text: string }
 	| { kind: 'persons-not-same-room'; personA: string; personB: string; text: string }
-	| { kind: 'person-in-room-with'; person: string; count: number; text: string };
+	| { kind: 'person-in-room-with'; person: string; count: number; text: string }
+	| { kind: 'person-in-row'; person: string; row: number; text: string }
+	| { kind: 'person-in-col'; person: string; col: number; text: string }
+	| { kind: 'person-in-corner'; person: string; text: string }
+	| { kind: 'person-in-room-corner'; person: string; text: string }
+	| { kind: 'person-sole-occupant'; person: string; objectKind: ObjectKind; text: string }
+	| { kind: 'empty-rooms'; count: number; text: string };
 
 // ─── Solution ─────────────────────────────────────────────────────────────────
 
@@ -136,9 +142,15 @@ export function getCluePersonId(clue: Clue): string | null {
 		case 'person-alone-in-room':
 		case 'person-not-in-room':
 		case 'person-in-room-with':
+		case 'person-in-row':
+		case 'person-in-col':
+		case 'person-in-corner':
+		case 'person-in-room-corner':
+		case 'person-sole-occupant':
 			return clue.person;
 		case 'room-population':
 		case 'object-occupancy':
+		case 'empty-rooms':
 			return null;
 		default:
 			return assertNever(clue);

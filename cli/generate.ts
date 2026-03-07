@@ -249,12 +249,15 @@ async function generatePuzzle(existingTitles: string[], n: number): Promise<Puzz
 	//     (evaluated in isolation). No uniqueness check here — we have many facts to spare.
 	// (b) Minimize: greedily remove redundant clues (uniqueness + coverage only).
 	console.log('\n✂️  Step 5: Minimizing clue set...');
-
-	// TODO: weight for every Clue kind
+  // TODO: weight for every Clue kind
 	// Lower weight = sorted to front = tried for removal first = less likely to survive.
 	const CLUE_WEIGHT: Partial<Record<Clue['kind'], number>> = {
 		'person-direction': 1,
 		'person-distance': 1,
+		'person-in-row': 2,
+		'person-in-col': 2,
+		'person-in-corner': 3,
+		'person-in-room-corner': 3,
 	};
 	const DEFAULT_WEIGHT = 5;
 

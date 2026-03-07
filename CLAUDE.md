@@ -38,6 +38,12 @@ A logic puzzle game combining murder mystery storytelling with Sudoku-style grid
 - `person-not-in-room` — "A is not in the ballroom"
 - `persons-not-same-room` — "A and B are not in the same room"
 - `person-in-room-with` — "A is in a room with exactly 2 other people"
+- `person-in-row` — "A is in row 3" (1-indexed)
+- `person-in-col` — "A is in column 2" (1-indexed)
+- `person-in-corner` — "A is in a corner of the grid" (one of the 4 grid corners)
+- `person-in-room-corner` — "A is in a corner of the Library" (cell with two perpendicular room walls)
+- `person-sole-occupant` — "A is the only person sitting on a chair" (sole occupant across all instances of that object kind)
+- `empty-rooms` — "Exactly 2 rooms are empty" (general clue)
 - Clues always yield exactly one valid solution
 
 **Direction semantics:**
@@ -241,7 +247,6 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 
 ## Future Ideas
 
-- More clue types: person in row X, person in column Y, person in corner, only person in object, X empty rooms, X people in object,
 - Generate less positional clues
 - Higher res icon
 - More object types: rug, tv, car

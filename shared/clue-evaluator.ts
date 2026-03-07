@@ -490,6 +490,123 @@ function evalPersonInRoomWith(
 	return 'unknown';
 }
 
+function evalPersonInRow(
+	clue: Extract<Clue, { kind: 'person-in-row' }>,
+	assignment: Assignment,
+): EvalResult {
+	const coord = assignment.get(clue.person);
+	if (!coord) {
+		return 'unknown';
+	}
+	return coord.row === clue.row ? 'satisfied' : 'violated';
+}
+
+function evalPersonInCol(
+	clue: Extract<Clue, { kind: 'person-in-col' }>,
+	assignment: Assignment,
+): EvalResult {
+	const coord = assignment.get(clue.person);
+	if (!coord) {
+		return 'unknown';
+	}
+	return coord.col === clue.col ? 'satisfied' : 'violated';
+}
+
+function evalPersonInCorner(
+	clue: Extract<Clue, { kind: 'person-in-corner' }>,
+	assignment: Assignment,
+	puzzle: Puzzle,
+): EvalResult {
+	const coord = assignment.get(clue.person);
+	if (!coord) {
+		return 'unknown';
+	}
+	const { rows, cols } = puzzle.gridSize;
+	const isCorner =
+		(coord.row === 0 || coord.row === rows - 1) && (coord.col === 0 || coord.col === cols - 1);
+	return isCorner ? 'satisfied' : 'violated';
+}
+
+function evalPersonInRoomCorner(
+	clue: Extract<Clue, { kind: 'person-in-room-corner' }>,
+	assignment: Assignment,
+	puzzle: Puzzle,
+): EvalResult {
+	const coord = assignment.get(clue.person);
+	if (!coord) {
+		return 'unknown';
+	}
+	const { coordToRoomId } = getCaches(puzzle);
+	const roomId = coordToRoomId.get(`${coord.row},${coord.col}`);
+	if (!roomId) {
+		return 'violated';
+	}
+	const { rows, cols } = puzzle.gridSize;
+	const { row: r, col: c } = coord;
+	const isWall = (nr: number, nc: number) =>
+		nr < 0 || nr >= rows || nc < 0 || nc >= cols || coordToRoomId.get(`${nr},${nc}`) !== roomId;
+	const isCorner =
+		(isWall(r - 1, c) && isWall(r, c - 1)) ||
+		(isWall(r - 1, c) && isWall(r, c + 1)) ||
+		(isWall(r + 1, c) && isWall(r, c - 1)) ||
+		(isWall(r + 1, c) && isWall(r, c + 1));
+	return isCorner ? 'satisfied' : 'violated';
+}
+
+function evalPersonSoleOccupant(
+	clue: Extract<Clue, { kind: 'person-sole-occupant' }>,
+	assignment: Assignment,
+	puzzle: Puzzle,
+	allPersonIds: string[],
+): EvalResult {
+	const { occupiableCoordToObj } = getCaches(puzzle);
+	const coord = assignment.get(clue.person);
+	if (!coord) {
+		return 'unknown';
+	}
+	const obj = occupiableCoordToObj.get(`${coord.row},${coord.col}`);
+	if (!obj || obj.kind !== clue.objectKind) {
+		return 'violated';
+	}
+	for (const [pid, c] of assignment) {
+		if (pid === clue.person) {
+			continue;
+		}
+		const otherObj = occupiableCoordToObj.get(`${c.row},${c.col}`);
+		if (otherObj && otherObj.kind === clue.objectKind) {
+			return 'violated';
+		}
+	}
+	if (assignment.size === allPersonIds.length) {
+		return 'satisfied';
+	}
+	return 'unknown';
+}
+
+function evalEmptyRooms(
+	clue: Extract<Clue, { kind: 'empty-rooms' }>,
+	assignment: Assignment,
+	puzzle: Puzzle,
+	allPersonIds: string[],
+): EvalResult {
+	const { coordToRoomId } = getCaches(puzzle);
+	const occupiedRooms = new Set<string>();
+	for (const [, c] of assignment) {
+		const roomId = coordToRoomId.get(`${c.row},${c.col}`);
+		if (roomId) {
+			occupiedRooms.add(roomId);
+		}
+	}
+	const currentEmpty = puzzle.rooms.filter((r) => !occupiedRooms.has(r.id)).length;
+	if (currentEmpty < clue.count) {
+		return 'violated';
+	}
+	if (assignment.size === allPersonIds.length) {
+		return currentEmpty === clue.count ? 'satisfied' : 'violated';
+	}
+	return 'unknown';
+}
+
 // ─── Main Evaluator ───────────────────────────────────────────────────────────
 
 export function evaluateClue(clue: Clue, assignment: Assignment, puzzle: Puzzle): EvalResult {
@@ -519,6 +636,18 @@ export function evaluateClue(clue: Clue, assignment: Assignment, puzzle: Puzzle)
 			return evalPersonsNotSameRoom(clue, assignment, puzzle);
 		case 'person-in-room-with':
 			return evalPersonInRoomWith(clue, assignment, puzzle, allPersonIds);
+		case 'person-in-row':
+			return evalPersonInRow(clue, assignment);
+		case 'person-in-col':
+			return evalPersonInCol(clue, assignment);
+		case 'person-in-corner':
+			return evalPersonInCorner(clue, assignment, puzzle);
+		case 'person-in-room-corner':
+			return evalPersonInRoomCorner(clue, assignment, puzzle);
+		case 'person-sole-occupant':
+			return evalPersonSoleOccupant(clue, assignment, puzzle, allPersonIds);
+		case 'empty-rooms':
+			return evalEmptyRooms(clue, assignment, puzzle, allPersonIds);
 		default:
 			return assertNever(clue);
 	}
