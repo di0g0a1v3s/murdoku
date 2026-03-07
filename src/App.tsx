@@ -9,7 +9,9 @@ const collection = puzzleData as PuzzleCollection;
 export function App() {
 	const puzzles = collection.puzzles;
 	const [selectedId, setSelectedId] = useState(puzzles[0]?.id ?? '');
-	const [undoStacks, setUndoStacks] = useState<Map<string, Map<string, Set<string>>[]>>(new Map());
+	const [undoStacks, setUndoStacks] = useState<
+		Map<string, { marks: Map<string, Set<string>>; committed: Map<string, string> }[]>
+	>(new Map());
 
 	const [completedIds, setCompletedIds] = useState<Set<string>>(() => {
 		try {
@@ -33,7 +35,10 @@ export function App() {
 		});
 	}
 
-	function handleUndoStackChange(id: string, stack: Map<string, Set<string>>[]) {
+	function handleUndoStackChange(
+		id: string,
+		stack: { marks: Map<string, Set<string>>; committed: Map<string, string> }[],
+	) {
 		setUndoStacks((prev) => new Map(prev).set(id, stack));
 	}
 

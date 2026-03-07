@@ -21,8 +21,9 @@ Murdoku presents you with a grid divided into named rooms, each with a distinct 
 **Solving:**
 - Tap any empty cell to open a popup — select a person's initial to mark them there, or ✕ to mark the cell empty
 - Tap again to remove a mark
-- Use **Clear** to wipe all your marks and start fresh (without losing your completed puzzles)
-- When you've placed everyone, hit **Verify Solution** to check your answer
+- When confident about a placement, hit **Commit** in the popup to lock it in — this removes that person from all other cells and marks the rest of their row and column with ✕. Committed letters turn green on the grid.
+- Once every person is committed, the puzzle auto-checks and tells you if you solved it
+- Use **Clear** to wipe all marks and start fresh (without losing your completed puzzles)
 - Stuck? Use **Reveal Solution** to see the answer
 - Expand **How to play** at the bottom for a quick rule reminder
 

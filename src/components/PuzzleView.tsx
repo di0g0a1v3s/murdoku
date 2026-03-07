@@ -5,11 +5,13 @@ import { CluesPanel } from './CluesPanel';
 import { MurdererReveal } from './MurdererReveal';
 import { CellPopup } from './CellPopup';
 
+type UndoEntry = { marks: Map<string, Set<string>>; committed: Map<string, string> };
+
 interface PuzzleViewProps {
 	puzzle: Puzzle;
 	isCompleted: boolean;
-	undoStack: Map<string, Set<string>>[];
-	onUndoStackChange: (stack: Map<string, Set<string>>[]) => void;
+	undoStack: UndoEntry[];
+	onUndoStackChange: (stack: UndoEntry[]) => void;
 	onComplete: () => void;
 	onReset: () => void;
 }
@@ -25,6 +27,7 @@ function useWindowWidth() {
 }
 
 const PROGRESS_KEY = (id: string) => `murdoku-progress-${id}`;
+const COMMITTED_KEY = (id: string) => `murdoku-committed-${id}`;
 
 function loadMarks(puzzleId: string): Map<string, Set<string>> {
 	try {
@@ -34,6 +37,19 @@ function loadMarks(puzzleId: string): Map<string, Set<string>> {
 		}
 		const parsed = JSON.parse(stored) as Record<string, string[]>;
 		return new Map(Object.entries(parsed).map(([k, v]) => [k, new Set(v)]));
+	} catch {
+		return new Map();
+	}
+}
+
+function loadCommitted(puzzleId: string): Map<string, string> {
+	try {
+		const stored = localStorage.getItem(COMMITTED_KEY(puzzleId));
+		if (!stored) {
+			return new Map();
+		}
+		const parsed = JSON.parse(stored) as Record<string, string>;
+		return new Map(Object.entries(parsed));
 	} catch {
 		return new Map();
 	}
@@ -53,12 +69,27 @@ export function PuzzleView({
 	// cellMarks: "row,col" → Set of personId | 'X'
 	// Initialized from localStorage; component remounts when puzzle changes (key={puzzle.id} in App)
 	const [cellMarks, setCellMarks] = useState<Map<string, Set<string>>>(() => loadMarks(puzzle.id));
+	const [committedCells, setCommittedCells] = useState<Map<string, string>>(() =>
+		loadCommitted(puzzle.id),
+	);
 	const [popup, setPopup] = useState<{ row: number; col: number; x: number; y: number } | null>(
 		null,
 	);
 	const [verifyResult, setVerifyResult] = useState<'correct' | 'wrong' | null>(
 		isCompleted ? 'correct' : null,
 	);
+
+	const nonOccupiable = useMemo(() => {
+		const s = new Set<string>();
+		for (const obj of puzzle.objects) {
+			if (obj.occupiable === 'non-occupiable') {
+				for (const c of obj.cells) {
+					s.add(`${c.row},${c.col}`);
+				}
+			}
+		}
+		return s;
+	}, [puzzle.objects]);
 
 	// Persist marks to localStorage whenever they change
 	useEffect(() => {
@@ -74,6 +105,20 @@ export function PuzzleView({
 		}
 	}, [cellMarks, puzzle.id]);
 
+	// Persist committed cells to localStorage
+	useEffect(() => {
+		try {
+			if (committedCells.size === 0) {
+				localStorage.removeItem(COMMITTED_KEY(puzzle.id));
+			} else {
+				const obj = Object.fromEntries(committedCells);
+				localStorage.setItem(COMMITTED_KEY(puzzle.id), JSON.stringify(obj));
+			}
+		} catch {
+			/* ignore */
+		}
+	}, [committedCells, puzzle.id]);
+
 	const windowWidth = useWindowWidth();
 
 	function handleCellClick(row: number, col: number, e: React.MouseEvent) {
@@ -87,7 +132,7 @@ export function PuzzleView({
 			return;
 		}
 		const key = `${popup.row},${popup.col}`;
-		onUndoStackChange([...undoStack, cellMarks]);
+		onUndoStackChange([...undoStack, { marks: cellMarks, committed: committedCells }]);
 		setCellMarks((prev) => {
 			const next = new Map(prev);
 			const cell = new Set(prev.get(key) ?? []);
@@ -113,8 +158,83 @@ export function PuzzleView({
 			}
 			return next;
 		});
+		// Toggling a mark un-commits the cell
+		setCommittedCells((prev) => {
+			if (!prev.has(key)) {
+				return prev;
+			}
+			const next = new Map(prev);
+			next.delete(key);
+			return next;
+		});
 		setVerifyResult(null);
 		setPopup(null);
+	}
+
+	function handleCommit(row: number, col: number, personId: string) {
+		const key = `${row},${col}`;
+		onUndoStackChange([...undoStack, { marks: cellMarks, committed: committedCells }]);
+
+		// Remove personId from all other cells; set this cell to exactly {personId}
+		const newMarks = new Map(cellMarks);
+		for (const [k, marks] of newMarks) {
+			if (k === key) {
+				continue;
+			}
+			if (marks.has(personId)) {
+				const newSet = new Set(marks);
+				newSet.delete(personId);
+				if (newSet.size === 0) {
+					newMarks.delete(k);
+				} else {
+					newMarks.set(k, newSet);
+				}
+			}
+		}
+		newMarks.set(key, new Set([personId]));
+
+		// Commit this cell
+		const newCommitted = new Map(committedCells);
+		newCommitted.set(key, personId);
+
+		// Cross out all other occupiable cells in the same row or column that aren't committed
+		for (let r = 0; r < puzzle.gridSize.rows; r++) {
+			for (let c = 0; c < puzzle.gridSize.cols; c++) {
+				const k = `${r},${c}`;
+				if (k === key) {
+					continue;
+				}
+				if (r !== row && c !== col) {
+					continue;
+				}
+				if (newCommitted.has(k)) {
+					continue;
+				}
+				if (nonOccupiable.has(k)) {
+					continue;
+				}
+				newMarks.set(k, new Set(['X']));
+			}
+		}
+
+		setCellMarks(newMarks);
+		setCommittedCells(newCommitted);
+		setPopup(null);
+		setVerifyResult(null);
+
+		// Auto-verify when all people are committed
+		if (newCommitted.size === puzzle.people.length) {
+			const { placements } = puzzle.solution;
+			const correct = placements.every(
+				({ personId: pid, coord }) => newCommitted.get(`${coord.row},${coord.col}`) === pid,
+			);
+			if (correct) {
+				setVerifyResult('correct');
+				onComplete();
+			} else {
+				setVerifyResult('wrong');
+			}
+		}
 	}
 
 	function handleUndo() {
@@ -123,7 +243,8 @@ export function PuzzleView({
 		}
 		const next = [...undoStack];
 		const last = next.pop()!;
-		setCellMarks(last);
+		setCellMarks(last.marks);
+		setCommittedCells(last.committed);
 		setVerifyResult(null);
 		onUndoStackChange(next);
 	}
@@ -139,48 +260,16 @@ export function PuzzleView({
 		return () => window.removeEventListener('keydown', onKeyDown);
 	});
 
-	function handleVerify() {
-		const { placements } = puzzle.solution;
-
-		// Collect all person marks from cellMarks (ignore X)
-		const userPlacements: { personId: string; key: string }[] = [];
-		for (const [key, marks] of cellMarks) {
-			const personIds = [...marks].filter((m) => m !== 'X');
-			if (personIds.length > 1) {
-				setVerifyResult('wrong');
-				return;
-			}
-			if (personIds.length === 1) {
-				userPlacements.push({ personId: personIds[0]!, key });
-			}
-		}
-
-		// Must have exactly one mark per solution placement, nothing extra
-		if (userPlacements.length !== placements.length) {
-			setVerifyResult('wrong');
-			return;
-		}
-
-		for (const { personId, coord } of placements) {
-			const key = `${coord.row},${coord.col}`;
-			if (!userPlacements.some((u) => u.key === key && u.personId === personId)) {
-				setVerifyResult('wrong');
-				return;
-			}
-		}
-
-		setVerifyResult('correct');
-		onComplete();
-	}
-
 	function handleClear() {
 		setCellMarks(new Map());
+		setCommittedCells(new Map());
 		onUndoStackChange([]);
 		setVerifyResult(null);
 	}
 
 	function handleReset() {
 		setCellMarks(new Map());
+		setCommittedCells(new Map());
 		onUndoStackChange([]);
 		setVerifyResult(null);
 		onReset();
@@ -198,7 +287,16 @@ export function PuzzleView({
 		return m;
 	}, [puzzle.solution.placements]);
 
+	const solutionCommitted = useMemo(() => {
+		const m = new Map<string, string>();
+		for (const p of puzzle.solution.placements) {
+			m.set(`${p.coord.row},${p.coord.col}`, p.personId);
+		}
+		return m;
+	}, [puzzle.solution.placements]);
+
 	const effectiveMarks = showSolution ? solutionMarks : cellMarks;
+	const effectiveCommitted = showSolution ? solutionCommitted : committedCells;
 
 	const murderer = puzzle.people.find((p) => p.id === puzzle.solution.murdererId)!;
 	const victim = puzzle.people.find((p) => p.id === puzzle.solution.victimId)!;
@@ -214,6 +312,11 @@ export function PuzzleView({
 		setShowSolution(false);
 		setShowRevealModal(false);
 	}
+
+	const popupMarks = popup
+		? (cellMarks.get(`${popup.row},${popup.col}`) ?? new Set<string>())
+		: new Set<string>();
+	const popupCommitted = popup ? committedCells.has(`${popup.row},${popup.col}`) : false;
 
 	return (
 		<div
@@ -334,11 +437,12 @@ export function PuzzleView({
 							puzzle={puzzle}
 							cellSize={cellSize}
 							cellMarks={effectiveMarks}
+							committedCells={effectiveCommitted}
 							onCellClick={showSolution ? undefined : handleCellClick}
 						/>
 					</div>
 
-					{/* Verify / result */}
+					{/* Result banner / controls */}
 					{!showSolution &&
 						(verifyResult === 'correct' ? (
 							<div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -377,22 +481,6 @@ export function PuzzleView({
 								style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}
 							>
 								<div style={{ display: 'flex', gap: 8 }}>
-									<button
-										onClick={handleVerify}
-										style={{
-											padding: '10px 28px',
-											background: '#1a1a2e',
-											color: 'white',
-											border: 'none',
-											borderRadius: 8,
-											fontSize: 17,
-											fontWeight: 700,
-											cursor: 'pointer',
-											boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-										}}
-									>
-										Verify Solution
-									</button>
 									<button
 										onClick={handleUndo}
 										disabled={undoStack.length === 0}
@@ -550,9 +638,10 @@ export function PuzzleView({
 						no one else.
 					</p>
 					<p style={{ margin: 0 }}>
-						Click any cell to annotate it with a suspect's initial (or ✕ to rule someone out). Use
-						the clues to narrow down who goes where, then hit <strong>Verify Solution</strong> when
-						you're confident.
+						Click any cell to annotate it with a suspect&apos;s initial (or ✕ to rule someone out).
+						When you&apos;re confident about a placement, hit <strong>Commit</strong> to lock it in
+						— this clears that person from other cells and marks the rest of their row and column
+						with ✕. Once everyone is committed, you&apos;ll find out if you solved it.
 					</p>
 				</div>
 			</details>
@@ -561,9 +650,11 @@ export function PuzzleView({
 			{popup && (
 				<CellPopup
 					people={puzzle.people}
-					marks={cellMarks.get(`${popup.row},${popup.col}`) ?? new Set()}
+					marks={popupMarks}
+					committed={popupCommitted}
 					position={{ x: popup.x, y: popup.y }}
 					onToggle={handleToggleMark}
+					onCommit={(personId) => handleCommit(popup.row, popup.col, personId)}
 					onClose={() => setPopup(null)}
 				/>
 			)}

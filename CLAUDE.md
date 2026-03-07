@@ -222,11 +222,11 @@ Grid uses **layered CSS Grid** (not SVG/Canvas):
 2. Room name labels (topmost-leftmost actual room cell — never outside the room)
 3. Cell borders (thick = room boundary, thin = intra-room) + click targets
 4. Object sprites (Lucide icon + label, spanning correct grid cells)
-5. Cell marks — player annotations (person initial in purple/red, or ✕); when solution is revealed, solution placements are shown using the same marks layer
+5. Cell marks — player annotations (person initial in purple/red/green, or ✕); when solution is revealed, solution placements shown as committed (green) using the same marks layer
 
-**Interactive solving:** clicking an occupiable cell opens a popup (`CellPopup`) with one button per person (initial letter) plus an X. Clicking a letter toggles that mark on the cell (multiple people per cell allowed; X is exclusive). Popup closes after each selection. Marks persist in `localStorage` per puzzle (`murdoku-progress-{id}`).
+**Interactive solving:** clicking an occupiable cell opens a popup (`CellPopup`) with one button per person (initial letter) plus an X. Clicking a letter toggles that mark on the cell (multiple people per cell allowed; X is exclusive). Popup closes after each selection. Marks persist in `localStorage` per puzzle (`murdoku-progress-{id}`). Committed cells persist in `localStorage` separately (`murdoku-committed-{id}`).
 
-**Verify Solution:** button checks that user's marks exactly match the solution placements (one person per cell, all placed, nothing extra; X marks ignored). Correct → green banner + marks puzzle complete. Wrong → red hint message.
+**Commit:** popup shows a green "Commit ✓" button (active only when exactly one person is marked). Committing: (1) removes that person from all other cells, (2) crosses out all other occupiable cells in the same row/col that aren't already committed, (3) turns the letter green on the grid. When all people are committed, auto-checks the solution: correct → green banner + marks complete; wrong → red hint. Action is undoable.
 
 **Completed puzzles:** stored in `localStorage` (`murdoku-completed`). `PuzzleSelector` shows completed puzzles in green with a ✓ prefix, grouped by difficulty (Easy ≤6 people, Medium 7–9, Hard 10+). A Reset button clears completion and progress.
 
@@ -248,6 +248,7 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 - [x] PWA — installable, works offline after first visit
 - [x] Clear board button — wipes marks without affecting completed state
 - [x] How to play collapsible section in the puzzle UI
+- [x] Commit mechanic — lock in placements; auto-verifies when all committed
 
 ## Future Ideas
 

@@ -26,6 +26,7 @@ interface GridCanvasProps {
 	puzzle: Puzzle;
 	cellSize: number;
 	cellMarks?: Map<string, Set<string>>;
+	committedCells?: Map<string, string>;
 	onCellClick?: (row: number, col: number, e: React.MouseEvent) => void;
 }
 
@@ -33,7 +34,13 @@ function getRoomAt(coord: Coord, rooms: Room[]): Room | undefined {
 	return rooms.find((r) => r.cells.some((c) => c.row === coord.row && c.col === coord.col));
 }
 
-export function GridCanvas({ puzzle, cellSize, cellMarks, onCellClick }: GridCanvasProps) {
+export function GridCanvas({
+	puzzle,
+	cellSize,
+	cellMarks,
+	committedCells,
+	onCellClick,
+}: GridCanvasProps) {
 	const { gridSize, rooms, objects, people } = puzzle;
 	const { rows, cols } = gridSize;
 
@@ -224,17 +231,24 @@ export function GridCanvas({ puzzle, cellSize, cellMarks, onCellClick }: GridCan
 										if (!person) {
 											return null;
 										}
+										const letter = person.name[0].toUpperCase();
+										const isCommitted = committedCells?.get(key) === pid;
+										const color = isCommitted
+											? '#15803d'
+											: person.role === 'victim'
+												? '#dc2626'
+												: '#7c3aed';
 										return (
 											<span
 												key={pid}
 												style={{
 													fontSize,
 													fontWeight: 700,
-													color: person.role === 'victim' ? '#dc2626' : '#7c3aed',
+													color,
 													lineHeight: 1,
 												}}
 											>
-												{person.name[0].toUpperCase()}
+												{letter}
 											</span>
 										);
 									})
