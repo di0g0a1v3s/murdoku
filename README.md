@@ -140,9 +140,14 @@ npm run preview  # Preview the production build
 ## Puzzle Generation Pipeline
 
 ```
-LLM → theme (title, rooms, characters)
+LLM → theme (title, rooms with size percentages, characters)
   ↓
-Algorithm → grid layout (Voronoi BFS room partitioning + object placement)
+Algorithm → grid layout
+            - Weighted Voronoi BFS: each room gets a sizePercentage target;
+              BFS always expands the room most behind its target proportion
+              (single seed per room keeps rooms contiguous)
+            - Object placement: required objects placed with backtracking,
+              optional objects placed greedily (~1 per 4 room cells)
   ↓
 Algorithm → valid placement (backtracking Latin-square solver)
             enforces: 1 person/row, 1 person/col, murder room = exactly 2 people

@@ -1,6 +1,6 @@
 import { randomInt } from 'crypto';
 import type { Clue, Puzzle } from '../shared/types.js';
-import { assertNever } from '../shared/types.js';
+import { getCluePersonId } from '../shared/types.js';
 import { solve } from '../shared/solver.js';
 import { evaluateClue } from '../shared/clue-evaluator.js';
 import { generateTheme, generateAllTexts, setDebug } from './llm-client.js';
@@ -136,8 +136,6 @@ async function generatePuzzle(existingTitles: string[], n: number): Promise<Puzz
 	for (let attempt = 0; attempt < MAX_LAYOUT_RETRIES; attempt++) {
 		console.log(`\n🏗️  Step 2: Building layout (attempt ${attempt + 1})...`);
 		try {
-			// TODO start removing rooms on each attempt
-			// TODO add more objects for bigger puzzles
 			const candidate = buildLayout(theme, layoutSeed + attempt, n, n);
 			if (hasEnoughOccupiableCells(candidate.rooms, candidate.objects, n)) {
 				layout = candidate;
@@ -215,28 +213,6 @@ async function generatePuzzle(existingTitles: string[], n: number): Promise<Puzz
 		const c = f.clue as Record<string, unknown>;
 		return c['person'] !== victimId && c['personA'] !== victimId;
 	});
-
-	function getCluePersonId(clue: Clue): string | null {
-		switch (clue.kind) {
-			case 'person-direction':
-			case 'person-distance':
-			case 'persons-same-room':
-			case 'persons-not-same-room':
-				return clue.personA;
-			case 'person-beside-object':
-			case 'person-on-object':
-			case 'person-in-room':
-			case 'person-alone-in-room':
-			case 'person-not-in-room':
-			case 'person-in-room-with':
-				return clue.person;
-			case 'room-population':
-			case 'object-occupancy':
-				return null;
-			default:
-				return assertNever(clue);
-		}
-	}
 
 	// Returns true if this suspect's clues alone (evaluated in isolation, no
 	// Latin-square reasoning) leave exactly one compatible cell.
@@ -336,10 +312,12 @@ async function generatePuzzle(existingTitles: string[], n: number): Promise<Puzz
 			const candidate = [...clues.slice(0, i), ...clues.slice(i + 1)];
 			const covered = new Set(candidate.map((c) => getCluePersonId(c)).filter(Boolean));
 			if ([...suspectIds].some((id) => !covered.has(id))) {
+				console.log(`  📌 Kept (last clue for suspect): ${clues[i]!.text}`);
 				i++;
 				continue;
 			}
 			if (solve(partialPuzzle, candidate).status !== 'unique') {
+				console.log(`  📌 Kept (needed for uniqueness): ${clues[i]!.text}`);
 				i++;
 				continue;
 			}
@@ -353,8 +331,6 @@ async function generatePuzzle(existingTitles: string[], n: number): Promise<Puzz
 		}
 	}
 	console.log(`✅ Minimized to ${clues.length} clues`);
-
-	// TODO: not allow more than 15% "positional" clues
 
 	// Step 6: Generate all clue texts in one LLM call
 	console.log('\n✍️  Step 6: Generating clue texts...');

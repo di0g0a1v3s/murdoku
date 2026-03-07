@@ -223,6 +223,7 @@ export async function generateAllTexts(
 			: '';
 
 	// TODO: "Anya, alone is the Server Room, is south of Chen Wei" -> should be "Anya is alone in the Server Room and south of Chen Wei"
+	// TODO: "in a room with exactly 0 other people." -> "Alone in a room"
 	const prompt = `You are writing clue text for a Murdoku murder mystery logic puzzle.
 
 For each suspect, write exactly ONE natural sentence covering ALL of their listed facts.

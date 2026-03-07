@@ -121,6 +121,30 @@ export interface PuzzleCollection {
 	puzzles: Puzzle[];
 }
 
+// ─── Clue Helpers ─────────────────────────────────────────────────────────────
+
+export function getCluePersonId(clue: Clue): string | null {
+	switch (clue.kind) {
+		case 'person-direction':
+		case 'person-distance':
+		case 'persons-same-room':
+		case 'persons-not-same-room':
+			return clue.personA;
+		case 'person-beside-object':
+		case 'person-on-object':
+		case 'person-in-room':
+		case 'person-alone-in-room':
+		case 'person-not-in-room':
+		case 'person-in-room-with':
+			return clue.person;
+		case 'room-population':
+		case 'object-occupancy':
+			return null;
+		default:
+			return assertNever(clue);
+	}
+}
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 export const OBJECT_OCCUPIABILITY: Record<ObjectKind, Occupiability> = {

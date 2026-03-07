@@ -272,63 +272,87 @@ export function buildLayout(
 		const allowed = theme.rooms[roomIdx]?.allowedObjects ?? [];
 		const required = theme.rooms[roomIdx]?.requiredObjects ?? [];
 
-		// Required objects first, then optional — fall back to all templates if allowed is empty
+		const fits = (template: ObjectTemplate, anchor: Coord): boolean => {
+			const cells = getCellsForTemplate(anchor, template);
+			return (
+				cellsInRoom(cells, room) &&
+				cellsNotOccupied(cells, usedCells) &&
+				hasFreeAdjacent(cells, room, usedCells, template.minFreeAdjacent) &&
+				(!template.mustTouchWall || touchesWall(cells, room, gridRows, gridCols))
+			);
+		};
+
+		const placeTemplate = (template: ObjectTemplate, anchor: Coord, slotIdx: number): void => {
+			const cells = getCellsForTemplate(anchor, template);
+			objects.push({
+				id: `${template.kind}-${room.id}-${slotIdx + 1}`,
+				kind: template.kind,
+				occupiable: OBJECT_OCCUPIABILITY[template.kind],
+				cells,
+			});
+			cells.forEach((c) => usedCells.add(`${c.row},${c.col}`));
+		};
+
+		const unplaceTemplate = (template: ObjectTemplate, anchor: Coord): void => {
+			const cells = getCellsForTemplate(anchor, template);
+			objects.splice(
+				objects.findIndex((o) => o.id.startsWith(`${template.kind}-${room.id}-`)),
+				1,
+			);
+			cells.forEach((c) => usedCells.delete(`${c.row},${c.col}`));
+		};
+
+		// Phase 1: backtracking placement of required objects so ordering never blocks them.
 		const requiredTemplates = shuffle(
 			OBJECT_TEMPLATES.filter((t) => required.includes(t.kind)),
 			rng,
 		);
+		const roomCellsShuffled = shuffle([...room.cells], rng);
+
+		function backtrackRequired(idx: number): boolean {
+			if (idx === requiredTemplates.length) {
+				return true;
+			}
+			const template = requiredTemplates[idx]!;
+			for (const anchor of roomCellsShuffled) {
+				if (!fits(template, anchor)) {
+					continue;
+				}
+				placeTemplate(template, anchor, idx);
+				if (backtrackRequired(idx + 1)) {
+					return true;
+				}
+				unplaceTemplate(template, anchor);
+			}
+			return false;
+		}
+
+		if (!backtrackRequired(0)) {
+			throw new Error(
+				`Required objects [${required.join(', ')}] could not all be placed in room '${room.name}'`,
+			);
+		}
+
+		// Phase 2: greedily place optional objects up to the target count.
+		// Scale with room size: ~1 object per 4 cells, with ±1 randomness.
+		const numOptional = Math.max(0, Math.floor(room.cells.length / 4) + Math.floor(rng() * 2));
 		const optionalTemplates = shuffle(
 			allowed.length > 0
 				? OBJECT_TEMPLATES.filter((t) => allowed.includes(t.kind) && !required.includes(t.kind))
 				: OBJECT_TEMPLATES.filter((t) => !required.includes(t.kind)),
 			rng,
 		);
-		const orderedTemplates = [...requiredTemplates, ...optionalTemplates];
-		const numObjects = Math.max(required.length, Math.floor(rng() * 2) + 1);
-		let placed = 0;
-		const placedKinds = new Set<ObjectKind>();
-
-		// For each slot: try templates in priority order (required first), pick the first that fits.
-		// Iterating by slot (not by template) means the same kind can be placed multiple times.
-		while (placed < numObjects) {
-			let placedOne = false;
-			for (const template of orderedTemplates) {
-				const roomCells = shuffle([...room.cells], rng);
-				for (const anchor of roomCells) {
-					const cells = getCellsForTemplate(anchor, template);
-					if (
-						cellsInRoom(cells, room) &&
-						cellsNotOccupied(cells, usedCells) &&
-						hasFreeAdjacent(cells, room, usedCells, template.minFreeAdjacent) &&
-						(!template.mustTouchWall || touchesWall(cells, room, gridRows, gridCols))
-					) {
-						const id = `${template.kind}-${room.id}-${placed + 1}`;
-						objects.push({
-							id,
-							kind: template.kind,
-							occupiable: OBJECT_OCCUPIABILITY[template.kind],
-							cells,
-						});
-						cells.forEach((c) => usedCells.add(`${c.row},${c.col}`));
-						placed++;
-						placedKinds.add(template.kind);
-						placedOne = true;
-						break;
-					}
-				}
-				if (placedOne) {
+		let optionalPlaced = 0;
+		for (const template of optionalTemplates) {
+			if (optionalPlaced >= numOptional) {
+				break;
+			}
+			for (const anchor of shuffle([...room.cells], rng)) {
+				if (fits(template, anchor)) {
+					placeTemplate(template, anchor, required.length + optionalPlaced);
+					optionalPlaced++;
 					break;
 				}
-			}
-			if (!placedOne) {
-				break;
-			} // no template fits anywhere in this room — stop
-		}
-
-		// Every required object must have been placed — otherwise this layout is invalid
-		for (const req of required) {
-			if (!placedKinds.has(req)) {
-				throw new Error(`Required object '${req}' could not be placed in room '${room.name}'`);
 			}
 		}
 	}

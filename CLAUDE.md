@@ -110,6 +110,7 @@ murdoku/
 - **LLM:** Google Gemini (`gemini-2.0-flash`) — requires `GEMINI_API_KEY`
 - **Hosting:** GitHub Pages (single `index.html`)
 - **PWA:** manual manifest + cache-first service worker; no extra plugin (avoids conflict with `viteSingleFile`); all URLs relative (`./`) so works under the `/murdoku/` subpath without a Vite `base` change
+- **Linting:** `eslint-plugin-prettier` (prettier as ESLint rule — single `npm run lint` command); tabs, single quotes, semicolons, 100-char print width. Pre-commit hook runs `lint-fix`; pre-push hook runs `lint` (via Husky).
 
 ---
 
@@ -133,7 +134,11 @@ GEMINI_API_KEY=your_key npm run generate -- --debug              # Print all LLM
 1. LLM  → theme (title, subtitle, room names, colors, character names/emojis)
            victim name starts with V; suspects start with A, B, C, D, E
            temperature=1.5 for maximum variety
-2. Algo → grid layout (Voronoi BFS room partitioning + random object placement)
+2. Algo → grid layout (weighted Voronoi BFS room partitioning + object placement)
+           - LLM provides `sizePercentage` per room; BFS expands the room most behind its
+             target proportion at each step (single seed per room preserves contiguity)
+           - Object placement: Phase 1 backtracks to place required objects; Phase 2 greedily
+             places optional objects (~1 per 4 room cells)
 3. Algo → valid placement (backtracking Latin-square placer)
            enforces: 1/row, 1/col, no non-occupiable cells,
            victim's room has exactly 2 people (victim + murderer)
