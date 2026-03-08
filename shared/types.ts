@@ -125,7 +125,7 @@ export interface Puzzle {
 
 // ─── Full Puzzle (stored in JSON, used by the frontend) ──────────────────────
 
-export type PuzzleDifficulty = 'easy' | 'easy+' | 'medium' | 'medium+' | 'hard' | 'hard+';
+export type PuzzleDifficulty = 'easy' | 'medium' | 'hard' | 'very-hard';
 
 export interface FullPuzzle extends Puzzle {
   clues: StoredClue[];

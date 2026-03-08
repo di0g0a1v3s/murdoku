@@ -269,6 +269,7 @@ export function GridCanvas({
                         }}
                       >
                         <span style={{ fontSize, fontWeight: 700, color, lineHeight: 1 }}>
+                          {/* TODO: center */}
                           {letter}
                         </span>
                       </span>

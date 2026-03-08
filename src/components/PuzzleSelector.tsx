@@ -11,31 +11,20 @@ function getDifficulty(puzzle: FullPuzzle): PuzzleDifficulty {
   return puzzle.difficulty;
 }
 
-const DIFFICULTY_ORDER: PuzzleDifficulty[] = [
-  'easy',
-  'easy+',
-  'medium',
-  'medium+',
-  'hard',
-  'hard+',
-];
+const DIFFICULTY_ORDER: PuzzleDifficulty[] = ['easy', 'medium', 'hard', 'very-hard'];
 
 const DIFFICULTY_LABEL: Record<PuzzleDifficulty, string> = {
   easy: 'Easy',
-  'easy+': 'Easy+',
   medium: 'Medium',
-  'medium+': 'Medium+',
   hard: 'Hard',
-  'hard+': 'Hard+',
+  'very-hard': 'Very Hard',
 };
 
 const DIFFICULTY_COLOR: Record<PuzzleDifficulty, string> = {
   easy: '#16a34a',
-  'easy+': '#15803d',
   medium: '#d97706',
-  'medium+': '#b45309',
   hard: '#dc2626',
-  'hard+': '#991b1b',
+  'very-hard': '#7f1d1d',
 };
 
 export function PuzzleSelector({
@@ -83,11 +72,15 @@ export function PuzzleSelector({
                     borderRadius: 20,
                     border: '2px solid',
                     borderColor: isSelected
-                      ? '#7c3aed'
+                      ? DIFFICULTY_COLOR[puzzle.difficulty]
                       : isCompleted
                         ? '#16a34a'
                         : 'rgba(0,0,0,0.15)',
-                    background: isSelected ? '#7c3aed' : isCompleted ? '#f0fdf4' : 'white',
+                    background: isSelected
+                      ? DIFFICULTY_COLOR[puzzle.difficulty]
+                      : isCompleted
+                        ? '#f0fdf4'
+                        : 'white',
                     color: isSelected ? 'white' : isCompleted ? '#15803d' : '#333',
                     fontSize: 15,
                     fontWeight: 600,

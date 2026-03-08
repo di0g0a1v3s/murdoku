@@ -12,12 +12,12 @@ A logic puzzle game combining murder mystery storytelling with Sudoku-style grid
 ## Game Rules
 
 **Grid:**
-- N×N grid (default 6×6, configurable via `--people=N`), divided into named rooms
+- N×N grid (size determined by difficulty — easy: 5×5, medium: 6×6, hard: 9×9, very-hard: 12×12), divided into named rooms
 - Cells can be: empty, occupiable object (chair, bed, sofa, car, rug…), or non-occupiable object (table, plant, bookshelf, tv…)
 - Objects can span multiple cells
 
 **People:**
-- N total = 1 victim + (N-1) suspects; default N=6, minimum N=4
+- N total = 1 victim + (N-1) suspects; N determined by difficulty (5/6/9/12), minimum N=5
 - Naming convention: victim name starts with V; suspects start with A, B, C, D, E, F, … (alphabetically)
 - One person per row, one per column (Latin square constraint)
 - People cannot be placed on non-occupiable object cells
@@ -72,7 +72,7 @@ murdoku/
 │   └── clue-evaluator.ts      # Per-clue-kind evaluators used by solver
 │
 ├── cli/                       # Developer puzzle generator (never bundled)
-│   ├── generate.ts            # Entry: npm run generate [--count=N] [--people=N] [--debug]
+│   ├── generate.ts            # Entry: npm run generate [--count=N] [--difficulty=easy|medium|hard|very-hard] [--debug]
 │   ├── llm-client.ts          # Vercel AI SDK + Gemini (theme + all clue texts)
 │   ├── layout-builder.ts      # Voronoi BFS room partitioning + object placement
 │   ├── placer.ts              # Latin-square backtracking placer; assigns people to cells after backtracking
@@ -91,7 +91,7 @@ murdoku/
 │       ├── CluesPanel.tsx     # Scrollable evidence list
 │       ├── ClueItem.tsx       # Single clue with kind icon + text
 │       ├── PuzzleView.tsx     # Full puzzle layout (grid + clues + controls)
-│       └── PuzzleSelector.tsx # Puzzle picker grouped by difficulty, completed state
+│       └── PuzzleSelector.tsx # Puzzle picker grouped by difficulty (easy/medium/hard/very-hard)
 │
 ├── public/
 │   ├── icon.svg               # PWA home screen icon (512×512, dark bg + 🕵️)
@@ -122,13 +122,15 @@ murdoku/
 ## Key Commands
 
 ```bash
-npm run dev                                                       # Dev server
-npm run build                                                     # Build → dist/index.html (single file)
-npm run clear-puzzles                                             # Reset puzzles.json to empty
-GEMINI_API_KEY=your_key npm run generate                          # Generate 1 puzzle (6×6)
-GEMINI_API_KEY=your_key npm run generate -- --count=5            # Generate 5 puzzles
-GEMINI_API_KEY=your_key npm run generate -- --people=4           # Generate a 4×4 puzzle
-GEMINI_API_KEY=your_key npm run generate -- --debug              # Print all LLM prompts/responses
+npm run dev                                                                      # Dev server
+npm run build                                                                    # Build → dist/index.html (single file)
+npm run clear-puzzles                                                            # Reset puzzles.json to empty
+GEMINI_API_KEY=your_key npm run generate                                         # Generate 1 medium puzzle (6×6)
+GEMINI_API_KEY=your_key npm run generate -- --count=5                           # Generate 5 puzzles
+GEMINI_API_KEY=your_key npm run generate -- --difficulty=easy                   # Generate an easy puzzle (5×5)
+GEMINI_API_KEY=your_key npm run generate -- --difficulty=hard                   # Generate a hard puzzle (9×9)
+GEMINI_API_KEY=your_key npm run generate -- --difficulty=very-hard              # Generate a very-hard puzzle (12×12)
+GEMINI_API_KEY=your_key npm run generate -- --debug                             # Print all LLM prompts/responses
 ```
 
 ---
@@ -136,19 +138,21 @@ GEMINI_API_KEY=your_key npm run generate -- --debug              # Print all LLM
 ## CLI Generation Pipeline
 
 ```
-1. LLM  → theme (title, subtitle, room names, patterns, character names/emojis)
-           victim name starts with V; suspects start with A, B, C, D, E
+1. LLM  → theme (title, subtitle, room names, patterns, character names/emojis, murdererInitial)
+           victim name starts with V; suspects start with A, B, C, D, E, …
+           LLM also picks which suspect is the murderer (murdererInitial)
            temperature=1.5 for maximum variety
 2. Algo → grid layout (weighted Voronoi BFS room partitioning + object placement)
            - LLM provides `sizePercentage` per room; BFS expands the room most behind its
              target proportion at each step (single seed per room preserves contiguity)
-           - Object placement: Phase 1 backtracks to place required objects; Phase 2 greedily
-             places optional objects (~1 per 4 room cells)
+           - Object placement: Phase 1 backtracks to place required objects (one per required kind,
+             trying all valid shapes/rotations); Phase 2 greedily places optional objects (~1 per 4 cells)
+           - requiredObjects capped at 1 for N≤6, 2 for N>6
 3. Algo → valid placement (backtracking Latin-square placer)
            enforces: 1/row, 1/col, no non-occupiable cells,
            some room has exactly 2 people; after backtracking, people are
            assigned to cells: victim+murderer → the 2-person room (murderer
-           chosen randomly from suspects), remaining suspects → other cells
+           is the LLM-chosen suspect), remaining suspects → other cells
 4. Algo → computeAllFacts() — exhaustive list of all true statements; victim facts excluded
            (person, personA, and personB === victimId all filtered out)
            facts are weighted and sorted: person-direction/distance (weight 1) first,
@@ -232,7 +236,7 @@ Grid uses **layered CSS Grid** (not SVG/Canvas):
 
 **Solution reveal:** "Reveal Solution" button sits below the evidence panel (clues column). Clicking it shows all placements as locked (green) on the grid — no modal. A "Hide Solution" button appears below the grid to return to normal view.
 
-**Completed puzzles:** stored in `localStorage` (`murdoku-completed`). `PuzzleSelector` shows completed puzzles in green with a ✓ prefix, grouped by difficulty (Easy ≤6 people, Medium 7–9, Hard 10+). A Reset button clears completion and progress.
+**Completed puzzles:** stored in `localStorage` (`murdoku-completed`). `PuzzleSelector` shows completed puzzles in green with a ✓ prefix, grouped by difficulty (Easy / Medium / Hard / Very Hard). A Reset button clears completion and progress.
 
 Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 
@@ -243,7 +247,7 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 - [x] CLI puzzle generator with LLM + algorithmic pipeline
 - [x] Frontend renders grid, rooms, objects, clues
 - [x] Solution reveal (placements shown on grid; no modal)
-- [x] Puzzle selector grouped by difficulty (Easy/Medium/Hard)
+- [x] Puzzle selector grouped by difficulty (Easy / Medium / Hard / Very Hard)
 - [x] Interactive solving — click cells to annotate with person initials or X
 - [x] Verify Solution — specific hints (unplaced, conflicts, violated clue)
 - [x] Progress + completed state persisted in localStorage
@@ -259,6 +263,10 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 - [x] Object placement — multi-shape support (rug has 5 base shapes); free-adjacent constraint correctly validated against all placed objects
 - [x] New object types: car (1×2, occupiable), rug (1×1 to 2×3, occupiable), tv (1×1, non-occupiable)
 - [x] Room labels placed in widest row instead of topmost row
+- [x] Difficulty overhaul — easy(5×5)/medium(6×6)/hard(9×9)/very-hard(12×12); victim clue required for all except easy
+- [x] LLM picks the murderer — `murdererInitial` in theme schema; plausible/surprising culprit per prompt
+- [x] Object placement bug fixes — required objects now placed once per kind (not once per rotation slot); `unplaceTemplate` uses exact id match to avoid removing the wrong object
+- [x] Removed `MurdererReveal.tsx` (unused component)
 
 ## Future Ideas
 

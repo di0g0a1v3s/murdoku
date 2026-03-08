@@ -552,36 +552,41 @@ export function buildLayout(
       cells.forEach((c) => usedCells.add(`${c.row},${c.col}`));
     };
 
-    const unplaceTemplate = (template: ObjectTemplate, anchor: Coord): void => {
+    const unplaceTemplate = (template: ObjectTemplate, anchor: Coord, slotIdx: number): void => {
       const cells = getCellsForTemplate(anchor, template);
+      const id = `${template.kind}-${room.id}-${slotIdx + 1}`;
       objects.splice(
-        objects.findIndex((o) => o.id.startsWith(`${template.kind}-${room.id}-`)),
+        objects.findIndex((o) => o.id === id),
         1,
       );
       cells.forEach((c) => usedCells.delete(`${c.row},${c.col}`));
     };
 
     // Phase 1: backtracking placement of required objects so ordering never blocks them.
-    const requiredTemplates = shuffle(
-      OBJECT_TEMPLATES.filter((t) => required.includes(t.kind)),
-      rng,
-    );
+    // requiredKinds: one slot per required kind (deduplicated to avoid placing extra copies).
+    const requiredKinds = [...new Set(required)];
     const roomCellsShuffled = shuffle([...room.cells], rng);
 
     function backtrackRequired(idx: number): boolean {
-      if (idx === requiredTemplates.length) {
+      if (idx === requiredKinds.length) {
         return true;
       }
-      const template = requiredTemplates[idx]!;
-      for (const anchor of roomCellsShuffled) {
-        if (!fits(template, anchor)) {
-          continue;
+      const kind = requiredKinds[idx]!;
+      const kindTemplates = shuffle(
+        OBJECT_TEMPLATES.filter((t) => t.kind === kind),
+        rng,
+      );
+      for (const template of kindTemplates) {
+        for (const anchor of roomCellsShuffled) {
+          if (!fits(template, anchor)) {
+            continue;
+          }
+          placeTemplate(template, anchor, idx);
+          if (backtrackRequired(idx + 1)) {
+            return true;
+          }
+          unplaceTemplate(template, anchor, idx);
         }
-        placeTemplate(template, anchor, idx);
-        if (backtrackRequired(idx + 1)) {
-          return true;
-        }
-        unplaceTemplate(template, anchor);
       }
       return false;
     }

@@ -50,6 +50,7 @@ export interface PuzzleTheme {
   subtitle: string;
   setting: string;
   people: Person[];
+  murdererId: string;
   rooms: (Pick<Room, 'id' | 'name' | 'pattern'> & {
     allowedObjects: ObjectKind[];
     requiredObjects: ObjectKind[];
@@ -102,9 +103,9 @@ export async function generateTheme(
             ),
           requiredObjects: z
             .array(z.enum(OBJECT_KIND_VALUES))
-            .max(2)
+            .max(n <= 6 ? 1 : 2)
             .describe(
-              '0–2 objects that must appear in this room (must be a subset of allowedObjects). Use for objects that are definitionally part of the room, e.g. a toilet in a bathroom, a bed in a bedroom, a counter in a bar.',
+              `0–${n <= 6 ? 1 : 2} objects that must appear in this room (must be a subset of allowedObjects). Use for objects that are definitionally part of the room, e.g. a toilet in a bathroom, a bed in a bedroom, a counter in a bar.`,
             ),
         }),
       )
@@ -126,6 +127,11 @@ export async function generateTheme(
           suspectInitials
             .map((l, i) => `index ${i + 1} is suspect ${l} (name starts with ${l})`)
             .join(', '),
+      ),
+    murdererInitial: z
+      .enum(suspectInitials as [string, ...string[]])
+      .describe(
+        `The initial letter of the suspect who is the murderer (one of: ${suspectInitials.join(', ')})`,
       ),
   });
 
@@ -171,6 +177,7 @@ ${peopleRules}
   Good examples: Victor, Vera Morin, Alex, Blake Sandhu, Casey, Dana Voss
   Bad examples: "Archibald 'Ace' Abernathy", "Baron Von Drake", "Lady Sinclair"
 - Each person gets one emoji avatar
+- Choose one suspect as the murderer (murdererInitial). Pick someone whose personality or role makes them a plausible but surprising culprit.
 
 Make it creative and varied — avoid clichés.`;
 
@@ -207,12 +214,16 @@ Make it creative and varied — avoid clichés.`;
     };
   });
 
+  const murdererIdx = allInitials.indexOf(object.murdererInitial);
+  const murdererId = (murdererIdx > 0 ? people[murdererIdx] : people[1])!.id;
+
   return {
     title: object.title,
     subtitle: object.subtitle,
     setting: object.setting,
     rooms,
     people,
+    murdererId,
   };
 }
 

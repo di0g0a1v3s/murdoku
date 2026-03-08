@@ -169,7 +169,14 @@ async function generatePuzzle(
 
   // Step 3: Place people (exhaustive search — no retries needed)
   console.log(`\n👥 Step 3: Placing people...`);
-  const placerResult = placePeople(theme.people, layout, n, n, randomInt(0, 1_000_000));
+  const placerResult = placePeople(
+    theme.people,
+    layout,
+    n,
+    n,
+    randomInt(0, 1_000_000),
+    theme.murdererId,
+  );
   if (!placerResult) {
     throw new Error('Failed to place people: no valid placement exists for this layout');
   }
@@ -448,7 +455,7 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  const VALID_DIFFICULTIES = ['easy', 'easy+', 'medium', 'medium+', 'hard', 'hard+'] as const;
+  const VALID_DIFFICULTIES = ['easy', 'medium', 'hard', 'very-hard'] as const;
   const difficultyArg = process.argv.find((a) => a.startsWith('--difficulty='));
   const difficulty = (difficultyArg?.split('=')[1] ??
     'easy') as (typeof VALID_DIFFICULTIES)[number];
@@ -457,15 +464,13 @@ async function main(): Promise<void> {
     process.exit(1);
   }
   const DIFFICULTY_PEOPLE: Record<string, number> = {
-    easy: 6,
-    'easy+': 6,
-    medium: 9,
-    'medium+': 9,
-    hard: 12,
-    'hard+': 12,
+    easy: 5,
+    medium: 6,
+    hard: 9,
+    'very-hard': 12,
   };
   const n = DIFFICULTY_PEOPLE[difficulty]!;
-  const victimClueRequired = difficulty.endsWith('+');
+  const victimClueRequired = difficulty !== 'easy';
 
   console.log('🕵️  Murdoku Puzzle Generator');
   console.log('━'.repeat(40));
