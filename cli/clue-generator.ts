@@ -69,17 +69,17 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
     // Room membership
     facts.push({
       description: `${name} is in the ${room.name}`,
-      clue: { kind: 'person-in-room', person: personId, roomId: room.id, text: '' },
+      clue: { kind: 'person-in-room', person: personId, roomId: room.id },
     });
 
     // Row and column position (1-indexed for display)
     facts.push({
       description: `${name} is in row ${coord.row + 1}`,
-      clue: { kind: 'person-in-row', person: personId, row: coord.row, text: '' },
+      clue: { kind: 'person-in-row', person: personId, row: coord.row },
     });
     facts.push({
       description: `${name} is in column ${coord.col + 1}`,
-      clue: { kind: 'person-in-col', person: personId, col: coord.col, text: '' },
+      clue: { kind: 'person-in-col', person: personId, col: coord.col },
     });
 
     // Grid corner position
@@ -90,7 +90,7 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
     ) {
       facts.push({
         description: `${name} is in a corner of the grid`,
-        clue: { kind: 'person-in-corner', person: personId, text: '' },
+        clue: { kind: 'person-in-corner', person: personId },
       });
     }
 
@@ -112,7 +112,7 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
       if (isRoomCorner) {
         facts.push({
           description: `${name} is in a corner of the ${roomForCorner.name}`,
-          clue: { kind: 'person-in-room-corner', person: personId, text: '' },
+          clue: { kind: 'person-in-room-corner', person: personId },
         });
       }
     }
@@ -127,7 +127,6 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
             kind: 'person-on-object',
             person: personId,
             objectKind: obj.kind as ObjectKind,
-            text: '',
           },
         });
       }
@@ -145,7 +144,6 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
             kind: 'person-beside-object',
             person: personId,
             objectKind: obj.kind as ObjectKind,
-            text: '',
           },
         });
       }
@@ -170,7 +168,6 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
           personA: pA.personId,
           direction: dirArelB as Direction,
           personB: pB.personId,
-          text: '',
         },
       });
     }
@@ -183,7 +180,6 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
           personA: pB.personId,
           direction: dirBrelA as Direction,
           personB: pA.personId,
-          text: '',
         },
       });
     }
@@ -197,7 +193,6 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
           personA: pA.personId,
           direction: 'N',
           personB: pB.personId,
-          text: '',
         },
       });
       facts.push({
@@ -207,7 +202,6 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
           personA: pB.personId,
           direction: 'S',
           personB: pA.personId,
-          text: '',
         },
       });
     } else {
@@ -218,7 +212,6 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
           personA: pA.personId,
           direction: 'S',
           personB: pB.personId,
-          text: '',
         },
       });
       facts.push({
@@ -228,7 +221,6 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
           personA: pB.personId,
           direction: 'N',
           personB: pA.personId,
-          text: '',
         },
       });
     }
@@ -242,7 +234,6 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
           personA: pA.personId,
           direction: 'E',
           personB: pB.personId,
-          text: '',
         },
       });
       facts.push({
@@ -252,7 +243,6 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
           personA: pB.personId,
           direction: 'W',
           personB: pA.personId,
-          text: '',
         },
       });
     } else {
@@ -263,7 +253,6 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
           personA: pA.personId,
           direction: 'W',
           personB: pB.personId,
-          text: '',
         },
       });
       facts.push({
@@ -273,7 +262,6 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
           personA: pB.personId,
           direction: 'E',
           personB: pA.personId,
-          text: '',
         },
       });
     }
@@ -291,7 +279,6 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
           personB: pB.personId,
           distance: Math.abs(colDiff),
           axis: 'col',
-          text: '',
         },
       });
     }
@@ -309,7 +296,6 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
           personB: pB.personId,
           distance: Math.abs(rowDiff),
           axis: 'row',
-          text: '',
         },
       });
     }
@@ -322,7 +308,7 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
       if (roomA.id === roomB.id) {
         facts.push({
           description: `${nameA} and ${nameB} are in the same room`,
-          clue: { kind: 'persons-same-room', personA: pA.personId, personB: pB.personId, text: '' },
+          clue: { kind: 'persons-same-room', personA: pA.personId, personB: pB.personId },
         });
       } else {
         facts.push({
@@ -331,16 +317,15 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
             kind: 'persons-not-same-room',
             personA: pA.personId,
             personB: pB.personId,
-            text: '',
           },
         });
         facts.push({
           description: `${nameA} is NOT in the ${roomB.name}`,
-          clue: { kind: 'person-not-in-room', person: pA.personId, roomId: roomB.id, text: '' },
+          clue: { kind: 'person-not-in-room', person: pA.personId, roomId: roomB.id },
         });
         facts.push({
           description: `${nameB} is NOT in the ${roomA.name}`,
-          clue: { kind: 'person-not-in-room', person: pB.personId, roomId: roomA.id, text: '' },
+          clue: { kind: 'person-not-in-room', person: pB.personId, roomId: roomA.id },
         });
       }
     }
@@ -358,7 +343,7 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
     if (count > 0) {
       facts.push({
         description: `The ${room.name} has exactly ${count} person(s)`,
-        clue: { kind: 'room-population', roomId: room.id, count, text: '' },
+        clue: { kind: 'room-population', roomId: room.id, count },
       });
       if (count === 1) {
         facts.push({
@@ -367,7 +352,6 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
             kind: 'person-alone-in-room',
             person: inRoom[0]!.personId,
             roomId: room.id,
-            text: '',
           },
         });
       }
@@ -375,7 +359,7 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
         const otherCount = count - 1;
         facts.push({
           description: `${personName(p.personId)} is in a room with exactly ${otherCount} other ${otherCount === 1 ? 'person' : 'people'}`,
-          clue: { kind: 'person-in-room-with', person: p.personId, count: otherCount, text: '' },
+          clue: { kind: 'person-in-room-with', person: p.personId, count: otherCount },
         });
       }
     }
@@ -404,7 +388,6 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
             kind: 'person-sole-occupant',
             person: personId,
             objectKind: obj.kind as ObjectKind,
-            text: '',
           },
         });
       }
@@ -436,7 +419,6 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
           kind: 'object-occupancy',
           objectKind: kind as ObjectKind,
           count: occupied,
-          text: '',
         },
       });
     }
@@ -457,7 +439,7 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
   if (emptyCount > 0) {
     facts.push({
       description: `Exactly ${emptyCount} room(s) are empty`,
-      clue: { kind: 'empty-rooms', count: emptyCount, text: '' },
+      clue: { kind: 'empty-rooms', count: emptyCount },
     });
   }
 

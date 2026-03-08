@@ -22,6 +22,9 @@ export const OBJECT_KIND_VALUES = [
   'counter',
   'wardrobe',
   'fireplace',
+  'car',
+  'rug',
+  'tv',
 ] as const;
 export type ObjectKind = (typeof OBJECT_KIND_VALUES)[number];
 
@@ -67,7 +70,6 @@ export type Clue =
       personA: string;
       direction: Direction;
       personB: string;
-      text: string;
     }
   | {
       kind: 'person-distance';
@@ -76,24 +78,25 @@ export type Clue =
       personB: string;
       distance: number;
       axis: 'row' | 'col';
-      text: string;
     }
-  | { kind: 'person-beside-object'; person: string; objectKind: ObjectKind; text: string }
-  | { kind: 'person-on-object'; person: string; objectKind: ObjectKind; text: string }
-  | { kind: 'person-in-room'; person: string; roomId: string; text: string }
-  | { kind: 'persons-same-room'; personA: string; personB: string; text: string }
-  | { kind: 'person-alone-in-room'; person: string; roomId: string; text: string }
-  | { kind: 'room-population'; roomId: string; count: number; text: string }
-  | { kind: 'object-occupancy'; objectKind: ObjectKind; count: number; text: string }
-  | { kind: 'person-not-in-room'; person: string; roomId: string; text: string }
-  | { kind: 'persons-not-same-room'; personA: string; personB: string; text: string }
-  | { kind: 'person-in-room-with'; person: string; count: number; text: string }
-  | { kind: 'person-in-row'; person: string; row: number; text: string }
-  | { kind: 'person-in-col'; person: string; col: number; text: string }
-  | { kind: 'person-in-corner'; person: string; text: string }
-  | { kind: 'person-in-room-corner'; person: string; text: string }
-  | { kind: 'person-sole-occupant'; person: string; objectKind: ObjectKind; text: string }
-  | { kind: 'empty-rooms'; count: number; text: string };
+  | { kind: 'person-beside-object'; person: string; objectKind: ObjectKind }
+  | { kind: 'person-on-object'; person: string; objectKind: ObjectKind }
+  | { kind: 'person-in-room'; person: string; roomId: string }
+  | { kind: 'persons-same-room'; personA: string; personB: string }
+  | { kind: 'person-alone-in-room'; person: string; roomId: string }
+  | { kind: 'room-population'; roomId: string; count: number }
+  | { kind: 'object-occupancy'; objectKind: ObjectKind; count: number }
+  | { kind: 'person-not-in-room'; person: string; roomId: string }
+  | { kind: 'persons-not-same-room'; personA: string; personB: string }
+  | { kind: 'person-in-room-with'; person: string; count: number }
+  | { kind: 'person-in-row'; person: string; row: number }
+  | { kind: 'person-in-col'; person: string; col: number }
+  | { kind: 'person-in-corner'; person: string }
+  | { kind: 'person-in-room-corner'; person: string }
+  | { kind: 'person-sole-occupant'; person: string; objectKind: ObjectKind }
+  | { kind: 'empty-rooms'; count: number };
+
+export type StoredClue = Clue & { text: string };
 
 // ─── Solution ─────────────────────────────────────────────────────────────────
 
@@ -125,6 +128,7 @@ export interface Puzzle {
 export type PuzzleDifficulty = 'easy' | 'easy+' | 'medium' | 'medium+' | 'hard' | 'hard+';
 
 export interface FullPuzzle extends Puzzle {
+  clues: StoredClue[];
   id: string;
   title: string;
   subtitle?: string;
@@ -183,17 +187,7 @@ export const OBJECT_OCCUPIABILITY: Record<ObjectKind, Occupiability> = {
   counter: 'non-occupiable',
   wardrobe: 'non-occupiable',
   fireplace: 'non-occupiable',
-};
-
-export const OBJECT_EMOJI: Record<ObjectKind, string> = {
-  chair: '🪑',
-  bed: '🛏️',
-  sofa: '🛋️',
-  toilet: '🚽',
-  table: '🍽️',
-  plant: '🪴',
-  bookshelf: '📚',
-  counter: '🔲',
-  wardrobe: '🚪',
-  fireplace: '🔥',
+  car: 'occupiable',
+  rug: 'occupiable',
+  tv: 'non-occupiable',
 };

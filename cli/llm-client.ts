@@ -112,7 +112,11 @@ export async function generateTheme(
     people: z
       .array(
         z.object({
-          name: z.string(),
+          name: z
+            .string()
+            .describe(
+              'A simple name: first name only, or first + last name (no nicknames or titles)',
+            ),
           avatarEmoji: z.string().describe('A single emoji representing this person'),
         }),
       )
@@ -163,7 +167,9 @@ Requirements:
 - Room patterns: choose patternKind (solid/striped/checkered) and two colors (colorA, colorB). For solid rooms colorB equals colorA. Use striped or checkered for roughly half the rooms to add visual variety. Colors should be distinct across rooms and evoke the mood (muted hex codes)
 - ${n} people with specific naming rules:
 ${peopleRules}
-- Names should be memorable and fit the setting's era/style
+- Names must be simple — first name only, or first + last name (two words max). No nicknames, no middle names, no titles.
+  Good examples: Victor, Vera Morin, Alex, Blake Sandhu, Casey, Dana Voss
+  Bad examples: "Archibald 'Ace' Abernathy", "Baron Von Drake", "Lady Sinclair"
 - Each person gets one emoji avatar
 
 Make it creative and varied — avoid clichés.`;

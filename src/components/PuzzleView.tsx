@@ -263,7 +263,12 @@ export function PuzzleView({
       if (personIds.length > 1) {
         hasMultipleMarks = true;
       } else if (personIds.length === 1) {
-        personToKey.set(personIds[0]!, key);
+        const pid = personIds[0]!;
+        if (personToKey.has(pid)) {
+          const name = puzzle.people.find((p) => p.id === pid)!.name;
+          return fail(`${name} is marked in more than one cell.`);
+        }
+        personToKey.set(pid, key);
       }
     }
 
@@ -307,7 +312,7 @@ export function PuzzleView({
       (c) => evaluateClue(c, assignment, puzzle) === 'violated',
     );
     if (violatedClue) {
-      return fail(`Clue not satisfied: "${violatedClue.text}"`);
+      return fail(`At least one clue is not satisfied: "${violatedClue.text}"`);
     }
 
     setVerifyHint(null);
@@ -535,110 +540,114 @@ export function PuzzleView({
               Hide Solution
             </button>
           )}
-
           {/* Result banner / controls */}
-          {!showSolution &&
-            (verifyResult === 'correct' ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div
-                  style={{
-                    padding: '8px 20px',
-                    background: '#dcfce7',
-                    color: '#15803d',
-                    borderRadius: 8,
-                    fontSize: 15,
-                    fontWeight: 700,
-                    border: '1px solid #86efac',
-                  }}
-                >
-                  {(() => {
-                    const murderer = puzzle.people.find((p) => p.id === puzzle.solution.murdererId);
-                    const victim = puzzle.people.find((p) => p.id === puzzle.solution.victimId);
-                    const room = puzzle.rooms.find((r) => r.id === puzzle.solution.murderRoom);
-                    return `✓ Case closed! ${murderer?.name ?? '?'} killed ${victim?.name ?? '?'} in the ${room?.name ?? '?'}.`;
-                  })()}
-                </div>
-                <button
-                  onClick={handleReset}
-                  style={{
-                    padding: '8px 14px',
-                    background: 'transparent',
-                    color: 'rgba(0,0,0,0.4)',
-                    border: '1px solid rgba(0,0,0,0.15)',
-                    borderRadius: 8,
-                    fontSize: 13,
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                  }}
-                  title="Reset puzzle"
-                >
-                  Reset
-                </button>
-              </div>
-            ) : (
-              <div
-                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}
-              >
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <button
-                    onClick={handleUndo}
-                    disabled={undoStack.length === 0}
-                    title="Undo (⌘Z)"
+          {!showSolution && (
+            <div style={{ width: cellSize * puzzle.gridSize.cols }}>
+              {verifyResult === 'correct' ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div
                     style={{
-                      padding: '10px 14px',
-                      background: 'transparent',
-                      color: undoStack.length === 0 ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.5)',
-                      border: '1px solid',
-                      borderColor: undoStack.length === 0 ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.2)',
+                      padding: '8px 20px',
+                      background: '#dcfce7',
+                      color: '#15803d',
                       borderRadius: 8,
-                      fontSize: 17,
-                      cursor: undoStack.length === 0 ? 'default' : 'pointer',
+                      fontSize: 15,
+                      fontWeight: 700,
+                      border: '1px solid #86efac',
                     }}
                   >
-                    ↩
-                  </button>
+                    {(() => {
+                      const murderer = puzzle.people.find(
+                        (p) => p.id === puzzle.solution.murdererId,
+                      );
+                      const victim = puzzle.people.find((p) => p.id === puzzle.solution.victimId);
+                      const room = puzzle.rooms.find((r) => r.id === puzzle.solution.murderRoom);
+                      return `✓ Case closed! ${murderer?.name ?? '?'} killed ${victim?.name ?? '?'} in the ${room?.name ?? '?'}.`;
+                    })()}
+                  </div>
                   <button
-                    onClick={handleClear}
-                    disabled={cellMarks.size === 0}
-                    title="Clear board"
+                    onClick={handleReset}
                     style={{
-                      padding: '10px 14px',
+                      padding: '8px 14px',
                       background: 'transparent',
-                      color: cellMarks.size === 0 ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.5)',
-                      border: '1px solid',
-                      borderColor: cellMarks.size === 0 ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.2)',
+                      color: 'rgba(0,0,0,0.4)',
+                      border: '1px solid rgba(0,0,0,0.15)',
                       borderRadius: 8,
                       fontSize: 13,
                       fontWeight: 600,
-                      cursor: cellMarks.size === 0 ? 'default' : 'pointer',
+                      cursor: 'pointer',
                     }}
+                    title="Reset puzzle"
                   >
-                    Clear
+                    Reset
                   </button>
                 </div>
-                <button
-                  onClick={handleVerify}
-                  style={{
-                    padding: '10px 28px',
-                    background: '#1a1a2e',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: 8,
-                    fontSize: 17,
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-                  }}
+              ) : (
+                <div
+                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}
                 >
-                  Verify Solution
-                </button>
-                {verifyResult === 'wrong' && verifyHint && (
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#dc2626' }}>
-                    {verifyHint}
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button
+                      onClick={handleUndo}
+                      disabled={undoStack.length === 0}
+                      title="Undo (⌘Z)"
+                      style={{
+                        padding: '10px 14px',
+                        background: 'transparent',
+                        color: undoStack.length === 0 ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.5)',
+                        border: '1px solid',
+                        borderColor: undoStack.length === 0 ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.2)',
+                        borderRadius: 8,
+                        fontSize: 17,
+                        cursor: undoStack.length === 0 ? 'default' : 'pointer',
+                      }}
+                    >
+                      ↩
+                    </button>
+                    <button
+                      onClick={handleClear}
+                      disabled={cellMarks.size === 0}
+                      title="Clear board"
+                      style={{
+                        padding: '10px 14px',
+                        background: 'transparent',
+                        color: cellMarks.size === 0 ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.5)',
+                        border: '1px solid',
+                        borderColor: cellMarks.size === 0 ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.2)',
+                        borderRadius: 8,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        cursor: cellMarks.size === 0 ? 'default' : 'pointer',
+                      }}
+                    >
+                      Clear
+                    </button>
                   </div>
-                )}
-              </div>
-            ))}
+                  <button
+                    onClick={handleVerify}
+                    style={{
+                      padding: '10px 28px',
+                      background: '#1a1a2e',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: 8,
+                      fontSize: 17,
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                    }}
+                  >
+                    Verify Solution
+                  </button>
+                  {verifyResult === 'wrong' && verifyHint && (
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#dc2626' }}>
+                      {verifyHint}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Clues panel */}

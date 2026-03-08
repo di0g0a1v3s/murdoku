@@ -14,7 +14,7 @@ Murdoku presents you with a grid divided into named rooms, each with a distinct 
 
 **Rules:**
 - One person per row, one per column (like Sudoku)
-- People cannot occupy cells blocked by non-occupiable objects (tables, plants, etc.)
+- People cannot occupy cells blocked by non-occupiable objects (tables, plants, bookshelves, TVs, etc.)
 - The **murderer** is the suspect who ends up **alone in the same room as the victim**
 - The clues always yield exactly one valid solution
 
@@ -151,7 +151,9 @@ Algorithm → grid layout
               BFS always expands the room most behind its target proportion
               (single seed per room keeps rooms contiguous)
             - Object placement: required objects placed with backtracking,
-              optional objects placed greedily (~1 per 4 room cells)
+              optional objects placed greedily (~1 per 4 room cells);
+              each object kind supports multiple base shapes (e.g. rug: 1×1,
+              1×2, 1×3, 2×2, 2×3) with all rotations tried
   ↓
 Algorithm → valid placement (backtracking Latin-square solver)
             enforces: 1 person/row, 1 person/col, murder room = exactly 2 people

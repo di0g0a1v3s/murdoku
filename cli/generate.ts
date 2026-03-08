@@ -1,9 +1,10 @@
 import { randomInt } from 'crypto';
-import type { Clue, FullPuzzle, Puzzle } from '../shared/types.js';
+import type { Clue, FullPuzzle, Puzzle, StoredClue } from '../shared/types.js';
 import { getCluePersonId } from '../shared/types.js';
 import { makeVictimClue, solve } from '../shared/solver.js';
 import { evaluateClue } from '../shared/clue-evaluator.js';
 import { generateTheme, generateAllTexts, setDebug } from './llm-client.js';
+import type { PuzzleTheme } from './llm-client.js';
 import { buildLayout, hasEnoughOccupiableCells } from './layout-builder.js';
 import { placePeople } from './placer.js';
 import { computeAllFacts } from './clue-generator.js';
@@ -11,7 +12,7 @@ import { appendPuzzle, loadCollection } from './output.js';
 import { printCostSummary, resetCosts } from './cost-tracker.js';
 
 const OUTPUT_PATH = 'src/puzzles/puzzles.json';
-const MAX_LAYOUT_RETRIES = 10;
+const MAX_LAYOUT_RETRIES = 100;
 
 // ─── CLI helpers ──────────────────────────────────────────────────────────────
 
@@ -24,7 +25,7 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-function printPuzzleSummary(puzzle: FullPuzzle): void {
+function printPuzzleSummary(puzzle: FullPuzzle, theme: PuzzleTheme): void {
   console.log('\n' + '═'.repeat(60));
   console.log(`📍 ${puzzle.title}`);
   if (puzzle.subtitle) {
@@ -38,7 +39,18 @@ function printPuzzleSummary(puzzle: FullPuzzle): void {
       const cell = p.coord;
       return room.cells.some((c) => c.row === cell.row && c.col === cell.col);
     }).length;
-    console.log(`  ${room.name} (${room.cells.length} cells, ${count} people)`);
+    const totalCells = puzzle.gridSize.rows * puzzle.gridSize.cols;
+    const themeRoom = theme.rooms.find((r) => r.id === room.id);
+    const llmPct = themeRoom
+      ? (
+          (themeRoom.sizePercentage / theme.rooms.reduce((s, r) => s + r.sizePercentage, 0)) *
+          100
+        ).toFixed(1)
+      : '?';
+    const actualPct = ((room.cells.length / totalCells) * 100).toFixed(1);
+    console.log(
+      `  ${room.name} (${room.cells.length} cells, ${count} people) — LLM: ${llmPct}%, actual: ${actualPct}%`,
+    );
   }
 
   console.log('\n🪑 OBJECTS:');
@@ -130,29 +142,28 @@ async function generatePuzzle(
   n: number,
   victimClueRequired: boolean,
   difficulty: FullPuzzle['difficulty'],
-): Promise<FullPuzzle> {
+): Promise<{ puzzle: FullPuzzle; theme: PuzzleTheme }> {
   console.log('\n🎲 Step 1: Generating theme via LLM...');
   const theme = await generateTheme(n, existingTitles);
   console.log(`✅ Theme: "${theme.title}"`);
 
   // Step 2: Build grid layout
+  console.log(`\n🏗️  Step 2: Building layout...`);
   let layout = null;
   const layoutSeed = randomInt(0, 1_000_000);
   for (let attempt = 0; attempt < MAX_LAYOUT_RETRIES; attempt++) {
-    console.log(`\n🏗️  Step 2: Building layout (attempt ${attempt + 1})...`);
     try {
       const candidate = buildLayout(theme, layoutSeed + attempt, n, n);
       if (hasEnoughOccupiableCells(candidate.rooms, candidate.objects, n)) {
         layout = candidate;
         break;
       }
-      console.log('  ⚠️  Not enough occupiable cells, retrying...');
-    } catch (err) {
-      console.log(`  ⚠️  ${err instanceof Error ? err.message : String(err)}, retrying...`);
+    } catch {
+      // NOOP - retry
     }
   }
   if (!layout) {
-    throw new Error('Failed to build valid layout after retries');
+    throw new Error(`Failed to build valid layout after ${MAX_LAYOUT_RETRIES} retries`);
   }
   console.log(`✅ Layout built: ${layout.rooms.length} rooms, ${layout.objects.length} objects`);
 
@@ -167,7 +178,7 @@ async function generatePuzzle(
   );
 
   // Build partial puzzle for fact computation
-  const partialPuzzle: Puzzle = {
+  const puzzle: Puzzle = {
     gridSize: { rows: n, cols: n },
     rooms: layout.rooms,
     objects: layout.objects,
@@ -188,17 +199,15 @@ async function generatePuzzle(
 
   // Step 4: Compute derivable facts
   console.log('\n📊 Step 4: Computing derivable facts...');
-  const facts = computeAllFacts(partialPuzzle, placerResult.placements);
+  const facts = computeAllFacts(puzzle, placerResult.placements);
   console.log(`✅ Found ${facts.length} derivable facts`);
 
   // Verify that every clue is actually satisfied by the known solution
   function auditClues(label: string, cluesToCheck: Clue[]): void {
-    const knownAssignment = new Map(
-      partialPuzzle.solution.placements.map((p) => [p.personId, p.coord]),
-    );
+    const knownAssignment = new Map(puzzle.solution.placements.map((p) => [p.personId, p.coord]));
     let anyViolated = false;
     for (const clue of cluesToCheck) {
-      const result = evaluateClue(clue, knownAssignment, partialPuzzle);
+      const result = evaluateClue(clue, knownAssignment, puzzle);
       if (result !== 'satisfied') {
         if (!anyViolated) {
           console.log(`\n🔎 Clue audit [${label}]:`);
@@ -213,7 +222,7 @@ async function generatePuzzle(
   }
 
   // Strip facts about the victim — victim has a fixed hardcoded clue in the UI
-  const victimId = partialPuzzle.solution.victimId;
+  const victimId = puzzle.solution.victimId;
   const nonVictimFacts = facts.filter((f) => {
     const c = f.clue as Record<string, unknown>;
     return (
@@ -225,11 +234,11 @@ async function generatePuzzle(
 
   // Pre-build the set of non-occupiable coords for fast lookup.
   const nonOccupiableSet = new Set(
-    partialPuzzle.objects
+    puzzle.objects
       .filter((obj) => obj.occupiable === 'non-occupiable')
       .flatMap((obj) => obj.cells.map((c) => `${c.row},${c.col}`)),
   );
-  const { rows, cols } = partialPuzzle.gridSize;
+  const { rows, cols } = puzzle.gridSize;
   const occupiableCells: { row: number; col: number }[] = [];
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
@@ -248,9 +257,7 @@ async function generatePuzzle(
     let compatibleCount = 0;
     for (const cell of occupiableCells) {
       const assignment = new Map([[suspectId, cell]]);
-      const ok = suspectClues.every(
-        (c) => evaluateClue(c, assignment, partialPuzzle) !== 'violated',
-      );
+      const ok = suspectClues.every((c) => evaluateClue(c, assignment, puzzle) !== 'violated');
       if (ok) {
         compatibleCount++;
         if (compatibleCount > 1) {
@@ -288,21 +295,19 @@ async function generatePuzzle(
     'empty-rooms': 5,
   };
 
-  let clues = shuffle(nonVictimFacts.map((f) => ({ ...f.clue, text: f.description }) as Clue)).sort(
-    (a, b) => CLUE_WEIGHT[a.kind] - CLUE_WEIGHT[b.kind],
-  );
+  let clues: StoredClue[] = shuffle(
+    nonVictimFacts.map((f) => ({ ...f.clue, text: f.description })),
+  ).sort((a, b) => CLUE_WEIGHT[a.kind] - CLUE_WEIGHT[b.kind]);
   console.log(`  Starting with ${clues.length} candidate clues`);
   auditClues('all facts', clues);
 
-  const suspectIds = new Set(
-    partialPuzzle.people.filter((p) => p.role === 'suspect').map((p) => p.id),
-  );
+  const suspectIds = new Set(puzzle.people.filter((p) => p.role === 'suspect').map((p) => p.id));
 
   // (a) De-pin pass — remove over-constraining clues while the pool is still large
   let pinChanged = true;
   while (pinChanged) {
     pinChanged = false;
-    for (const suspect of partialPuzzle.people.filter((p) => p.role === 'suspect')) {
+    for (const suspect of puzzle.people.filter((p) => p.role === 'suspect')) {
       const suspectClues = clues.filter((c) => getCluePersonId(c) === suspect.id);
       if (!suspectIsPinned(suspect.id, suspectClues)) {
         continue;
@@ -329,15 +334,15 @@ async function generatePuzzle(
   }
   console.log(`  ${clues.length} clues after de-pinning`);
 
-  for (const suspect of partialPuzzle.people.filter((p) => p.role === 'suspect')) {
+  for (const suspect of puzzle.people.filter((p) => p.role === 'suspect')) {
     if (!clues.some((c) => getCluePersonId(c) === suspect.id)) {
       throw new Error(`De-pin left suspect ${suspect.name} with no clues — puzzle is degenerate`);
     }
   }
 
   // Minimize: sweep through, removing any redundant clue (O(clues × passes)).
-  const victimClue = makeVictimClue(partialPuzzle);
-  partialPuzzle.clues = clues;
+  const victimClue = makeVictimClue(puzzle);
+  puzzle.clues = clues;
   let passChanged = true;
   while (passChanged) {
     passChanged = false;
@@ -351,7 +356,7 @@ async function generatePuzzle(
         continue;
       }
       const solveClues = victimClueRequired ? [...candidate, victimClue] : candidate;
-      if (solve(partialPuzzle, solveClues).status !== 'unique') {
+      if (solve(puzzle, solveClues).status !== 'unique') {
         console.log(`  📌 Kept (needed for uniqueness): ${clues[i]!.text}`);
         i++;
         continue;
@@ -360,7 +365,7 @@ async function generatePuzzle(
         `  ✂️  Removed: ${clues[i]!.text}, current: ${candidate.length}/${nonVictimFacts.length}`,
       );
       clues = candidate;
-      partialPuzzle.clues = clues;
+      puzzle.clues = clues;
       passChanged = true;
       // Don't increment i — the array shifted left, next clue is now at position i
     }
@@ -370,7 +375,7 @@ async function generatePuzzle(
   // Step 6: Generate all clue texts in one LLM call
   console.log('\n✍️  Step 6: Generating clue texts...');
 
-  const suspectInputs = partialPuzzle.people
+  const suspectInputs = puzzle.people
     .filter((p) => p.role === 'suspect')
     .map((p) => ({
       personId: p.id,
@@ -389,7 +394,7 @@ async function generatePuzzle(
   );
 
   const suspectSummaries = suspectTexts.map(({ personId, text }) => {
-    const suspect = partialPuzzle.people.find((p) => p.id === personId)!;
+    const suspect = puzzle.people.find((p) => p.id === personId)!;
     console.log(`  ✅ ${suspect.avatarEmoji} ${suspect.name}: "${text}"`);
     return { personId, text };
   });
@@ -418,12 +423,8 @@ async function generatePuzzle(
     Date.now().toString(36);
 
   return {
-    ...partialPuzzle,
-    ...puzzleMeta,
-    id,
-    difficulty,
-    clues,
-    suspectSummaries,
+    puzzle: { ...puzzle, ...puzzleMeta, id, difficulty, clues, suspectSummaries },
+    theme,
   };
 }
 
@@ -477,10 +478,10 @@ async function main(): Promise<void> {
       console.log(`\n📦 Puzzle ${i + 1} of ${count}`);
     }
     try {
-      const puzzle = await generatePuzzle(usedTitles, n, victimClueRequired, difficulty);
+      const { puzzle, theme } = await generatePuzzle(usedTitles, n, victimClueRequired, difficulty);
       usedTitles.push(puzzle.title);
       printGrid(puzzle);
-      printPuzzleSummary(puzzle);
+      printPuzzleSummary(puzzle, theme);
       appendPuzzle(puzzle, OUTPUT_PATH);
       console.log(`✅ Puzzle saved to ${OUTPUT_PATH}`);
       succeeded++;

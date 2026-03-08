@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { getCluePersonId } from '@shared/types';
-import type { Clue, Person } from '@shared/types';
+import type { Person, StoredClue } from '@shared/types';
 import { ClueItem } from './ClueItem';
 
 interface CluesPanelProps {
-  clues: Clue[];
+  clues: StoredClue[];
   people: Person[];
   suspectSummaries: { personId: string; text: string }[];
   lockedPersonIds?: Set<string>;

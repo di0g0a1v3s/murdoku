@@ -15,7 +15,7 @@ export function makeVictimClue(puzzle: Puzzle): Clue {
   if (victimId == null) {
     throw new Error('No victim in puzzle');
   }
-  return { kind: 'person-in-room-with', person: victimId, count: 1, text: '' };
+  return { kind: 'person-in-room-with', person: victimId, count: 1 };
 }
 
 export function solve(puzzle: Puzzle, clues: Clue[]): SolveResult {

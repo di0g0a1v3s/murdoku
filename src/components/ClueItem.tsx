@@ -1,4 +1,4 @@
-import type { Clue } from '@shared/types';
+import type { Clue, StoredClue } from '@shared/types';
 
 const CLUE_ICONS: Record<Clue['kind'], string> = {
   'person-direction': '🧭',
@@ -22,7 +22,7 @@ const CLUE_ICONS: Record<Clue['kind'], string> = {
 };
 
 interface ClueItemProps {
-  clue: Clue;
+  clue: StoredClue;
   checked?: boolean;
   onToggle?: () => void;
 }

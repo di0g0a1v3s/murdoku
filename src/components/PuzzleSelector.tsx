@@ -1,13 +1,13 @@
-import type { Puzzle, PuzzleDifficulty } from '@shared/types';
+import type { FullPuzzle, PuzzleDifficulty } from '@shared/types';
 
 interface PuzzleSelectorProps {
-  puzzles: Puzzle[];
+  puzzles: FullPuzzle[];
   selectedId: string;
   onSelect: (id: string) => void;
   completedIds: Set<string>;
 }
 
-function getDifficulty(puzzle: Puzzle): PuzzleDifficulty {
+function getDifficulty(puzzle: FullPuzzle): PuzzleDifficulty {
   return puzzle.difficulty;
 }
 

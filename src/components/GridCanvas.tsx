@@ -77,16 +77,27 @@ export function GridCanvas({
     );
   }, [rows, cols, rooms]);
 
-  // Room label positions — topmost-leftmost cell actually in the room
+  // Room label positions — leftmost cell of the room's widest row
   const roomLabels = useMemo(() => {
     return rooms.map((room) => {
-      const sorted = [...room.cells].sort((a, b) =>
-        a.row !== b.row ? a.row - b.row : a.col - b.col,
-      );
-      const { row, col } = sorted[0]!;
-      // Number of room cells in the label row at or right of the label column
-      const spanInRow = room.cells.filter((c) => c.row === row && c.col >= col).length;
-      return { room, row, col, spanInRow };
+      // Group cells by row, find the row with the most room cells
+      const byRow = new Map<number, number[]>();
+      for (const c of room.cells) {
+        const cols = byRow.get(c.row) ?? [];
+        cols.push(c.col);
+        byRow.set(c.row, cols);
+      }
+      let bestRow = room.cells[0]!.row;
+      let bestWidth = 0;
+      for (const [r, cs] of byRow) {
+        if (cs.length > bestWidth || (cs.length === bestWidth && r < bestRow)) {
+          bestWidth = cs.length;
+          bestRow = r;
+        }
+      }
+      const col = Math.min(...(byRow.get(bestRow) ?? [0]));
+      const spanInRow = room.cells.filter((c) => c.row === bestRow && c.col >= col).length;
+      return { room, row: bestRow, col, spanInRow };
     });
   }, [rooms]);
 

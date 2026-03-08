@@ -13,7 +13,7 @@ A logic puzzle game combining murder mystery storytelling with Sudoku-style grid
 
 **Grid:**
 - N×N grid (default 6×6, configurable via `--people=N`), divided into named rooms
-- Cells can be: empty, occupiable object (chair, bed, sofa...), or non-occupiable object (table, plant, bookshelf…)
+- Cells can be: empty, occupiable object (chair, bed, sofa, car, rug…), or non-occupiable object (table, plant, bookshelf, tv…)
 - Objects can span multiple cells
 
 **People:**
@@ -254,12 +254,15 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 - [x] How to play collapsible section in the puzzle UI
 - [x] Lock mechanic — lock in placements; auto-verifies when all locked
 - [x] Puzzle/FullPuzzle type split — base type for solver/evaluator/generator; FullPuzzle for frontend/storage
+- [x] `StoredClue = Clue & { text: string }` — `text` removed from base `Clue` type; only stored/displayed variants carry it
+- [x] Room builder — weighted Voronoi BFS with farthest-point seeding, per-room frontiers, and phase 2 cell-stealing correction for exact target sizes
+- [x] Object placement — multi-shape support (rug has 5 base shapes); free-adjacent constraint correctly validated against all placed objects
+- [x] New object types: car (1×2, occupiable), rug (1×1 to 2×3, occupiable), tv (1×1, non-occupiable)
+- [x] Room labels placed in widest row instead of topmost row
 
 ## Future Ideas
 
 - App icon
-- Object sprites
-- More object types: rug, tv, car
 - Non-square grids
 - Hint system using the solver
 - Daily puzzle

@@ -11,6 +11,9 @@ import {
   ChefHat,
   Archive,
   Flame,
+  Car,
+  LayoutGrid,
+  Tv,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -25,6 +28,9 @@ const OBJECT_ICONS: Record<ObjectKind, LucideIcon> = {
   counter: ChefHat,
   wardrobe: Archive,
   fireplace: Flame,
+  car: Car,
+  rug: LayoutGrid,
+  tv: Tv,
 };
 
 interface ObjectSpriteProps {

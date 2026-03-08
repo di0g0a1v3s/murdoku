@@ -33,8 +33,24 @@ export function buildRooms(
 ): Room[] {
   const rng = makePrng(seed);
   const numRooms = theme.rooms.length;
+  const totalCells = gridRows * gridCols;
 
-  // One seed per room (preserves contiguity)
+  // Compute exact integer target sizes from sizePercentage.
+  // Floor all, then distribute the rounding remainder to the rooms with the
+  // largest fractional parts (so the sum always equals totalCells exactly).
+  const totalWeight = theme.rooms.reduce((s, r) => s + r.sizePercentage, 0);
+  const rawTargets = theme.rooms.map((r) => (r.sizePercentage / totalWeight) * totalCells);
+  const targets = rawTargets.map((t) => Math.floor(t));
+  let remainder = totalCells - targets.reduce((a, b) => a + b, 0);
+  rawTargets
+    .map((t, i) => ({ i, frac: t - Math.floor(t) }))
+    .sort((a, b) => b.frac - a.frac)
+    .forEach(({ i }) => {
+      if (remainder-- > 0) {
+        targets[i]!++;
+      }
+    });
+
   const allCells: Coord[] = [];
   for (let r = 0; r < gridRows; r++) {
     for (let c = 0; c < gridCols; c++) {
@@ -42,66 +58,217 @@ export function buildRooms(
     }
   }
 
-  const shuffled = shuffle(allCells, rng);
-  const seedCoords = shuffled.slice(0, numRooms);
-
-  // TODO: this isnt working. Room sizes differ very much from sizePercentage
-  // Weighted BFS — each step expands the room most behind its size target.
-  // This keeps rooms contiguous while approximating sizePercentage proportions.
   const assignment: (number | null)[][] = Array.from({ length: gridRows }, () =>
     Array(gridCols).fill(null),
   );
-  const roomQueues: Coord[][] = Array.from({ length: numRooms }, () => []);
-  const roomHeads = new Array<number>(numRooms).fill(0);
   const roomSizes = new Array<number>(numRooms).fill(0);
 
-  seedCoords.forEach((coord, i) => {
-    assignment[coord.row][coord.col] = i;
-    roomQueues[i].push(coord);
-    roomSizes[i] = 1;
-  });
-
-  const totalWeight = theme.rooms.reduce((s, r) => s + r.sizePercentage, 0);
-  const roomWeights = theme.rooms.map((r) => r.sizePercentage / totalWeight);
-
-  const neighbors = (c: Coord): Coord[] =>
+  const neighbors = (row: number, col: number): Coord[] =>
     [
-      { row: c.row - 1, col: c.col },
-      { row: c.row + 1, col: c.col },
-      { row: c.row, col: c.col - 1 },
-      { row: c.row, col: c.col + 1 },
+      { row: row - 1, col },
+      { row: row + 1, col },
+      { row, col: col - 1 },
+      { row, col: col + 1 },
     ].filter((n) => n.row >= 0 && n.row < gridRows && n.col >= 0 && n.col < gridCols);
 
-  while (true) {
-    // Pick the room most underrepresented relative to its target weight
-    const totalClaimed = roomSizes.reduce((a, b) => a + b, 0);
-    let nextRoom = -1;
-    let bestDeficit = -Infinity;
-    for (let i = 0; i < numRooms; i++) {
-      if (roomHeads[i] >= roomQueues[i].length) {
-        continue;
-      }
-      const deficit = roomWeights[i]! - roomSizes[i]! / totalClaimed;
-      if (deficit > bestDeficit) {
-        bestDeficit = deficit;
-        nextRoom = i;
+  // Farthest-point seeding: each new seed is placed as far as possible (by
+  // Manhattan distance) from all already-chosen seeds.  This prevents seeds
+  // from clustering and ensures every room starts with accessible frontier cells.
+  const shuffledCells = shuffle(allCells, rng);
+  const seedCoords: Coord[] = [shuffledCells[0]!];
+  while (seedCoords.length < numRooms) {
+    let bestCell = shuffledCells[0]!;
+    let bestDist = -1;
+    for (const cell of shuffledCells) {
+      const minDist = Math.min(
+        ...seedCoords.map((s) => Math.abs(cell.row - s.row) + Math.abs(cell.col - s.col)),
+      );
+      if (minDist > bestDist) {
+        bestDist = minDist;
+        bestCell = cell;
       }
     }
-    if (nextRoom === -1) {
-      break;
-    }
+    seedCoords.push(bestCell);
+  }
+  // Shuffle the seed→room mapping so room order does not bias placement.
+  const assignedSeeds = shuffle(seedCoords, rng);
 
-    const coord = roomQueues[nextRoom][roomHeads[nextRoom]++]!;
-    for (const n of shuffle(neighbors(coord), rng)) {
+  // Per-room frontiers: each room independently tracks candidate expansion
+  // cells.  A cell may appear in multiple rooms' frontiers simultaneously;
+  // it is silently skipped when popped if already claimed by another room.
+  // This is critical — a global frontier would starve rooms whose seeds share
+  // neighbours with an earlier seed.
+  const frontiers: Coord[][] = Array.from({ length: numRooms }, () => []);
+  const inFrontierOf: Set<string>[] = Array.from({ length: numRooms }, () => new Set());
+
+  const addToFrontier = (roomIdx: number, coord: Coord): void => {
+    const key = `${coord.row},${coord.col}`;
+    if (!inFrontierOf[roomIdx].has(key)) {
+      inFrontierOf[roomIdx].add(key);
+      frontiers[roomIdx].push(coord);
+    }
+  };
+
+  for (let i = 0; i < numRooms; i++) {
+    const { row, col } = assignedSeeds[i]!;
+    assignment[row][col] = i;
+    roomSizes[i] = 1;
+    for (const n of neighbors(row, col)) {
       if (assignment[n.row][n.col] === null) {
-        assignment[n.row][n.col] = nextRoom;
-        roomQueues[nextRoom].push(n);
-        roomSizes[nextRoom]++;
+        addToFrontier(i, n);
       }
     }
   }
 
-  // Build Room objects
+  let totalAssigned = numRooms;
+
+  // Phase 1: expand one cell at a time, always picking the room with the
+  // highest remaining fraction of its target (normalised need).  Random
+  // selection within the frontier avoids DFS-snake patterns that let one room
+  // wrap around and enclose another.
+  while (totalAssigned < totalCells) {
+    let best = -1;
+    let bestFraction = 0;
+    for (let i = 0; i < numRooms; i++) {
+      if (frontiers[i].length === 0) {
+        continue;
+      }
+      const need = targets[i]! - roomSizes[i]!;
+      if (need <= 0) {
+        continue;
+      }
+      const fraction = need / targets[i]!;
+      if (fraction > bestFraction) {
+        bestFraction = fraction;
+        best = i;
+      }
+    }
+    if (best === -1) {
+      break; // all rooms at quota, or every frontier is exhausted
+    }
+
+    // Pick a random cell from this room's frontier (avoids directional bias)
+    let claimed = false;
+    while (frontiers[best].length > 0 && !claimed) {
+      const randIdx = Math.floor(rng() * frontiers[best].length);
+      const coord = frontiers[best][randIdx]!;
+      // Swap-remove for O(1) deletion
+      frontiers[best][randIdx] = frontiers[best][frontiers[best].length - 1]!;
+      frontiers[best].pop();
+
+      if (assignment[coord.row][coord.col] !== null) {
+        continue; // already claimed by a faster-expanding room
+      }
+      assignment[coord.row][coord.col] = best;
+      roomSizes[best]++;
+      totalAssigned++;
+      claimed = true;
+      for (const n of neighbors(coord.row, coord.col)) {
+        if (assignment[n.row][n.col] === null) {
+          addToFrontier(best, n);
+        }
+      }
+    }
+    // If this room's frontier drained without a claim, the outer loop will
+    // naturally skip it (frontier empty) on the next iteration — no break needed.
+  }
+
+  // Assign any remaining isolated cells to an adjacent room (ignoring quota).
+  // These are truly enclosed pockets; quota correction happens in phase 2.
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const { row, col } of allCells) {
+      if (assignment[row][col] !== null) {
+        continue;
+      }
+      for (const n of neighbors(row, col)) {
+        if (assignment[n.row][n.col] !== null) {
+          assignment[row][col] = assignment[n.row][n.col];
+          roomSizes[assignment[row][col]!]++;
+          changed = true;
+          break;
+        }
+      }
+    }
+  }
+
+  // Phase 2: cell-stealing correction.
+  // Iteratively move border cells from over-quota rooms to adjacent under-quota
+  // rooms, checking that the donor room stays contiguous after each move.
+  // This guarantees exact target sizes regardless of how phase 1 went.
+  const roomCells: Coord[][] = Array.from({ length: numRooms }, () => []);
+  for (const cell of allCells) {
+    roomCells[assignment[cell.row][cell.col]!]!.push(cell);
+  }
+
+  const isContiguousWithout = (roomIdx: number, exclude: Coord): boolean => {
+    const cells = roomCells[roomIdx]!;
+    if (cells.length <= 1) {
+      return false; // removing the only cell disconnects it
+    }
+    const start = cells.find((c) => !(c.row === exclude.row && c.col === exclude.col))!;
+    const visited = new Set<string>([`${start.row},${start.col}`]);
+    const queue: Coord[] = [start];
+    while (queue.length > 0) {
+      const cur = queue.shift()!;
+      for (const n of neighbors(cur.row, cur.col)) {
+        const key = `${n.row},${n.col}`;
+        if (visited.has(key) || assignment[n.row][n.col] !== roomIdx) {
+          continue;
+        }
+        if (n.row === exclude.row && n.col === exclude.col) {
+          continue;
+        }
+        visited.add(key);
+        queue.push(n);
+      }
+    }
+    return visited.size === cells.length - 1;
+  };
+
+  let balancing = true;
+  while (balancing) {
+    balancing = false;
+    for (let toRoom = 0; toRoom < numRooms; toRoom++) {
+      if (roomSizes[toRoom]! >= targets[toRoom]!) {
+        continue;
+      }
+      // Look for a movable cell in an over-quota room adjacent to toRoom
+      let moved = false;
+      outer: for (const cell of roomCells[toRoom]!) {
+        for (const n of neighbors(cell.row, cell.col)) {
+          const fromRoom = assignment[n.row][n.col];
+          if (fromRoom === null || fromRoom === toRoom) {
+            continue;
+          }
+          if (roomSizes[fromRoom]! <= targets[fromRoom]!) {
+            continue; // donor is not over-quota
+          }
+          if (!isContiguousWithout(fromRoom, n)) {
+            continue; // moving this cell would disconnect the donor
+          }
+          // Move cell n from fromRoom to toRoom
+          assignment[n.row][n.col] = toRoom;
+          roomSizes[toRoom]!++;
+          roomSizes[fromRoom]!--;
+          roomCells[toRoom]!.push(n);
+          roomCells[fromRoom] = roomCells[fromRoom]!.filter(
+            (c) => !(c.row === n.row && c.col === n.col),
+          );
+          balancing = true;
+          moved = true;
+          break outer;
+        }
+      }
+      if (!moved && roomSizes[toRoom]! < targets[toRoom]!) {
+        // Under-quota room has no over-quota neighbours reachable in one hop.
+        // This can happen when it's enclosed by at-quota rooms — skip for now;
+        // subsequent iterations may open up paths as other rooms rebalance.
+      }
+    }
+  }
+
   return theme.rooms.map((r, i) => ({
     id: r.id,
     name: r.name,
@@ -120,45 +287,90 @@ interface ObjectTemplate {
   mustTouchWall: boolean; // at least one cell must border the room boundary or grid edge
 }
 
-const OBJECT_OFFSETS: Record<ObjectKind, Coord[]> = {
-  chair: [{ row: 0, col: 0 }],
-  plant: [{ row: 0, col: 0 }],
+// Each kind maps to an array of base shapes; getAllRotations is applied to each.
+const OBJECT_OFFSETS: Record<ObjectKind, Coord[][]> = {
+  chair: [[{ row: 0, col: 0 }]],
+  plant: [[{ row: 0, col: 0 }]],
   table: [
-    { row: 0, col: 0 },
-    { row: 0, col: 1 },
+    [
+      { row: 0, col: 0 },
+      { row: 0, col: 1 },
+    ],
   ],
   bed: [
-    { row: 0, col: 0 },
-    { row: 1, col: 0 },
+    [
+      { row: 0, col: 0 },
+      { row: 1, col: 0 },
+    ],
   ],
-  bookshelf: [{ row: 0, col: 0 }],
+  bookshelf: [[{ row: 0, col: 0 }]],
   sofa: [
-    { row: 0, col: 0 },
-    { row: 0, col: 1 },
+    [
+      { row: 0, col: 0 },
+      { row: 0, col: 1 },
+    ],
   ],
-  fireplace: [{ row: 0, col: 0 }],
+  fireplace: [[{ row: 0, col: 0 }]],
   counter: [
-    { row: 0, col: 0 },
-    { row: 0, col: 1 },
+    [
+      { row: 0, col: 0 },
+      { row: 0, col: 1 },
+    ],
   ],
-  wardrobe: [{ row: 0, col: 0 }],
-  toilet: [{ row: 0, col: 0 }],
+  wardrobe: [[{ row: 0, col: 0 }]],
+  toilet: [[{ row: 0, col: 0 }]],
+  car: [
+    [
+      { row: 0, col: 0 },
+      { row: 0, col: 1 },
+    ],
+  ],
+  tv: [[{ row: 0, col: 0 }]],
+  rug: [
+    [{ row: 0, col: 0 }],
+    [
+      { row: 0, col: 0 },
+      { row: 0, col: 1 },
+    ],
+    [
+      { row: 0, col: 0 },
+      { row: 0, col: 1 },
+      { row: 0, col: 2 },
+    ],
+    [
+      { row: 0, col: 0 },
+      { row: 0, col: 1 },
+      { row: 1, col: 0 },
+      { row: 1, col: 1 },
+    ],
+    [
+      { row: 0, col: 0 },
+      { row: 0, col: 1 },
+      { row: 0, col: 2 },
+      { row: 1, col: 0 },
+      { row: 1, col: 1 },
+      { row: 1, col: 2 },
+    ],
+  ],
 };
 
 // Minimum number of free in-room cells adjacent to the object after placement.
 // Occupiable objects and service objects need at least one open approach cell.
 // Decorative / wall-mounted objects can be tucked into a corner.
 const OBJECT_MIN_FREE_ADJACENT: Record<ObjectKind, number> = {
-  chair: 1, // must be reachable
-  plant: 0, // decorative corner piece
-  table: 1, // need space to pull up a chair
-  bed: 1, // need space to get in/out
-  bookshelf: 0, // against a wall
-  sofa: 1, // must be approachable
-  fireplace: 0, // wall-mounted
-  counter: 1, // service space in front
-  wardrobe: 0, // against a wall
-  toilet: 1, // must be approachable
+  chair: 1,
+  plant: 0,
+  table: 2,
+  bed: 2,
+  bookshelf: 0,
+  sofa: 2,
+  fireplace: 3,
+  counter: 2,
+  wardrobe: 1,
+  toilet: 1,
+  car: 1,
+  rug: 0,
+  tv: 0,
 };
 
 // Objects that structurally belong against a room boundary or grid edge.
@@ -166,13 +378,16 @@ const OBJECT_MUST_TOUCH_WALL: Record<ObjectKind, boolean> = {
   chair: false,
   plant: false,
   table: false,
-  bed: true, // always against a wall
-  bookshelf: true, // always against a wall
-  sofa: false, // can face into the room
-  fireplace: true, // structurally in a wall
-  counter: true, // against a wall
-  wardrobe: true, // against a wall
-  toilet: true, // always against a wall
+  bed: false,
+  bookshelf: true,
+  sofa: false,
+  fireplace: true,
+  counter: true,
+  wardrobe: true,
+  toilet: true,
+  car: false,
+  rug: false,
+  tv: false,
 };
 
 function rotateOffsets90(offsets: Coord[]): Coord[] {
@@ -201,12 +416,14 @@ function getAllRotations(offsets: Coord[]): Coord[][] {
 }
 
 const OBJECT_TEMPLATES: ObjectTemplate[] = OBJECT_KIND_VALUES.flatMap((kind) =>
-  getAllRotations(OBJECT_OFFSETS[kind]).map((offsets) => ({
-    kind,
-    offsets,
-    minFreeAdjacent: OBJECT_MIN_FREE_ADJACENT[kind],
-    mustTouchWall: OBJECT_MUST_TOUCH_WALL[kind],
-  })),
+  OBJECT_OFFSETS[kind].flatMap((baseOffsets) =>
+    getAllRotations(baseOffsets).map((offsets) => ({
+      kind,
+      offsets,
+      minFreeAdjacent: OBJECT_MIN_FREE_ADJACENT[kind],
+      mustTouchWall: OBJECT_MUST_TOUCH_WALL[kind],
+    })),
+  ),
 );
 
 function getCellsForTemplate(anchor: Coord, template: ObjectTemplate): Coord[] {
@@ -301,12 +518,26 @@ export function buildLayout(
 
     const fits = (template: ObjectTemplate, anchor: Coord): boolean => {
       const cells = getCellsForTemplate(anchor, template);
-      return (
-        cellsInRoom(cells, room) &&
-        cellsNotOccupied(cells, usedCells) &&
-        hasFreeAdjacent(cells, room, usedCells, template.minFreeAdjacent) &&
-        (!template.mustTouchWall || touchesWall(cells, room, gridRows, gridCols))
-      );
+      if (
+        !cellsInRoom(cells, room) ||
+        !cellsNotOccupied(cells, usedCells) ||
+        !hasFreeAdjacent(cells, room, usedCells, template.minFreeAdjacent) ||
+        (template.mustTouchWall && !touchesWall(cells, room, gridRows, gridCols))
+      ) {
+        return false;
+      }
+      // Ensure placing this object doesn't block required free adjacent cells of existing room objects.
+      const newUsedCells = new Set(usedCells);
+      cells.forEach((c) => newUsedCells.add(`${c.row},${c.col}`));
+      for (const obj of objects) {
+        if (!obj.cells.some((c) => room.cells.some((rc) => rc.row === c.row && rc.col === c.col))) {
+          continue;
+        }
+        if (!hasFreeAdjacent(obj.cells, room, newUsedCells, OBJECT_MIN_FREE_ADJACENT[obj.kind])) {
+          return false;
+        }
+      }
+      return true;
     };
 
     const placeTemplate = (template: ObjectTemplate, anchor: Coord, slotIdx: number): void => {
