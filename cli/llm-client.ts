@@ -249,7 +249,8 @@ Rules:
 - Natural word order: "alone in the Library" not "in the Library and alone"
 - When combining "alone in a room" with other facts, join with "and": "Anya is alone in the Server Room and south of Chen Wei" — never use a comma clause like "Anya, alone in the Server Room, is south of Chen Wei"
 - "in a room with 0 other people" means alone — write "alone in a room", not "in a room with exactly 0 other people"
-- Row/column numbers use ordinals: "in the 3rd row" / "in the 4th column", not "in row 3" / "in column 4"
+- Row/column numbers use written ordinals: "in the third row" / "in the fourth column" — never digits or digit-ordinals like "3rd" or "4"
+- All other numbers are also written out: "two chairs", "three people", "exactly one"
 - Use "sitting in a chair" not "occupying a chair"
 - Keep suspect names and room/object names exactly as given
 

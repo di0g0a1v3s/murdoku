@@ -206,9 +206,12 @@ export function GridCanvas({
                 style={{
                   gridColumn: col + 1,
                   gridRow: row + 1,
+                  width: cellSize,
+                  height: cellSize,
                   display: 'flex',
                   flexWrap: 'wrap',
                   alignItems: 'center',
+                  alignContent: 'center',
                   justifyContent: 'center',
                   padding: 2,
                   gap: 1,

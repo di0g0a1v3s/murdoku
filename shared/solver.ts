@@ -10,6 +10,14 @@ export type SolveResult =
 
 // ─── Solver ───────────────────────────────────────────────────────────────────
 
+export function makeVictimClue(puzzle: Puzzle): Clue {
+  const victimId = puzzle.people.find((p) => p.role === 'victim')?.id;
+  if (victimId == null) {
+    throw new Error('No victim in puzzle');
+  }
+  return { kind: 'person-in-room-with', person: victimId, count: 1, text: '' };
+}
+
 export function solve(puzzle: Puzzle, clues: Clue[]): SolveResult {
   const { rows, cols } = puzzle.gridSize;
   const allPersonIds = puzzle.people.map((p) => p.id);
@@ -74,14 +82,6 @@ export function solve(puzzle: Puzzle, clues: Clue[]): SolveResult {
     }
   }
 
-  // Murder condition: victim must be in a room with exactly 1 other person (the murderer)
-  const victimId = puzzle.people.find((p) => p.role === 'victim')?.id;
-  if (victimId == null) {
-    throw new Error('No victim id');
-  }
-  const victimClue: Clue = { kind: 'person-in-room-with', person: victimId, count: 1, text: '' };
-  globalClues.push(victimClue);
-
   // Compute valid cells for pid given the current assignment.
   // Starts from all valid (non-occupiable) cells, then filters:
   //   - Latin square: skip rows/cols already used by placed people
@@ -140,9 +140,6 @@ export function solve(puzzle: Puzzle, clues: Clue[]): SolveResult {
         if (evaluateClue(clue, assignment, puzzle) !== 'satisfied') {
           return;
         }
-      }
-      if (evaluateClue(victimClue, assignment, puzzle) !== 'satisfied') {
-        return;
       }
       solutions.push(allPersonIds.map((id) => ({ personId: id, coord: assignment.get(id)! })));
       return;

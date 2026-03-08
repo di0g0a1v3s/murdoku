@@ -91,8 +91,7 @@ murdoku/
 │       ├── CluesPanel.tsx     # Scrollable evidence list
 │       ├── ClueItem.tsx       # Single clue with kind icon + text
 │       ├── PuzzleView.tsx     # Full puzzle layout (grid + clues + controls)
-│       ├── PuzzleSelector.tsx # Puzzle picker grouped by difficulty, completed state
-│       └── MurdererReveal.tsx # Modal shown when solution revealed
+│       └── PuzzleSelector.tsx # Puzzle picker grouped by difficulty, completed state
 │
 ├── public/
 │   ├── icon.svg               # PWA home screen icon (512×512, dark bg + 🕵️)
@@ -150,20 +149,21 @@ GEMINI_API_KEY=your_key npm run generate -- --debug              # Print all LLM
            some room has exactly 2 people; after backtracking, people are
            assigned to cells: victim+murderer → the 2-person room (murderer
            chosen randomly from suspects), remaining suspects → other cells
-4. Algo → computeAllFacts() — exhaustive list of all true statements (victim facts excluded)
+4. Algo → computeAllFacts() — exhaustive list of all true statements; victim facts excluded
+           (person, personA, and personB === victimId all filtered out)
            facts are weighted and sorted: person-direction/distance (weight 1) first,
            all others (weight 5) last
-5. Algo → de-pin pass — remove any clue whose removal still leaves the suspect
-           with ≥1 clue but no longer individually pinned to one cell
-           (no uniqueness check; pool is large enough to absorb removals)
+5. Algo → de-pin pass — for each suspect, if their clues individually pin them to one cell,
+           try removing each clue; remove it if either (a) the remaining set no longer pins,
+           OR (b) this clue alone already pins (making it redundant given the rest)
 6. Algo → minimize pass — greedily remove redundant clues while maintaining
            (a) unique solution and (b) ≥1 clue per suspect
            (lower-weight clues tried first → person-direction/distance pruned preferentially)
 7. LLM  → generateAllTexts() — single LLM call produces:
            - one summary sentence per suspect (covering all their clue facts)
            - natural language text for each general clue (room-population, object-occupancy)
-           temperature=0.4 for accurate factual prose
-           victim clue is fixed ("alone with murderer") and never stored
+           temperature=0.4 for accurate factual prose; all numbers written out in words
+           (e.g. "two" not "2", "third" not "3rd"); victim clue hardcoded in UI, never stored
 8. Auto-save → append to src/puzzles/puzzles.json
 ```
 
@@ -173,23 +173,23 @@ GEMINI_API_KEY=your_key npm run generate -- --debug              # Print all LLM
 
 ## Data Model (shared/types.ts)
 
+Two-level type hierarchy:
+
 ```typescript
+// Base — used by solver, evaluator, and CLI generator
 Puzzle {
-  id, title, subtitle, gridSize, generatedAt
-  rooms: Room[]          // each room owns its cells + has a RoomPattern (solid | striped | checkered)
-  objects: GridObject[]  // kind, occupiable|non-occupiable, cells[]
-  people: Person[]       // role: 'victim' | 'suspect', avatarEmoji
-  clues: Clue[]          // discriminated union; each clue's .text = raw description (used by solver audit)
-  suspectSummaries: { personId: string; text: string }[]
-                         // one LLM-written sentence per suspect (used for UI display)
-  solution: {
-    placements: { personId, coord }[]
-    murdererId, victimId, murderRoom
-  }
+  gridSize, rooms, objects, people, clues, solution
 }
+
+// Full stored record — extends Puzzle, used by the frontend
+FullPuzzle extends Puzzle {
+  id, title, subtitle, difficulty, suspectSummaries, generatedAt
+}
+
+PuzzleCollection { version, puzzles: FullPuzzle[] }
 ```
 
-**Display vs solver split:** `suspectSummaries` holds one LLM-generated sentence per suspect that combines all their facts for display. General clue `text` fields hold LLM-naturalized text rendered directly in the UI. The victim clue is hardcoded in the UI ("The victim is alone in a room with the murderer.") and never stored in `clues`.
+`clues` is a discriminated union of all clue kinds; each carries a `.text` field with LLM-written prose. `suspectSummaries` holds one sentence per suspect combining all their facts (used for UI display). The victim clue is hardcoded in the UI ("The victim is alone in a room with the murderer.") and never stored in `clues`.
 
 **`person-alone-in-room` encodes `roomId`:** This clue stores the room explicitly, so the evaluator can prune immediately if any other person enters that room — making `room-population count=1` for the same room genuinely redundant and removable by the minimizer.
 
@@ -224,9 +224,13 @@ Grid uses **layered CSS Grid** (not SVG/Canvas):
 4. Object sprites (Lucide icon + label, spanning correct grid cells)
 5. Cell marks — player annotations (person initial in purple/red/green, or ✕); when solution is revealed, solution placements shown as committed (green) using the same marks layer
 
-**Interactive solving:** clicking an occupiable cell opens a popup (`CellPopup`) with one button per person (initial letter) plus an X. Clicking a letter toggles that mark on the cell (multiple people per cell allowed; X is exclusive). Popup closes after each selection. Marks persist in `localStorage` per puzzle (`murdoku-progress-{id}`). Committed cells persist in `localStorage` separately (`murdoku-committed-{id}`).
+**Interactive solving:** clicking an occupiable cell opens a popup (`CellPopup`) with one button per person (initial letter) plus an X. Clicking a letter toggles that mark on the cell (multiple people per cell allowed; X is exclusive). Marks persist in `localStorage` per puzzle (`murdoku-progress-{id}`). Locked cells persist separately (`murdoku-committed-{id}`).
 
-**Commit:** popup shows a green "Commit ✓" button (active only when exactly one person is marked). Committing: (1) removes that person from all other cells, (2) crosses out all other occupiable cells in the same row/col that aren't already committed, (3) turns the letter green on the grid. When all people are committed, auto-checks the solution: correct → green banner + marks complete; wrong → red hint. Action is undoable.
+**Lock ✓:** popup shows a green "Lock ✓" button (active only when exactly one person is marked). Locking: (1) removes that person from all other cells, (2) crosses out all other occupiable cells in the same row/col that aren't already locked, (3) turns the letter green on the grid. When all people are locked, auto-checks the solution: correct → green banner ("X killed Y in the Z") + all letters locked; wrong → specific hint. Action is undoable.
+
+**Verify Solution:** available at any time. Checks in priority order: (1) multiple marks on a cell, (2) someone not yet placed, (3) row/column conflict (names the two people), (4) first violated clue (shows the clue text). Only one hint shown at a time.
+
+**Solution reveal:** "Reveal Solution" button sits below the evidence panel (clues column). Clicking it shows all placements as locked (green) on the grid — no modal. A "Hide Solution" button appears below the grid to return to normal view.
 
 **Completed puzzles:** stored in `localStorage` (`murdoku-completed`). `PuzzleSelector` shows completed puzzles in green with a ✓ prefix, grouped by difficulty (Easy ≤6 people, Medium 7–9, Hard 10+). A Reset button clears completion and progress.
 
@@ -238,17 +242,18 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 
 - [x] CLI puzzle generator with LLM + algorithmic pipeline
 - [x] Frontend renders grid, rooms, objects, clues
-- [x] Solution reveal (letter marks + murderer modal)
+- [x] Solution reveal (placements shown on grid; no modal)
 - [x] Puzzle selector grouped by difficulty (Easy/Medium/Hard)
 - [x] Interactive solving — click cells to annotate with person initials or X
-- [x] Verify Solution — checks marks against solution, marks puzzle complete
+- [x] Verify Solution — specific hints (unplaced, conflicts, violated clue)
 - [x] Progress + completed state persisted in localStorage
 - [x] Single-file build deployable to GitHub Pages
 - [x] GitHub Actions auto-deploy on push to main
 - [x] PWA — installable, works offline after first visit
 - [x] Clear board button — wipes marks without affecting completed state
 - [x] How to play collapsible section in the puzzle UI
-- [x] Commit mechanic — lock in placements; auto-verifies when all committed
+- [x] Lock mechanic — lock in placements; auto-verifies when all locked
+- [x] Puzzle/FullPuzzle type split — base type for solver/evaluator/generator; FullPuzzle for frontend/storage
 
 ## Future Ideas
 

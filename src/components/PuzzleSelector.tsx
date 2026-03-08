@@ -1,4 +1,4 @@
-import type { Puzzle } from '@shared/types';
+import type { Puzzle, PuzzleDifficulty } from '@shared/types';
 
 interface PuzzleSelectorProps {
   puzzles: Puzzle[];
@@ -7,23 +7,35 @@ interface PuzzleSelectorProps {
   completedIds: Set<string>;
 }
 
-function getDifficulty(puzzle: Puzzle): 'Easy' | 'Medium' | 'Hard' {
-  const n = puzzle.people.length;
-  if (n <= 6) {
-    return 'Easy';
-  }
-  if (n <= 9) {
-    return 'Medium';
-  }
-  return 'Hard';
+function getDifficulty(puzzle: Puzzle): PuzzleDifficulty {
+  return puzzle.difficulty;
 }
 
-const DIFFICULTY_ORDER = ['Easy', 'Medium', 'Hard'] as const;
+const DIFFICULTY_ORDER: PuzzleDifficulty[] = [
+  'easy',
+  'easy+',
+  'medium',
+  'medium+',
+  'hard',
+  'hard+',
+];
 
-const DIFFICULTY_COLOR: Record<string, string> = {
-  Easy: '#16a34a',
-  Medium: '#d97706',
-  Hard: '#dc2626',
+const DIFFICULTY_LABEL: Record<PuzzleDifficulty, string> = {
+  easy: 'Easy',
+  'easy+': 'Easy+',
+  medium: 'Medium',
+  'medium+': 'Medium+',
+  hard: 'Hard',
+  'hard+': 'Hard+',
+};
+
+const DIFFICULTY_COLOR: Record<PuzzleDifficulty, string> = {
+  easy: '#16a34a',
+  'easy+': '#15803d',
+  medium: '#d97706',
+  'medium+': '#b45309',
+  hard: '#dc2626',
+  'hard+': '#991b1b',
 };
 
 export function PuzzleSelector({
@@ -56,7 +68,7 @@ export function PuzzleSelector({
               paddingLeft: 4,
             }}
           >
-            {label}
+            {DIFFICULTY_LABEL[label]}
           </div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {group.map((puzzle) => {

@@ -109,19 +109,27 @@ export interface Solution {
   murderRoom: string;
 }
 
-// ─── Full Puzzle ──────────────────────────────────────────────────────────────
+// ─── Puzzle (base — used by solver, evaluator, generator) ────────────────────
 
 export interface Puzzle {
-  id: string;
-  title: string;
-  subtitle?: string;
   gridSize: { rows: number; cols: number };
   rooms: Room[];
   objects: GridObject[];
   people: Person[];
   clues: Clue[];
-  suspectSummaries: { personId: string; text: string }[];
   solution: Solution;
+}
+
+// ─── Full Puzzle (stored in JSON, used by the frontend) ──────────────────────
+
+export type PuzzleDifficulty = 'easy' | 'easy+' | 'medium' | 'medium+' | 'hard' | 'hard+';
+
+export interface FullPuzzle extends Puzzle {
+  id: string;
+  title: string;
+  subtitle?: string;
+  difficulty: PuzzleDifficulty;
+  suspectSummaries: { personId: string; text: string }[];
   generatedAt: string;
 }
 
@@ -129,7 +137,7 @@ export interface Puzzle {
 
 export interface PuzzleCollection {
   version: string;
-  puzzles: Puzzle[];
+  puzzles: FullPuzzle[];
 }
 
 // ─── Clue Helpers ─────────────────────────────────────────────────────────────

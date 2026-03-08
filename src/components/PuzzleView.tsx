@@ -1,14 +1,14 @@
 import { useState, useEffect, useMemo } from 'react';
-import type { Puzzle } from '@shared/types';
+import type { FullPuzzle } from '@shared/types';
+import { evaluateClue } from '@shared/clue-evaluator';
 import { GridCanvas } from './GridCanvas';
 import { CluesPanel } from './CluesPanel';
-import { MurdererReveal } from './MurdererReveal';
 import { CellPopup } from './CellPopup';
 
 type UndoEntry = { marks: Map<string, Set<string>>; committed: Map<string, string> };
 
 interface PuzzleViewProps {
-  puzzle: Puzzle;
+  puzzle: FullPuzzle;
   isCompleted: boolean;
   undoStack: UndoEntry[];
   onUndoStackChange: (stack: UndoEntry[]) => void;
@@ -64,7 +64,6 @@ export function PuzzleView({
   onReset,
 }: PuzzleViewProps) {
   const [showSolution, setShowSolution] = useState(false);
-  const [showRevealModal, setShowRevealModal] = useState(false);
   const [howToPlayOpen, setHowToPlayOpen] = useState(false);
   // cellMarks: "row,col" → Set of personId | 'X'
   // Initialized from localStorage; component remounts when puzzle changes (key={puzzle.id} in App)
@@ -78,6 +77,7 @@ export function PuzzleView({
   const [verifyResult, setVerifyResult] = useState<'correct' | 'wrong' | null>(
     isCompleted ? 'correct' : null,
   );
+  const [verifyHint, setVerifyHint] = useState<string | null>(null);
 
   const nonOccupiable = useMemo(() => {
     const s = new Set<string>();
@@ -250,31 +250,70 @@ export function PuzzleView({
   }
 
   function handleVerify() {
-    const { placements } = puzzle.solution;
-    const userPlacements: { personId: string; key: string }[] = [];
+    const fail = (hint: string) => {
+      setVerifyHint(hint);
+      setVerifyResult('wrong');
+    };
+
+    // Build person → cell mapping from marks
+    let hasMultipleMarks = false;
+    const personToKey = new Map<string, string>();
     for (const [key, marks] of cellMarks) {
       const personIds = [...marks].filter((m) => m !== 'X');
       if (personIds.length > 1) {
-        setVerifyResult('wrong');
-        return;
-      }
-      if (personIds.length === 1) {
-        userPlacements.push({ personId: personIds[0]!, key });
+        hasMultipleMarks = true;
+      } else if (personIds.length === 1) {
+        personToKey.set(personIds[0]!, key);
       }
     }
-    if (userPlacements.length !== placements.length) {
-      setVerifyResult('wrong');
-      return;
+
+    if (hasMultipleMarks) {
+      return fail('Some cells have multiple suspects marked.');
     }
-    for (const { personId, coord } of placements) {
-      const key = `${coord.row},${coord.col}`;
-      if (!userPlacements.some((u) => u.key === key && u.personId === personId)) {
-        setVerifyResult('wrong');
-        return;
+
+    const unplaced = puzzle.people.filter((p) => !personToKey.has(p.id));
+    if (unplaced.length > 0) {
+      return fail(`Not yet placed: ${unplaced.map((p) => p.name).join(', ')}.`);
+    }
+
+    // Check Latin square
+    const rowOwner = new Map<number, string>();
+    const colOwner = new Map<number, string>();
+    for (const [pid, key] of personToKey) {
+      const [row, col] = key.split(',').map(Number);
+      const name = puzzle.people.find((p) => p.id === pid)!.name;
+      if (rowOwner.has(row)) {
+        return fail(
+          `${name} and ${puzzle.people.find((p) => p.id === rowOwner.get(row))!.name} are in the same row.`,
+        );
       }
+      rowOwner.set(row, pid);
+      if (colOwner.has(col)) {
+        return fail(
+          `${name} and ${puzzle.people.find((p) => p.id === colOwner.get(col))!.name} are in the same column.`,
+        );
+      }
+      colOwner.set(col, pid);
     }
+
+    // Check clues against current placement
+    const assignment = new Map(
+      [...personToKey].map(([pid, key]) => {
+        const [row, col] = key.split(',').map(Number);
+        return [pid, { row, col }] as const;
+      }),
+    );
+    const violatedClue = puzzle.clues.find(
+      (c) => evaluateClue(c, assignment, puzzle) === 'violated',
+    );
+    if (violatedClue) {
+      return fail(`Clue not satisfied: "${violatedClue.text}"`);
+    }
+
+    setVerifyHint(null);
     setVerifyResult('correct');
     onComplete();
+    setCommittedCells(new Map([...personToKey].map(([pid, key]) => [key, pid])));
   }
 
   function handleUndo() {
@@ -286,6 +325,7 @@ export function PuzzleView({
     setCellMarks(last.marks);
     setCommittedCells(last.committed);
     setVerifyResult(null);
+    setVerifyHint(null);
     onUndoStackChange(next);
   }
 
@@ -305,6 +345,7 @@ export function PuzzleView({
     setCommittedCells(new Map());
     onUndoStackChange([]);
     setVerifyResult(null);
+    setVerifyHint(null);
   }
 
   function handleReset() {
@@ -338,19 +379,13 @@ export function PuzzleView({
   const effectiveMarks = showSolution ? solutionMarks : cellMarks;
   const effectiveCommitted = showSolution ? solutionCommitted : committedCells;
 
-  const murderer = puzzle.people.find((p) => p.id === puzzle.solution.murdererId)!;
-  const victim = puzzle.people.find((p) => p.id === puzzle.solution.victimId)!;
-  const murderRoom = puzzle.rooms.find((r) => r.id === puzzle.solution.murderRoom);
-
   function handleReveal() {
     setShowSolution(true);
-    setShowRevealModal(true);
     setPopup(null);
   }
 
   function handleHide() {
     setShowSolution(false);
-    setShowRevealModal(false);
   }
 
   const popupMarks = popup
@@ -482,6 +517,25 @@ export function PuzzleView({
             />
           </div>
 
+          {/* Reveal / hide solution */}
+          {showSolution && (
+            <button
+              onClick={handleHide}
+              style={{
+                padding: '8px 22px',
+                background: 'transparent',
+                color: '#7c3aed',
+                border: '2px solid #7c3aed',
+                borderRadius: 8,
+                fontSize: 15,
+                fontWeight: 700,
+                cursor: 'pointer',
+              }}
+            >
+              Hide Solution
+            </button>
+          )}
+
           {/* Result banner / controls */}
           {!showSolution &&
             (verifyResult === 'correct' ? (
@@ -497,7 +551,12 @@ export function PuzzleView({
                     border: '1px solid #86efac',
                   }}
                 >
-                  ✓ Correct! Case closed.
+                  {(() => {
+                    const murderer = puzzle.people.find((p) => p.id === puzzle.solution.murdererId);
+                    const victim = puzzle.people.find((p) => p.id === puzzle.solution.victimId);
+                    const room = puzzle.rooms.find((r) => r.id === puzzle.solution.murderRoom);
+                    return `✓ Case closed! ${murderer?.name ?? '?'} killed ${victim?.name ?? '?'} in the ${room?.name ?? '?'}.`;
+                  })()}
                 </div>
                 <button
                   onClick={handleReset}
@@ -573,15 +632,9 @@ export function PuzzleView({
                 >
                   Verify Solution
                 </button>
-                {verifyResult === 'wrong' && (
-                  <div
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 600,
-                      color: '#dc2626',
-                    }}
-                  >
-                    Not quite. Keep investigating.
+                {verifyResult === 'wrong' && verifyHint && (
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#dc2626' }}>
+                    {verifyHint}
                   </div>
                 )}
               </div>
@@ -605,8 +658,7 @@ export function PuzzleView({
             suspectSummaries={puzzle.suspectSummaries}
             lockedPersonIds={new Set(committedCells.values())}
           />
-          {/* Reveal button */}
-          {!showSolution ? (
+          {!showSolution && (
             <button
               onClick={handleReveal}
               style={{
@@ -624,29 +676,11 @@ export function PuzzleView({
             >
               Reveal Solution
             </button>
-          ) : (
-            <button
-              onClick={handleHide}
-              style={{
-                padding: '10px 28px',
-                background: 'transparent',
-                color: '#7c3aed',
-                border: '2px solid #7c3aed',
-                borderRadius: 8,
-                fontSize: 17,
-                fontWeight: 700,
-                cursor: 'pointer',
-                alignSelf: 'center',
-              }}
-            >
-              Hide Solution
-            </button>
           )}
         </div>
       </div>
 
       {/* How to play */}
-      {/* TODO: mention that "besides" an object implies in the same room*/}
       <details
         onToggle={(e) => setHowToPlayOpen((e.currentTarget as HTMLDetailsElement).open)}
         style={{
@@ -699,10 +733,18 @@ export function PuzzleView({
             no one else.
           </p>
           <p style={{ margin: 0 }}>
-            Click any cell to annotate it with a suspect&apos;s initial (or ✕ to rule someone out).
-            When you&apos;re confident about a placement, hit <strong>Lock</strong> to lock it in —
-            this clears that person from other cells and marks the rest of their row and column with
-            ✕. Once everyone is locked, you&apos;ll find out if you solved it.
+            <strong>Reading clues:</strong> cardinal directions (north, south, east, west) compare
+            only one axis — "north" means a lower row regardless of column. Diagonal directions
+            (northeast, etc.) compare both. &ldquo;Beside&rdquo; an object means orthogonally
+            adjacent <em>and in the same room</em>.
+          </p>
+          <p style={{ margin: 0 }}>
+            <strong>Annotating:</strong> click any cell to mark it with a suspect&apos;s initial or
+            ✕ to rule them out. Hit <strong>Lock ✓</strong> when you&apos;re confident — this turns
+            the letter green, removes that person from all other cells, and crosses out the rest of
+            their row and column. Locking everyone auto-verifies the solution. You can also hit{' '}
+            <strong>Verify Solution</strong> at any time to check early — if something&apos;s wrong,
+            you&apos;ll see a specific hint about what to fix.
           </p>
         </div>
       </details>
@@ -718,16 +760,6 @@ export function PuzzleView({
           onCommit={(personId) => handleCommit(popup.row, popup.col, personId)}
           onUncommit={() => handleUncommit(popup.row, popup.col)}
           onClose={() => setPopup(null)}
-        />
-      )}
-
-      {/* Murder reveal modal */}
-      {showRevealModal && (
-        <MurdererReveal
-          murderer={murderer}
-          victim={victim}
-          murderRoom={murderRoom}
-          onClose={() => setShowRevealModal(false)}
         />
       )}
     </div>

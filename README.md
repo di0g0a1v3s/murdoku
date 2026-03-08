@@ -19,21 +19,21 @@ Murdoku presents you with a grid divided into named rooms, each with a distinct 
 - The clues always yield exactly one valid solution
 
 **Solving:**
-- Tap any empty cell to open a popup — select a person's initial to mark them there, or ✕ to mark the cell empty
+- Tap any occupiable cell to open a popup — select a person's initial to mark them there, or ✕ to rule them out
 - Tap again to remove a mark
-- When confident about a placement, hit **Commit** in the popup to lock it in — this removes that person from all other cells and marks the rest of their row and column with ✕. Committed letters turn green on the grid.
-- Once every person is committed, the puzzle auto-checks and tells you if you solved it
+- When confident about a placement, hit **Lock ✓** in the popup to lock it in — this removes that person from all other cells, marks the rest of their row and column with ✕, and turns the letter green on the grid
+- Locking everyone auto-verifies the solution. Or hit **Verify Solution** at any time to check early — if something's wrong you'll see a specific hint (multiple marks on a cell, someone not placed, a row/column conflict, or which clue is violated)
 - Use **Clear** to wipe all marks and start fresh (without losing your completed puzzles)
-- Stuck? Use **Reveal Solution** to see the answer
+- Stuck? Use **Reveal Solution** (below the evidence panel) to see the answer; **Hide Solution** appears below the grid to return to normal view
 - Expand **How to play** at the bottom for a quick rule reminder
 
 **Clue types:**
-- Directional — *"A is north of B"* (row comparison), *"A is northeast of B"* (both row and column)
-- Distance — *"A is 2 columns east of B"* (column distance only, any row)
-- Grid position — *"A is in row 3"*, *"A is in column 2"*, *"A is in a corner of the grid"*
-- Object-relative — *"A is beside a chair"*, *"A is sitting in a chair"*, *"A is the only person on a sofa"*
-- Room-based — *"A is in the library"*, *"A is in the same room as B"*, *"A is alone in the library"*, *"A is in a corner of the Library"*, *"A is in a room with exactly 2 other people"*
-- General — *"Exactly one chair is occupied"*, *"Exactly 2 rooms are empty"*
+- Directional — *"A is north of B"* (row comparison only, any column), *"A is northeast of B"* (both row and column)
+- Distance — *"A is exactly two columns east of B"* (column distance only, any row)
+- Grid position — *"A is in the third row"*, *"A is in the second column"*, *"A is in a corner of the grid"*
+- Object-relative — *"A is beside a chair"* (orthogonally adjacent, same room), *"A is sitting in a chair"*, *"A is the only person on a sofa"*
+- Room-based — *"A is in the library"*, *"A is in the same room as B"*, *"A is alone in the library"*, *"A is in a corner of the Library"*, *"A is in a room with exactly two other people"*
+- General — *"Exactly one chair is occupied"*, *"Exactly two rooms are empty"*
 
 ---
 
