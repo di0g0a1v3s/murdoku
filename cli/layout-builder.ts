@@ -292,6 +292,7 @@ const OBJECT_OFFSETS: Record<ObjectKind, Coord[][]> = {
   chair: [[{ row: 0, col: 0 }]],
   plant: [[{ row: 0, col: 0 }]],
   table: [
+    [{ row: 0, col: 0 }],
     [
       { row: 0, col: 0 },
       { row: 0, col: 1 },
