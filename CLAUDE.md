@@ -263,6 +263,6 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 ## Future Ideas
 
 - App icon
+- Object sprites
 - Non-square grids
-- Hint system using the solver
 - Daily puzzle

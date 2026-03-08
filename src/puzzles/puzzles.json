@@ -2,69 +2,82 @@
   "version": "1.0.0",
   "puzzles": [
     {
-      "id": "jazzhaus-mmh11ba8",
-      "title": "Jazzhaus",
-      "subtitle": "A dissonant chord. A life cut short.",
       "gridSize": {
         "rows": 6,
         "cols": 6
       },
       "rooms": [
         {
-          "id": "stage",
-          "name": "Stage",
+          "id": "screening-room",
+          "name": "Screening Room",
           "pattern": {
             "kind": "solid",
-            "color": "#D4A373"
+            "color": "#4A4E69"
           },
           "cells": [
             {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
               "row": 1,
-              "col": 5
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 1,
+              "col": 2
+            },
+            {
+              "row": 1,
+              "col": 3
             },
             {
               "row": 2,
-              "col": 4
+              "col": 0
             },
             {
               "row": 2,
-              "col": 5
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 3
             },
             {
               "row": 3,
-              "col": 4
-            },
-            {
-              "row": 3,
-              "col": 5
-            },
-            {
-              "row": 4,
-              "col": 4
-            },
-            {
-              "row": 4,
-              "col": 5
-            },
-            {
-              "row": 5,
-              "col": 4
-            },
-            {
-              "row": 5,
-              "col": 5
+              "col": 1
             }
           ]
         },
         {
-          "id": "dressing-room",
-          "name": "Dressing Room",
+          "id": "projection-booth",
+          "name": "Projection Booth",
           "pattern": {
             "kind": "striped",
-            "colorA": "#946B2D",
-            "colorB": "#63471C"
+            "colorA": "#9A8C98",
+            "colorB": "#C9ADA7"
           },
           "cells": [
+            {
+              "row": 3,
+              "col": 0
+            },
             {
               "row": 4,
               "col": 0
@@ -74,12 +87,31 @@
               "col": 1
             },
             {
-              "row": 4,
-              "col": 2
-            },
-            {
               "row": 5,
               "col": 0
+            }
+          ]
+        },
+        {
+          "id": "lobby",
+          "name": "Lobby",
+          "pattern": {
+            "kind": "checkered",
+            "colorA": "#F2E9E4",
+            "colorB": "#D8C3A5"
+          },
+          "cells": [
+            {
+              "row": 3,
+              "col": 5
+            },
+            {
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 5
             },
             {
               "row": 5,
@@ -92,6 +124,14 @@
             {
               "row": 5,
               "col": 3
+            },
+            {
+              "row": 5,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 5
             }
           ]
         },
@@ -99,48 +139,13 @@
           "id": "backstage",
           "name": "Backstage",
           "pattern": {
-            "kind": "checkered",
-            "colorA": "#4E342E",
-            "colorB": "#3E2723"
-          },
-          "cells": [
-            {
-              "row": 0,
-              "col": 4
-            }
-          ]
-        },
-        {
-          "id": "bar",
-          "name": "Bar",
-          "pattern": {
             "kind": "solid",
-            "color": "#5D4037"
+            "color": "#8A817C"
           },
           "cells": [
-            {
-              "row": 0,
-              "col": 3
-            },
-            {
-              "row": 1,
-              "col": 3
-            },
-            {
-              "row": 1,
-              "col": 4
-            },
             {
               "row": 2,
-              "col": 3
-            },
-            {
-              "row": 3,
-              "col": 0
-            },
-            {
-              "row": 3,
-              "col": 1
+              "col": 2
             },
             {
               "row": 3,
@@ -152,113 +157,113 @@
             },
             {
               "row": 4,
+              "col": 2
+            },
+            {
+              "row": 4,
               "col": 3
             }
           ]
         },
         {
-          "id": "office",
-          "name": "Office",
+          "id": "owner-s-office",
+          "name": "Owner's Office",
           "pattern": {
             "kind": "striped",
-            "colorA": "#795548",
-            "colorB": "#6D4C41"
+            "colorA": "#6B705C",
+            "colorB": "#A5A58D"
           },
           "cells": [
+            {
+              "row": 0,
+              "col": 4
+            },
             {
               "row": 0,
               "col": 5
-            }
-          ]
-        },
-        {
-          "id": "smoking-room",
-          "name": "Smoking Room",
-          "pattern": {
-            "kind": "checkered",
-            "colorA": "#3E2723",
-            "colorB": "#212121"
-          },
-          "cells": [
-            {
-              "row": 0,
-              "col": 0
-            },
-            {
-              "row": 0,
-              "col": 1
-            },
-            {
-              "row": 0,
-              "col": 2
             },
             {
               "row": 1,
-              "col": 0
+              "col": 4
             },
             {
               "row": 1,
-              "col": 1
-            },
-            {
-              "row": 1,
-              "col": 2
+              "col": 5
             },
             {
               "row": 2,
-              "col": 0
+              "col": 4
             },
             {
               "row": 2,
-              "col": 1
+              "col": 5
             },
             {
-              "row": 2,
-              "col": 2
+              "row": 3,
+              "col": 4
             }
           ]
         }
       ],
       "objects": [
         {
-          "id": "table-stage-1",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 5
-            },
-            {
-              "row": 4,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "chair-stage-2",
+          "id": "chair-screening-room-1",
           "kind": "chair",
           "occupiable": "occupiable",
           "cells": [
             {
               "row": 2,
-              "col": 5
+              "col": 0
             }
           ]
         },
         {
-          "id": "plant-stage-3",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
+          "id": "rug-screening-room-2",
+          "kind": "rug",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 1,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "sofa-screening-room-3",
+          "kind": "sofa",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 0,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "rug-screening-room-4",
+          "kind": "rug",
+          "occupiable": "occupiable",
           "cells": [
             {
               "row": 2,
-              "col": 4
+              "col": 3
             }
           ]
         },
         {
-          "id": "table-dressing-room-1",
+          "id": "table-projection-booth-1",
           "kind": "table",
           "occupiable": "non-occupiable",
           "cells": [
@@ -273,10 +278,248 @@
           ]
         },
         {
-          "id": "counter-bar-1",
-          "kind": "counter",
+          "id": "chair-lobby-1",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "plant-lobby-2",
+          "kind": "plant",
           "occupiable": "non-occupiable",
           "cells": [
+            {
+              "row": 3,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "table-backstage-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 4,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-owner-s-office-1",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "chair-owner-s-office-2",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 5
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "id": "vivienne-moore",
+          "name": "Vivienne Moore",
+          "role": "victim",
+          "avatarEmoji": "🎭"
+        },
+        {
+          "id": "arthur-finch",
+          "name": "Arthur Finch",
+          "role": "suspect",
+          "avatarEmoji": "🕵️"
+        },
+        {
+          "id": "brenda-hill",
+          "name": "Brenda Hill",
+          "role": "suspect",
+          "avatarEmoji": "💃"
+        },
+        {
+          "id": "charles-baker",
+          "name": "Charles Baker",
+          "role": "suspect",
+          "avatarEmoji": "👨‍💼"
+        },
+        {
+          "id": "diana-rivers",
+          "name": "Diana Rivers",
+          "role": "suspect",
+          "avatarEmoji": "👩‍🎨"
+        },
+        {
+          "id": "edward-crane",
+          "name": "Edward Crane",
+          "role": "suspect",
+          "avatarEmoji": "🎬"
+        }
+      ],
+      "clues": [
+        {
+          "kind": "person-in-col",
+          "person": "edward-crane",
+          "col": 4,
+          "text": "Edward Crane is in column 5"
+        },
+        {
+          "kind": "person-in-room-corner",
+          "person": "brenda-hill",
+          "text": "Brenda Hill is in a corner of the Screening Room"
+        },
+        {
+          "kind": "object-occupancy",
+          "objectKind": "chair",
+          "count": 1,
+          "text": "Exactly one chair is occupied."
+        },
+        {
+          "kind": "person-in-room",
+          "person": "charles-baker",
+          "roomId": "backstage",
+          "text": "Charles Baker is in the Backstage"
+        },
+        {
+          "kind": "person-in-room-with",
+          "person": "arthur-finch",
+          "count": 0,
+          "text": "Arthur Finch is in a room with exactly 0 other people"
+        },
+        {
+          "kind": "person-sole-occupant",
+          "person": "diana-rivers",
+          "objectKind": "sofa",
+          "text": "Diana Rivers is the only person on a sofa"
+        },
+        {
+          "kind": "room-population",
+          "roomId": "owner-s-office",
+          "count": 2,
+          "text": "The Owner's Office has exactly two people."
+        },
+        {
+          "kind": "person-in-room-with",
+          "person": "brenda-hill",
+          "count": 1,
+          "text": "Brenda Hill is in a room with exactly 1 other person"
+        }
+      ],
+      "solution": {
+        "placements": [
+          {
+            "personId": "arthur-finch",
+            "coord": {
+              "row": 5,
+              "col": 0
+            }
+          },
+          {
+            "personId": "brenda-hill",
+            "coord": {
+              "row": 3,
+              "col": 1
+            }
+          },
+          {
+            "personId": "charles-baker",
+            "coord": {
+              "row": 4,
+              "col": 2
+            }
+          },
+          {
+            "personId": "diana-rivers",
+            "coord": {
+              "row": 0,
+              "col": 3
+            }
+          },
+          {
+            "personId": "edward-crane",
+            "coord": {
+              "row": 2,
+              "col": 4
+            }
+          },
+          {
+            "personId": "vivienne-moore",
+            "coord": {
+              "row": 1,
+              "col": 5
+            }
+          }
+        ],
+        "murdererId": "edward-crane",
+        "victimId": "vivienne-moore",
+        "murderRoom": "owner-s-office"
+      },
+      "title": "Seaside Cinema",
+      "subtitle": "The final showing...",
+      "generatedAt": "2026-03-08T15:40:58.352Z",
+      "id": "seaside-cinema-mmhx64n3",
+      "difficulty": "easy",
+      "suspectSummaries": [
+        {
+          "personId": "arthur-finch",
+          "text": "Arthur Finch is alone in a room."
+        },
+        {
+          "personId": "brenda-hill",
+          "text": "Brenda Hill is in a corner of the Screening Room and in a room with exactly one other person."
+        },
+        {
+          "personId": "charles-baker",
+          "text": "Charles Baker is in the Backstage."
+        },
+        {
+          "personId": "diana-rivers",
+          "text": "Diana Rivers is the only person sitting on a sofa."
+        },
+        {
+          "personId": "edward-crane",
+          "text": "Edward Crane is in the fifth column."
+        }
+      ]
+    },
+    {
+      "gridSize": {
+        "rows": 6,
+        "cols": 6
+      },
+      "rooms": [
+        {
+          "id": "great-hall",
+          "name": "Great Hall",
+          "pattern": {
+            "kind": "checkered",
+            "colorA": "#A9A9A9",
+            "colorB": "#D3D3D3"
+          },
+          "cells": [
+            {
+              "row": 2,
+              "col": 5
+            },
             {
               "row": 3,
               "col": 2
@@ -284,29 +527,73 @@
             {
               "row": 3,
               "col": 3
-            }
-          ]
-        },
-        {
-          "id": "counter-bar-2",
-          "kind": "counter",
-          "occupiable": "non-occupiable",
-          "cells": [
+            },
             {
-              "row": 1,
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 5
+            },
+            {
+              "row": 4,
               "col": 3
             },
             {
-              "row": 2,
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 5
+            },
+            {
+              "row": 5,
               "col": 3
+            },
+            {
+              "row": 5,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 5
             }
           ]
         },
         {
-          "id": "chair-bar-2",
-          "kind": "chair",
-          "occupiable": "occupiable",
+          "id": "kitchen",
+          "name": "Kitchen",
+          "pattern": {
+            "kind": "solid",
+            "color": "#8B4513"
+          },
           "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
             {
               "row": 3,
               "col": 0
@@ -314,39 +601,279 @@
           ]
         },
         {
-          "id": "chair-smoking-room-1",
-          "kind": "chair",
-          "occupiable": "occupiable",
+          "id": "library",
+          "name": "Library",
+          "pattern": {
+            "kind": "striped",
+            "colorA": "#2F4F4F",
+            "colorB": "#556B2F"
+          },
           "cells": [
             {
-              "row": 2,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "sofa-smoking-room-2",
-          "kind": "sofa",
-          "occupiable": "occupiable",
-          "cells": [
+              "row": 3,
+              "col": 1
+            },
             {
-              "row": 1,
+              "row": 4,
               "col": 0
             },
             {
-              "row": 1,
+              "row": 4,
               "col": 1
+            },
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 5,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 2
             }
           ]
         },
         {
-          "id": "table-smoking-room-3",
+          "id": "armory",
+          "name": "Armory",
+          "pattern": {
+            "kind": "solid",
+            "color": "#708090"
+          },
+          "cells": [
+            {
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 2,
+              "col": 2
+            },
+            {
+              "row": 2,
+              "col": 3
+            },
+            {
+              "row": 2,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "master-chamber",
+          "name": "Master Chamber",
+          "pattern": {
+            "kind": "striped",
+            "colorA": "#C04000",
+            "colorB": "#800000"
+          },
+          "cells": [
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 0,
+              "col": 4
+            },
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 2
+            },
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 1,
+              "col": 5
+            }
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "table-great-hall-2",
           "kind": "table",
           "occupiable": "non-occupiable",
           "cells": [
             {
-              "row": 0,
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 4,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "table-great-hall-2",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 3,
+              "col": 5
+            },
+            {
+              "row": 4,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "fireplace-great-hall-3",
+          "kind": "fireplace",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 3,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "plant-great-hall-3",
+          "kind": "plant",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "rug-great-hall-4",
+          "kind": "rug",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "counter-kitchen-1",
+          "kind": "counter",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 2,
               "col": 1
+            }
+          ]
+        },
+        {
+          "id": "counter-kitchen-2",
+          "kind": "counter",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-library-1",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "table-library-2",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "chair-library-3",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "table-armory-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 3
+            },
+            {
+              "row": 2,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "bed-master-chamber-1",
+          "kind": "bed",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "bed-master-chamber-2",
+          "kind": "bed",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 3
             },
             {
               "row": 0,
@@ -357,286 +884,193 @@
       ],
       "people": [
         {
-          "id": "viktor",
-          "name": "Viktor",
+          "id": "vera-snow",
+          "name": "Vera Snow",
           "role": "victim",
-          "avatarEmoji": "🎺"
+          "avatarEmoji": "👸"
         },
         {
-          "id": "annelise",
-          "name": "Annelise",
+          "id": "arthur-holm",
+          "name": "Arthur Holm",
           "role": "suspect",
-          "avatarEmoji": "💃"
+          "avatarEmoji": "👨"
         },
         {
-          "id": "bruno",
-          "name": "Bruno",
+          "id": "bran-stark",
+          "name": "Bran Stark",
           "role": "suspect",
-          "avatarEmoji": "👨🏻‍💼"
+          "avatarEmoji": "🧑‍🦽"
         },
         {
-          "id": "clara",
-          "name": "Clara",
+          "id": "cersei-lannister",
+          "name": "Cersei Lannister",
           "role": "suspect",
-          "avatarEmoji": "👩🏼‍🎤"
+          "avatarEmoji": "👩"
         },
         {
-          "id": "dietrich",
-          "name": "Dietrich",
+          "id": "daenerys-targaryen",
+          "name": "Daenerys Targaryen",
           "role": "suspect",
-          "avatarEmoji": "🕵🏻"
+          "avatarEmoji": "👑"
         },
         {
-          "id": "elsa",
-          "name": "Elsa",
+          "id": "euron-greyjoy",
+          "name": "Euron Greyjoy",
           "role": "suspect",
-          "avatarEmoji": "👩🏼‍🍳"
+          "avatarEmoji": "🧔"
         }
       ],
       "clues": [
         {
-          "kind": "person-in-col",
-          "person": "bruno",
-          "col": 2,
-          "text": "Bruno is in column 3"
+          "kind": "person-in-row",
+          "person": "daenerys-targaryen",
+          "row": 1,
+          "text": "Daenerys Targaryen is in row 2"
         },
         {
-          "kind": "person-beside-object",
-          "person": "annelise",
-          "objectKind": "chair",
-          "text": "Annelise is beside a chair"
-        },
-        {
-          "kind": "person-beside-object",
-          "person": "dietrich",
-          "objectKind": "chair",
-          "text": "Dietrich is beside a chair"
-        },
-        {
-          "kind": "person-in-room",
-          "person": "elsa",
-          "roomId": "stage",
-          "text": "Elsa is in the Stage"
-        },
-        {
-          "kind": "person-alone-in-room",
-          "person": "dietrich",
-          "roomId": "bar",
-          "text": "Dietrich is alone in the Bar"
-        },
-        {
-          "kind": "person-in-room",
-          "person": "clara",
-          "roomId": "dressing-room",
-          "text": "Clara is in the Dressing Room"
+          "kind": "person-in-row",
+          "person": "cersei-lannister",
+          "row": 3,
+          "text": "Cersei Lannister is in row 4"
         },
         {
           "kind": "persons-same-room",
-          "personA": "bruno",
-          "personB": "viktor",
-          "text": "Bruno and Viktor are in the same room"
-        }
-      ],
-      "suspectSummaries": [
-        {
-          "personId": "annelise",
-          "text": "Annelise is beside a chair."
+          "personA": "bran-stark",
+          "personB": "daenerys-targaryen",
+          "text": "Bran Stark and Daenerys Targaryen are in the same room"
         },
         {
-          "personId": "bruno",
-          "text": "Bruno is in the 3rd column and in the same room as Viktor."
+          "kind": "person-sole-occupant",
+          "person": "arthur-holm",
+          "objectKind": "bed",
+          "text": "Arthur Holm is the only person on a bed"
         },
         {
-          "personId": "clara",
-          "text": "Clara is in the Dressing Room."
-        },
-        {
-          "personId": "dietrich",
-          "text": "Dietrich is beside a chair and alone in the Bar."
-        },
-        {
-          "personId": "elsa",
-          "text": "Elsa is in the Stage."
+          "kind": "person-in-room-with",
+          "person": "euron-greyjoy",
+          "count": 0,
+          "text": "Euron Greyjoy is in a room with exactly 0 other people"
         }
       ],
       "solution": {
         "placements": [
           {
-            "personId": "annelise",
+            "personId": "arthur-holm",
             "coord": {
-              "row": 1,
+              "row": 0,
               "col": 5
             }
           },
           {
-            "personId": "clara",
-            "coord": {
-              "row": 5,
-              "col": 3
-            }
-          },
-          {
-            "personId": "dietrich",
-            "coord": {
-              "row": 3,
-              "col": 1
-            }
-          },
-          {
-            "personId": "elsa",
-            "coord": {
-              "row": 4,
-              "col": 4
-            }
-          },
-          {
-            "personId": "bruno",
+            "personId": "bran-stark",
             "coord": {
               "row": 2,
               "col": 2
             }
           },
           {
-            "personId": "viktor",
+            "personId": "daenerys-targaryen",
             "coord": {
-              "row": 0,
+              "row": 1,
+              "col": 3
+            }
+          },
+          {
+            "personId": "euron-greyjoy",
+            "coord": {
+              "row": 4,
+              "col": 4
+            }
+          },
+          {
+            "personId": "cersei-lannister",
+            "coord": {
+              "row": 3,
+              "col": 1
+            }
+          },
+          {
+            "personId": "vera-snow",
+            "coord": {
+              "row": 5,
               "col": 0
             }
           }
         ],
-        "murdererId": "bruno",
-        "victimId": "viktor",
-        "murderRoom": "smoking-room"
+        "murdererId": "cersei-lannister",
+        "victimId": "vera-snow",
+        "murderRoom": "library"
       },
-      "generatedAt": "2026-03-08T00:41:25.893Z",
-      "difficulty": "easy"
+      "title": "Winterfell",
+      "subtitle": "A Feast Interrupted",
+      "generatedAt": "2026-03-08T15:56:19.026Z",
+      "id": "winterfell-mmhxpuvd",
+      "difficulty": "easy",
+      "suspectSummaries": [
+        {
+          "personId": "arthur-holm",
+          "text": "Arthur Holm is the only person sitting on a bed."
+        },
+        {
+          "personId": "bran-stark",
+          "text": "Bran Stark and Daenerys Targaryen are in the same room."
+        },
+        {
+          "personId": "cersei-lannister",
+          "text": "Cersei Lannister is in the fourth row."
+        },
+        {
+          "personId": "daenerys-targaryen",
+          "text": "Daenerys Targaryen is in the second row."
+        },
+        {
+          "personId": "euron-greyjoy",
+          "text": "Euron Greyjoy is alone in a room."
+        }
+      ]
     },
     {
-      "id": "victorian-s-ance-mmh11mv0",
-      "title": "Victorian Séance",
-      "subtitle": "A chill descends upon the parlor.",
       "gridSize": {
         "rows": 6,
         "cols": 6
       },
       "rooms": [
         {
-          "id": "grand-foyer",
-          "name": "Grand Foyer",
-          "pattern": {
-            "kind": "striped",
-            "colorA": "#4A3F35",
-            "colorB": "#5E5444"
-          },
-          "cells": [
-            {
-              "row": 2,
-              "col": 3
-            },
-            {
-              "row": 2,
-              "col": 4
-            },
-            {
-              "row": 3,
-              "col": 3
-            },
-            {
-              "row": 3,
-              "col": 4
-            },
-            {
-              "row": 3,
-              "col": 5
-            },
-            {
-              "row": 4,
-              "col": 4
-            },
-            {
-              "row": 4,
-              "col": 5
-            },
-            {
-              "row": 5,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "ritual-parlor",
-          "name": "Ritual Parlor",
-          "pattern": {
-            "kind": "solid",
-            "color": "#382F2E"
-          },
-          "cells": [
-            {
-              "row": 0,
-              "col": 0
-            },
-            {
-              "row": 1,
-              "col": 0
-            },
-            {
-              "row": 1,
-              "col": 1
-            },
-            {
-              "row": 2,
-              "col": 0
-            },
-            {
-              "row": 2,
-              "col": 1
-            },
-            {
-              "row": 2,
-              "col": 2
-            },
-            {
-              "row": 3,
-              "col": 0
-            },
-            {
-              "row": 3,
-              "col": 1
-            },
-            {
-              "row": 3,
-              "col": 2
-            },
-            {
-              "row": 4,
-              "col": 0
-            },
-            {
-              "row": 4,
-              "col": 1
-            },
-            {
-              "row": 5,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "study",
-          "name": "Study",
+          "id": "laboratory",
+          "name": "Laboratory",
           "pattern": {
             "kind": "checkered",
-            "colorA": "#5C4033",
-            "colorB": "#46362E"
+            "colorA": "#A7C4BC",
+            "colorB": "#87A3A7"
           },
           "cells": [
+            {
+              "row": 3,
+              "col": 1
+            },
+            {
+              "row": 3,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 4,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 1
+            },
             {
               "row": 4,
               "col": 2
             },
             {
-              "row": 4,
-              "col": 3
+              "row": 5,
+              "col": 0
             },
             {
               "row": 5,
@@ -645,6 +1079,101 @@
             {
               "row": 5,
               "col": 2
+            }
+          ]
+        },
+        {
+          "id": "bunk-room",
+          "name": "Bunk Room",
+          "pattern": {
+            "kind": "solid",
+            "color": "#D9D0C7"
+          },
+          "cells": [
+            {
+              "row": 0,
+              "col": 4
+            },
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 1,
+              "col": 5
+            },
+            {
+              "row": 2,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "observation-deck",
+          "name": "Observation Deck",
+          "pattern": {
+            "kind": "striped",
+            "colorA": "#878E88",
+            "colorB": "#AAB0AA"
+          },
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 0,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "power-plant",
+          "name": "Power Plant",
+          "pattern": {
+            "kind": "solid",
+            "color": "#6A737B"
+          },
+          "cells": [
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 5
+            },
+            {
+              "row": 4,
+              "col": 3
+            },
+            {
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 5
             },
             {
               "row": 5,
@@ -653,18 +1182,397 @@
             {
               "row": 5,
               "col": 4
+            },
+            {
+              "row": 5,
+              "col": 5
             }
           ]
         },
         {
-          "id": "greenhouse",
-          "name": "Greenhouse",
+          "id": "storage-room",
+          "name": "Storage Room",
           "pattern": {
             "kind": "striped",
-            "colorA": "#40513B",
-            "colorB": "#384734"
+            "colorA": "#C0B283",
+            "colorB": "#DCD0C0"
           },
           "cells": [
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 2
+            },
+            {
+              "row": 2,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "bathroom",
+          "name": "Bathroom",
+          "pattern": {
+            "kind": "checkered",
+            "colorA": "#E0DAD4",
+            "colorB": "#C6C3BE"
+          },
+          "cells": [
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 1,
+              "col": 2
+            }
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "table-laboratory-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 3,
+              "col": 1
+            },
+            {
+              "row": 3,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "table-laboratory-2",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-laboratory-3",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "plant-laboratory-3",
+          "kind": "plant",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "bed-bunk-room-1",
+          "kind": "bed",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 1,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "bed-bunk-room-2",
+          "kind": "bed",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 5
+            },
+            {
+              "row": 2,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "sofa-observation-deck-1",
+          "kind": "sofa",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 0,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "chair-power-plant-1",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "table-power-plant-2",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-storage-room-1",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "wardrobe-storage-room-2",
+          "kind": "wardrobe",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "toilet-bathroom-1",
+          "kind": "toilet",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 1
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "id": "viktor-volkov",
+          "name": "Viktor Volkov",
+          "role": "victim",
+          "avatarEmoji": "🧑‍🔬"
+        },
+        {
+          "id": "alice-chen",
+          "name": "Alice Chen",
+          "role": "suspect",
+          "avatarEmoji": "👩‍💻"
+        },
+        {
+          "id": "blake-ito",
+          "name": "Blake Ito",
+          "role": "suspect",
+          "avatarEmoji": "👨‍⚕️"
+        },
+        {
+          "id": "casey-smith",
+          "name": "Casey Smith",
+          "role": "suspect",
+          "avatarEmoji": "👨‍🍳"
+        },
+        {
+          "id": "dana-rodriguez",
+          "name": "Dana Rodriguez",
+          "role": "suspect",
+          "avatarEmoji": "👩‍🔧"
+        },
+        {
+          "id": "eric-olsen",
+          "name": "Eric Olsen",
+          "role": "suspect",
+          "avatarEmoji": "👨‍🚀"
+        }
+      ],
+      "clues": [
+        {
+          "kind": "person-beside-object",
+          "person": "casey-smith",
+          "objectKind": "table",
+          "text": "Casey Smith is beside a table"
+        },
+        {
+          "kind": "empty-rooms",
+          "count": 1,
+          "text": "Exactly one room is empty."
+        },
+        {
+          "kind": "person-in-room-with",
+          "person": "eric-olsen",
+          "count": 0,
+          "text": "Eric Olsen is in a room with exactly 0 other people"
+        },
+        {
+          "kind": "person-in-room",
+          "person": "dana-rodriguez",
+          "roomId": "bathroom",
+          "text": "Dana Rodriguez is in the Bathroom"
+        },
+        {
+          "kind": "person-sole-occupant",
+          "person": "blake-ito",
+          "objectKind": "bed",
+          "text": "Blake Ito is the only person on a bed"
+        },
+        {
+          "kind": "person-alone-in-room",
+          "person": "alice-chen",
+          "roomId": "laboratory",
+          "text": "Alice Chen is alone in the Laboratory"
+        }
+      ],
+      "solution": {
+        "placements": [
+          {
+            "personId": "alice-chen",
+            "coord": {
+              "row": 5,
+              "col": 2
+            }
+          },
+          {
+            "personId": "casey-smith",
+            "coord": {
+              "row": 4,
+              "col": 3
+            }
+          },
+          {
+            "personId": "dana-rodriguez",
+            "coord": {
+              "row": 1,
+              "col": 1
+            }
+          },
+          {
+            "personId": "eric-olsen",
+            "coord": {
+              "row": 3,
+              "col": 0
+            }
+          },
+          {
+            "personId": "blake-ito",
+            "coord": {
+              "row": 2,
+              "col": 5
+            }
+          },
+          {
+            "personId": "viktor-volkov",
+            "coord": {
+              "row": 0,
+              "col": 4
+            }
+          }
+        ],
+        "murdererId": "blake-ito",
+        "victimId": "viktor-volkov",
+        "murderRoom": "bunk-room"
+      },
+      "title": "Arctic Research",
+      "subtitle": "Isolation breeds desperation.",
+      "generatedAt": "2026-03-08T15:56:26.498Z",
+      "id": "arctic-research-mmhxq0jg",
+      "difficulty": "easy",
+      "suspectSummaries": [
+        {
+          "personId": "alice-chen",
+          "text": "Alice Chen is alone in the Laboratory."
+        },
+        {
+          "personId": "blake-ito",
+          "text": "Blake Ito is the only person on a bed."
+        },
+        {
+          "personId": "casey-smith",
+          "text": "Casey Smith is beside a table."
+        },
+        {
+          "personId": "dana-rodriguez",
+          "text": "Dana Rodriguez is in the Bathroom."
+        },
+        {
+          "personId": "eric-olsen",
+          "text": "Eric Olsen is alone in a room."
+        }
+      ]
+    },
+    {
+      "gridSize": {
+        "rows": 6,
+        "cols": 6
+      },
+      "rooms": [
+        {
+          "id": "main-stage",
+          "name": "Main Stage",
+          "pattern": {
+            "kind": "striped",
+            "colorA": "#594A4E",
+            "colorB": "#3F3336"
+          },
+          "cells": [
+            {
+              "row": 0,
+              "col": 4
+            },
             {
               "row": 0,
               "col": 5
@@ -679,22 +1587,169 @@
             },
             {
               "row": 2,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 5
+            },
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 5
+            },
+            {
+              "row": 4,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "backstage",
+          "name": "Backstage",
+          "pattern": {
+            "kind": "solid",
+            "color": "#7A6C5D"
+          },
+          "cells": [
+            {
+              "row": 4,
+              "col": 5
+            },
+            {
+              "row": 5,
+              "col": 3
+            },
+            {
+              "row": 5,
+              "col": 4
+            },
+            {
+              "row": 5,
               "col": 5
             }
           ]
         },
         {
-          "id": "servant-s-quarters",
-          "name": "Servant's Quarters",
+          "id": "lounge",
+          "name": "Lounge",
+          "pattern": {
+            "kind": "checkered",
+            "colorA": "#8C7853",
+            "colorB": "#544B35"
+          },
+          "cells": [
+            {
+              "row": 2,
+              "col": 2
+            },
+            {
+              "row": 2,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 1
+            },
+            {
+              "row": 3,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 4,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "bar",
+          "name": "Bar",
           "pattern": {
             "kind": "solid",
-            "color": "#645A52"
+            "color": "#A68E5C"
           },
           "cells": [
             {
               "row": 0,
+              "col": 0
+            },
+            {
+              "row": 0,
               "col": 1
             },
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 3,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "office",
+          "name": "Office",
+          "pattern": {
+            "kind": "striped",
+            "colorA": "#605336",
+            "colorB": "#433A26"
+          },
+          "cells": [
+            {
+              "row": 4,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "bathroom",
+          "name": "Bathroom",
+          "pattern": {
+            "kind": "checkered",
+            "colorA": "#9E8263",
+            "colorB": "#7B654A"
+          },
+          "cells": [
             {
               "row": 0,
               "col": 2
@@ -702,10 +1757,6 @@
             {
               "row": 0,
               "col": 3
-            },
-            {
-              "row": 0,
-              "col": 4
             },
             {
               "row": 1,
@@ -720,92 +1771,115 @@
       ],
       "objects": [
         {
-          "id": "chair-grand-foyer-1",
+          "id": "rug-main-stage-1",
+          "kind": "rug",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 5
+            },
+            {
+              "row": 2,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "rug-main-stage-2",
+          "kind": "rug",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "chair-backstage-1",
           "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-backstage-2",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "sofa-lounge-1",
+          "kind": "sofa",
           "occupiable": "occupiable",
           "cells": [
             {
               "row": 2,
               "col": 3
-            }
-          ]
-        },
-        {
-          "id": "table-grand-foyer-2",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 2,
-              "col": 4
             },
             {
               "row": 3,
-              "col": 4
+              "col": 3
             }
           ]
         },
         {
-          "id": "table-ritual-parlor-1",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 0
-            },
-            {
-              "row": 3,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "table-ritual-parlor-2",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 2,
-              "col": 2
-            },
-            {
-              "row": 3,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "plant-ritual-parlor-2",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 2,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "sofa-ritual-parlor-3",
+          "id": "sofa-lounge-2",
           "kind": "sofa",
           "occupiable": "occupiable",
           "cells": [
             {
-              "row": 4,
+              "row": 3,
+              "col": 1
+            },
+            {
+              "row": 3,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "counter-bar-1",
+          "kind": "counter",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 2,
               "col": 0
             },
             {
-              "row": 4,
+              "row": 2,
               "col": 1
             }
           ]
         },
         {
-          "id": "chair-ritual-parlor-4",
-          "kind": "chair",
-          "occupiable": "occupiable",
+          "id": "counter-bar-2",
+          "kind": "counter",
+          "occupiable": "non-occupiable",
           "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
             {
               "row": 1,
               "col": 0
@@ -813,12 +1887,1463 @@
           ]
         },
         {
-          "id": "fireplace-ritual-parlor-5",
-          "kind": "fireplace",
+          "id": "bookshelf-bar-2",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-office-1",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "chair-office-2",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "toilet-bathroom-1",
+          "kind": "toilet",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 3
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "id": "vera-davies",
+          "name": "Vera Davies",
+          "role": "victim",
+          "avatarEmoji": "🎤"
+        },
+        {
+          "id": "arturo-silva",
+          "name": "Arturo Silva",
+          "role": "suspect",
+          "avatarEmoji": "🎺"
+        },
+        {
+          "id": "benny-hayes",
+          "name": "Benny Hayes",
+          "role": "suspect",
+          "avatarEmoji": "🥁"
+        },
+        {
+          "id": "clara-fox",
+          "name": "Clara Fox",
+          "role": "suspect",
+          "avatarEmoji": "🍸"
+        },
+        {
+          "id": "danny-bell",
+          "name": "Danny Bell",
+          "role": "suspect",
+          "avatarEmoji": "🚬"
+        },
+        {
+          "id": "ethan-cole",
+          "name": "Ethan Cole",
+          "role": "suspect",
+          "avatarEmoji": "💼"
+        }
+      ],
+      "clues": [
+        {
+          "kind": "person-in-corner",
+          "person": "benny-hayes",
+          "text": "Benny Hayes is in a corner of the grid"
+        },
+        {
+          "kind": "person-beside-object",
+          "person": "clara-fox",
+          "objectKind": "toilet",
+          "text": "Clara Fox is beside a toilet"
+        },
+        {
+          "kind": "person-beside-object",
+          "person": "arturo-silva",
+          "objectKind": "sofa",
+          "text": "Arturo Silva is beside a sofa"
+        },
+        {
+          "kind": "person-in-room-with",
+          "person": "danny-bell",
+          "count": 1,
+          "text": "Danny Bell is in a room with exactly 1 other person"
+        },
+        {
+          "kind": "person-in-room",
+          "person": "ethan-cole",
+          "roomId": "office",
+          "text": "Ethan Cole is in the Office"
+        },
+        {
+          "kind": "persons-same-room",
+          "personA": "benny-hayes",
+          "personB": "danny-bell",
+          "text": "Benny Hayes and Danny Bell are in the same room"
+        },
+        {
+          "kind": "person-in-room-with",
+          "person": "arturo-silva",
+          "count": 1,
+          "text": "Arturo Silva is in a room with exactly 1 other person"
+        }
+      ],
+      "solution": {
+        "placements": [
+          {
+            "personId": "benny-hayes",
+            "coord": {
+              "row": 0,
+              "col": 5
+            }
+          },
+          {
+            "personId": "clara-fox",
+            "coord": {
+              "row": 1,
+              "col": 2
+            }
+          },
+          {
+            "personId": "danny-bell",
+            "coord": {
+              "row": 2,
+              "col": 4
+            }
+          },
+          {
+            "personId": "ethan-cole",
+            "coord": {
+              "row": 5,
+              "col": 0
+            }
+          },
+          {
+            "personId": "arturo-silva",
+            "coord": {
+              "row": 4,
+              "col": 3
+            }
+          },
+          {
+            "personId": "vera-davies",
+            "coord": {
+              "row": 3,
+              "col": 1
+            }
+          }
+        ],
+        "murdererId": "arturo-silva",
+        "victimId": "vera-davies",
+        "murderRoom": "lounge"
+      },
+      "title": "The Jazz Club",
+      "subtitle": "A night of sorrow, a song silenced forever.",
+      "generatedAt": "2026-03-08T15:56:49.026Z",
+      "id": "the-jazz-club-mmhxqi5v",
+      "difficulty": "easy",
+      "suspectSummaries": [
+        {
+          "personId": "arturo-silva",
+          "text": "Arturo Silva is beside a sofa and in a room with exactly one other person."
+        },
+        {
+          "personId": "benny-hayes",
+          "text": "Benny Hayes is in a corner of the grid and in the same room as Danny Bell."
+        },
+        {
+          "personId": "clara-fox",
+          "text": "Clara Fox is beside a toilet."
+        },
+        {
+          "personId": "danny-bell",
+          "text": "Danny Bell is in a room with exactly one other person."
+        },
+        {
+          "personId": "ethan-cole",
+          "text": "Ethan Cole is in the Office."
+        }
+      ]
+    },
+    {
+      "gridSize": {
+        "rows": 6,
+        "cols": 6
+      },
+      "rooms": [
+        {
+          "id": "ballroom",
+          "name": "Ballroom",
+          "pattern": {
+            "kind": "striped",
+            "colorA": "#8B0000",
+            "colorB": "#D3D3D3"
+          },
+          "cells": [
+            {
+              "row": 2,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 1
+            },
+            {
+              "row": 3,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 5
+            },
+            {
+              "row": 4,
+              "col": 1
+            },
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 4,
+              "col": 3
+            },
+            {
+              "row": 5,
+              "col": 2
+            },
+            {
+              "row": 5,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "library",
+          "name": "Library",
+          "pattern": {
+            "kind": "checkered",
+            "colorA": "#A0522D",
+            "colorB": "#D2B48C"
+          },
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 2
+            },
+            {
+              "row": 2,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "wine-cellar",
+          "name": "Wine Cellar",
+          "pattern": {
+            "kind": "solid",
+            "color": "#4B0082"
+          },
+          "cells": [
+            {
+              "row": 3,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "guest-suite",
+          "name": "Guest Suite",
+          "pattern": {
+            "kind": "striped",
+            "colorA": "#BC8F8F",
+            "colorB": "#F5F5DC"
+          },
+          "cells": [
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 0,
+              "col": 4
+            },
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 1,
+              "col": 5
+            },
+            {
+              "row": 2,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "secret-passage",
+          "name": "Secret Passage",
+          "pattern": {
+            "kind": "solid",
+            "color": "#696969"
+          },
+          "cells": [
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 2
+            },
+            {
+              "row": 2,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "rooftop-terrace",
+          "name": "Rooftop Terrace",
+          "pattern": {
+            "kind": "checkered",
+            "colorA": "#2F4F4F",
+            "colorB": "#8FBC8F"
+          },
+          "cells": [
+            {
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 5
+            },
+            {
+              "row": 5,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 5
+            }
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "table-ballroom-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 3,
+              "col": 2
+            },
+            {
+              "row": 4,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "plant-ballroom-2",
+          "kind": "plant",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 3,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "sofa-ballroom-3",
+          "kind": "sofa",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "bookshelf-library-1",
+          "kind": "bookshelf",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "rug-library-2",
+          "kind": "rug",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 2,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "rug-library-3",
+          "kind": "rug",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "table-wine-cellar-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "bed-guest-suite-1",
+          "kind": "bed",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 1,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "bed-guest-suite-2",
+          "kind": "bed",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "table-secret-passage-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "chair-rooftop-terrace-1",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "plant-rooftop-terrace-2",
+          "kind": "plant",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 5
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "id": "valentina-rossi",
+          "name": "Valentina Rossi",
+          "role": "victim",
+          "avatarEmoji": "🎭"
+        },
+        {
+          "id": "antonio-moretti",
+          "name": "Antonio Moretti",
+          "role": "suspect",
+          "avatarEmoji": "👨‍💼"
+        },
+        {
+          "id": "bianca-verdi",
+          "name": "Bianca Verdi",
+          "role": "suspect",
+          "avatarEmoji": "💃"
+        },
+        {
+          "id": "carlo-esposito",
+          "name": "Carlo Esposito",
+          "role": "suspect",
+          "avatarEmoji": "👨‍🎨"
+        },
+        {
+          "id": "donato-rizzo",
+          "name": "Donato Rizzo",
+          "role": "suspect",
+          "avatarEmoji": "👨‍🍳"
+        },
+        {
+          "id": "elena-lombardi",
+          "name": "Elena Lombardi",
+          "role": "suspect",
+          "avatarEmoji": "👩‍⚕️"
+        }
+      ],
+      "clues": [
+        {
+          "kind": "person-in-col",
+          "person": "antonio-moretti",
+          "col": 3,
+          "text": "Antonio Moretti is in column 4"
+        },
+        {
+          "kind": "person-beside-object",
+          "person": "donato-rizzo",
+          "objectKind": "plant",
+          "text": "Donato Rizzo is beside a plant"
+        },
+        {
+          "kind": "object-occupancy",
+          "objectKind": "bed",
+          "count": 2,
+          "text": "Exactly two beds are occupied."
+        },
+        {
+          "kind": "person-sole-occupant",
+          "person": "elena-lombardi",
+          "objectKind": "sofa",
+          "text": "Elena Lombardi is the only person on a sofa"
+        },
+        {
+          "kind": "person-in-room-with",
+          "person": "carlo-esposito",
+          "count": 2,
+          "text": "Carlo Esposito is in a room with exactly 2 other people"
+        },
+        {
+          "kind": "person-in-room",
+          "person": "bianca-verdi",
+          "roomId": "library",
+          "text": "Bianca Verdi is in the Library"
+        }
+      ],
+      "solution": {
+        "placements": [
+          {
+            "personId": "bianca-verdi",
+            "coord": {
+              "row": 2,
+              "col": 0
+            }
+          },
+          {
+            "personId": "carlo-esposito",
+            "coord": {
+              "row": 5,
+              "col": 2
+            }
+          },
+          {
+            "personId": "donato-rizzo",
+            "coord": {
+              "row": 4,
+              "col": 1
+            }
+          },
+          {
+            "personId": "elena-lombardi",
+            "coord": {
+              "row": 3,
+              "col": 4
+            }
+          },
+          {
+            "personId": "antonio-moretti",
+            "coord": {
+              "row": 1,
+              "col": 3
+            }
+          },
+          {
+            "personId": "valentina-rossi",
+            "coord": {
+              "row": 0,
+              "col": 5
+            }
+          }
+        ],
+        "murdererId": "antonio-moretti",
+        "victimId": "valentina-rossi",
+        "murderRoom": "guest-suite"
+      },
+      "title": "Venetian Masquerade",
+      "subtitle": "Secrets Unmasked, Shadows Revealed.",
+      "generatedAt": "2026-03-08T15:56:55.237Z",
+      "id": "venetian-masquerade-mmhxqmwd",
+      "difficulty": "easy",
+      "suspectSummaries": [
+        {
+          "personId": "antonio-moretti",
+          "text": "Antonio Moretti is in the fourth column."
+        },
+        {
+          "personId": "bianca-verdi",
+          "text": "Bianca Verdi is in the Library."
+        },
+        {
+          "personId": "carlo-esposito",
+          "text": "Carlo Esposito is in a room with exactly two other people."
+        },
+        {
+          "personId": "donato-rizzo",
+          "text": "Donato Rizzo is beside a plant."
+        },
+        {
+          "personId": "elena-lombardi",
+          "text": "Elena Lombardi is the only person sitting on a sofa."
+        }
+      ]
+    },
+    {
+      "gridSize": {
+        "rows": 6,
+        "cols": 6
+      },
+      "rooms": [
+        {
+          "id": "projection-booth",
+          "name": "Projection Booth",
+          "pattern": {
+            "kind": "solid",
+            "color": "#4A4A4A"
+          },
+          "cells": [
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 3,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "screening-room",
+          "name": "Screening Room",
+          "pattern": {
+            "kind": "striped",
+            "colorA": "#5C4033",
+            "colorB": "#362216"
+          },
+          "cells": [
+            {
+              "row": 1,
+              "col": 2
+            },
+            {
+              "row": 2,
+              "col": 2
+            },
+            {
+              "row": 2,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 5
+            },
+            {
+              "row": 3,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 5
+            },
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 5
+            },
+            {
+              "row": 5,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "lobby",
+          "name": "Lobby",
+          "pattern": {
+            "kind": "checkered",
+            "colorA": "#A98D6B",
+            "colorB": "#7F6245"
+          },
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 3,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "office",
+          "name": "Office",
+          "pattern": {
+            "kind": "solid",
+            "color": "#8E795E"
+          },
+          "cells": [
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 0,
+              "col": 4
+            },
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 1,
+              "col": 5
+            },
+            {
+              "row": 2,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "backstage",
+          "name": "Backstage",
+          "pattern": {
+            "kind": "striped",
+            "colorA": "#6B8E23",
+            "colorB": "#556B2F"
+          },
+          "cells": [
+            {
+              "row": 4,
+              "col": 1
+            },
+            {
+              "row": 4,
+              "col": 3
+            },
+            {
+              "row": 5,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 2
+            },
+            {
+              "row": 5,
+              "col": 3
+            }
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "chair-projection-booth-1",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "rug-screening-room-1",
+          "kind": "rug",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "chair-screening-room-2",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "rug-screening-room-3",
+          "kind": "rug",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 4,
+              "col": 5
+            },
+            {
+              "row": 5,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "rug-screening-room-4",
+          "kind": "rug",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "table-lobby-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 0,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "table-office-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "table-office-2",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 1,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "table-backstage-1",
+          "kind": "table",
           "occupiable": "non-occupiable",
           "cells": [
             {
               "row": 5,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 2
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "id": "victor-sinclair",
+          "name": "Victor Sinclair",
+          "role": "victim",
+          "avatarEmoji": "👨🏻‍🦱"
+        },
+        {
+          "id": "alan-davies",
+          "name": "Alan Davies",
+          "role": "suspect",
+          "avatarEmoji": "👨🏼"
+        },
+        {
+          "id": "brenda-lee",
+          "name": "Brenda Lee",
+          "role": "suspect",
+          "avatarEmoji": "👩🏻"
+        },
+        {
+          "id": "catherine-moore",
+          "name": "Catherine Moore",
+          "role": "suspect",
+          "avatarEmoji": "👩🏾‍🦱"
+        },
+        {
+          "id": "daniel-hill",
+          "name": "Daniel Hill",
+          "role": "suspect",
+          "avatarEmoji": "🧔🏽"
+        },
+        {
+          "id": "ethan-reid",
+          "name": "Ethan Reid",
+          "role": "suspect",
+          "avatarEmoji": "👨🏻‍🦳"
+        }
+      ],
+      "clues": [
+        {
+          "kind": "person-in-corner",
+          "person": "alan-davies",
+          "text": "Alan Davies is in a corner of the grid"
+        },
+        {
+          "kind": "person-beside-object",
+          "person": "brenda-lee",
+          "objectKind": "chair",
+          "text": "Brenda Lee is beside a chair"
+        },
+        {
+          "kind": "person-beside-object",
+          "person": "catherine-moore",
+          "objectKind": "table",
+          "text": "Catherine Moore is beside a table"
+        },
+        {
+          "kind": "person-in-room",
+          "person": "ethan-reid",
+          "roomId": "backstage",
+          "text": "Ethan Reid is in the Backstage"
+        },
+        {
+          "kind": "person-in-room",
+          "person": "daniel-hill",
+          "roomId": "office",
+          "text": "Daniel Hill is in the Office"
+        },
+        {
+          "kind": "room-population",
+          "roomId": "backstage",
+          "count": 2,
+          "text": "The Backstage has exactly two people."
+        },
+        {
+          "kind": "empty-rooms",
+          "count": 1,
+          "text": "Exactly one room is empty."
+        }
+      ],
+      "solution": {
+        "placements": [
+          {
+            "personId": "alan-davies",
+            "coord": {
+              "row": 5,
+              "col": 0
+            }
+          },
+          {
+            "personId": "catherine-moore",
+            "coord": {
+              "row": 1,
+              "col": 1
+            }
+          },
+          {
+            "personId": "daniel-hill",
+            "coord": {
+              "row": 0,
+              "col": 5
+            }
+          },
+          {
+            "personId": "ethan-reid",
+            "coord": {
+              "row": 4,
+              "col": 3
+            }
+          },
+          {
+            "personId": "brenda-lee",
+            "coord": {
+              "row": 3,
+              "col": 4
+            }
+          },
+          {
+            "personId": "victor-sinclair",
+            "coord": {
+              "row": 2,
+              "col": 2
+            }
+          }
+        ],
+        "murdererId": "brenda-lee",
+        "victimId": "victor-sinclair",
+        "murderRoom": "screening-room"
+      },
+      "title": "Starlight Cinema",
+      "subtitle": "The final showing.",
+      "generatedAt": "2026-03-08T15:57:01.509Z",
+      "id": "starlight-cinema-mmhxqro7",
+      "difficulty": "easy",
+      "suspectSummaries": [
+        {
+          "personId": "alan-davies",
+          "text": "Alan Davies is in a corner of the grid."
+        },
+        {
+          "personId": "brenda-lee",
+          "text": "Brenda Lee is beside a chair."
+        },
+        {
+          "personId": "catherine-moore",
+          "text": "Catherine Moore is beside a table."
+        },
+        {
+          "personId": "daniel-hill",
+          "text": "Daniel Hill is in the Office."
+        },
+        {
+          "personId": "ethan-reid",
+          "text": "Ethan Reid is in the Backstage."
+        }
+      ]
+    },
+    {
+      "gridSize": {
+        "rows": 6,
+        "cols": 6
+      },
+      "rooms": [
+        {
+          "id": "dome-room",
+          "name": "Dome Room",
+          "pattern": {
+            "kind": "solid",
+            "color": "#A9A9A9"
+          },
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 0,
+              "col": 1
+            },
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 0,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 1,
+              "col": 2
+            },
+            {
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 3,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "study",
+          "name": "Study",
+          "pattern": {
+            "kind": "checkered",
+            "colorA": "#778899",
+            "colorB": "#B0C4DE"
+          },
+          "cells": [
+            {
+              "row": 4,
+              "col": 3
+            },
+            {
+              "row": 4,
+              "col": 4
+            },
+            {
+              "row": 4,
+              "col": 5
+            },
+            {
+              "row": 5,
+              "col": 3
+            },
+            {
+              "row": 5,
+              "col": 4
+            },
+            {
+              "row": 5,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "living-quarters",
+          "name": "Living Quarters",
+          "pattern": {
+            "kind": "striped",
+            "colorA": "#D3D3D3",
+            "colorB": "#808080"
+          },
+          "cells": [
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 2
+            },
+            {
+              "row": 2,
+              "col": 3
+            },
+            {
+              "row": 2,
+              "col": 4
+            },
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 3,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "laboratory",
+          "name": "Laboratory",
+          "pattern": {
+            "kind": "striped",
+            "colorA": "#C0C0C0",
+            "colorB": "#A9A9A9"
+          },
+          "cells": [
+            {
+              "row": 3,
+              "col": 1
+            },
+            {
+              "row": 3,
+              "col": 2
+            },
+            {
+              "row": 4,
+              "col": 1
+            },
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 5,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "dark-room",
+          "name": "Dark Room",
+          "pattern": {
+            "kind": "solid",
+            "color": "#696969"
+          },
+          "cells": [
+            {
+              "row": 0,
+              "col": 4
+            },
+            {
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 1,
+              "col": 5
+            },
+            {
+              "row": 2,
+              "col": 5
+            },
+            {
+              "row": 3,
+              "col": 5
+            }
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "table-dome-room-1",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 2
+            },
+            {
+              "row": 0,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "table-dome-room-2",
+          "kind": "table",
+          "occupiable": "non-occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 2,
               "col": 0
             }
           ]
@@ -829,1099 +3354,23 @@
           "occupiable": "non-occupiable",
           "cells": [
             {
-              "row": 4,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "fireplace-study-2",
-          "kind": "fireplace",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 5,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "chair-study-3",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 4,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "plant-greenhouse-1",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "bed-servant-s-quarters-1",
-          "kind": "bed",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 0,
-              "col": 4
-            },
-            {
-              "row": 0,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "bed-servant-s-quarters-2",
-          "kind": "bed",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 0,
-              "col": 2
-            },
-            {
-              "row": 1,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "wardrobe-servant-s-quarters-2",
-          "kind": "wardrobe",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 3
-            }
-          ]
-        }
-      ],
-      "people": [
-        {
-          "id": "valentina",
-          "name": "Valentina",
-          "role": "victim",
-          "avatarEmoji": "💀"
-        },
-        {
-          "id": "alistair",
-          "name": "Alistair",
-          "role": "suspect",
-          "avatarEmoji": "🧐"
-        },
-        {
-          "id": "barnaby",
-          "name": "Barnaby",
-          "role": "suspect",
-          "avatarEmoji": "😈"
-        },
-        {
-          "id": "cecil",
-          "name": "Cecil",
-          "role": "suspect",
-          "avatarEmoji": "👻"
-        },
-        {
-          "id": "dorothea",
-          "name": "Dorothea",
-          "role": "suspect",
-          "avatarEmoji": "🔮"
-        },
-        {
-          "id": "edmund",
-          "name": "Edmund",
-          "role": "suspect",
-          "avatarEmoji": "🕯️"
-        }
-      ],
-      "clues": [
-        {
-          "kind": "person-beside-object",
-          "person": "alistair",
-          "objectKind": "wardrobe",
-          "text": "Alistair is beside a wardrobe"
-        },
-        {
-          "kind": "person-beside-object",
-          "person": "dorothea",
-          "objectKind": "plant",
-          "text": "Dorothea is beside a plant"
-        },
-        {
-          "kind": "person-beside-object",
-          "person": "edmund",
-          "objectKind": "chair",
-          "text": "Edmund is beside a chair"
-        },
-        {
-          "kind": "person-in-room",
-          "person": "cecil",
-          "roomId": "grand-foyer",
-          "text": "Cecil is in the Grand Foyer"
-        },
-        {
-          "kind": "person-in-room",
-          "person": "barnaby",
-          "roomId": "servant-s-quarters",
-          "text": "Barnaby is in the Servant's Quarters"
-        },
-        {
-          "kind": "person-in-room-with",
-          "person": "edmund",
-          "count": 0,
-          "text": "Edmund is in a room with exactly 0 other people"
-        }
-      ],
-      "suspectSummaries": [
-        {
-          "personId": "alistair",
-          "text": "Alistair is beside a wardrobe."
-        },
-        {
-          "personId": "barnaby",
-          "text": "Barnaby is in the Servant's Quarters."
-        },
-        {
-          "personId": "cecil",
-          "text": "Cecil is in the Grand Foyer."
-        },
-        {
-          "personId": "dorothea",
-          "text": "Dorothea is beside a plant."
-        },
-        {
-          "personId": "edmund",
-          "text": "Edmund is beside a chair and alone in a room."
-        }
-      ],
-      "solution": {
-        "placements": [
-          {
-            "personId": "alistair",
-            "coord": {
-              "row": 1,
-              "col": 2
-            }
-          },
-          {
-            "personId": "barnaby",
-            "coord": {
-              "row": 0,
-              "col": 4
-            }
-          },
-          {
-            "personId": "cecil",
-            "coord": {
-              "row": 3,
-              "col": 5
-            }
-          },
-          {
-            "personId": "edmund",
-            "coord": {
-              "row": 5,
-              "col": 3
-            }
-          },
-          {
-            "personId": "dorothea",
-            "coord": {
-              "row": 2,
-              "col": 1
-            }
-          },
-          {
-            "personId": "valentina",
-            "coord": {
-              "row": 4,
-              "col": 0
-            }
-          }
-        ],
-        "murdererId": "dorothea",
-        "victimId": "valentina",
-        "murderRoom": "ritual-parlor"
-      },
-      "generatedAt": "2026-03-08T00:41:41.305Z",
-      "difficulty": "easy"
-    },
-    {
-      "id": "alpine-chalet-mmh11tku",
-      "title": "Alpine Chalet",
-      "subtitle": "Secrets carved in ice.",
-      "gridSize": {
-        "rows": 6,
-        "cols": 6
-      },
-      "rooms": [
-        {
-          "id": "ski-lodge",
-          "name": "Ski Lodge",
-          "pattern": {
-            "kind": "striped",
-            "colorA": "#A9A9A9",
-            "colorB": "#D3D3D3"
-          },
-          "cells": [
-            {
-              "row": 0,
-              "col": 0
-            },
-            {
-              "row": 0,
-              "col": 1
-            },
-            {
-              "row": 1,
-              "col": 0
-            },
-            {
-              "row": 2,
-              "col": 0
-            },
-            {
-              "row": 3,
-              "col": 0
-            },
-            {
-              "row": 4,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "dining-hall",
-          "name": "Dining Hall",
-          "pattern": {
-            "kind": "solid",
-            "color": "#8B4513"
-          },
-          "cells": [
-            {
-              "row": 0,
-              "col": 2
-            },
-            {
-              "row": 0,
-              "col": 3
-            },
-            {
-              "row": 1,
-              "col": 1
-            },
-            {
-              "row": 1,
-              "col": 2
-            },
-            {
-              "row": 1,
-              "col": 3
-            },
-            {
-              "row": 2,
-              "col": 1
-            },
-            {
-              "row": 2,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "game-room",
-          "name": "Game Room",
-          "pattern": {
-            "kind": "checkered",
-            "colorA": "#4682B4",
-            "colorB": "#B0C4DE"
-          },
-          "cells": [
-            {
-              "row": 2,
-              "col": 3
-            },
-            {
-              "row": 3,
-              "col": 2
-            },
-            {
-              "row": 3,
-              "col": 3
-            },
-            {
-              "row": 3,
-              "col": 4
-            },
-            {
-              "row": 3,
-              "col": 5
-            },
-            {
-              "row": 4,
-              "col": 3
-            },
-            {
-              "row": 4,
-              "col": 4
-            },
-            {
-              "row": 4,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "bedroom-suite",
-          "name": "Bedroom Suite",
-          "pattern": {
-            "kind": "solid",
-            "color": "#BC8F8F"
-          },
-          "cells": [
-            {
-              "row": 4,
-              "col": 1
-            },
-            {
-              "row": 4,
-              "col": 2
-            },
-            {
-              "row": 5,
-              "col": 0
-            },
-            {
-              "row": 5,
-              "col": 1
-            },
-            {
-              "row": 5,
-              "col": 2
-            },
-            {
-              "row": 5,
-              "col": 3
-            },
-            {
-              "row": 5,
-              "col": 4
-            },
-            {
-              "row": 5,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "wine-cellar",
-          "name": "Wine Cellar",
-          "pattern": {
-            "kind": "striped",
-            "colorA": "#708090",
-            "colorB": "#A9A9A9"
-          },
-          "cells": [
-            {
-              "row": 0,
-              "col": 4
-            },
-            {
-              "row": 0,
-              "col": 5
-            },
-            {
-              "row": 1,
-              "col": 4
-            },
-            {
-              "row": 1,
-              "col": 5
-            },
-            {
-              "row": 2,
-              "col": 4
-            },
-            {
-              "row": 2,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "sauna",
-          "name": "Sauna",
-          "pattern": {
-            "kind": "solid",
-            "color": "#F0E68C"
-          },
-          "cells": [
-            {
-              "row": 3,
-              "col": 1
-            }
-          ]
-        }
-      ],
-      "objects": [
-        {
-          "id": "table-ski-lodge-1",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 0,
-              "col": 0
-            },
-            {
-              "row": 0,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "table-ski-lodge-2",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 0
-            },
-            {
-              "row": 2,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "chair-ski-lodge-3",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "plant-ski-lodge-3",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 4,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "table-dining-hall-1",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 2
-            },
-            {
-              "row": 2,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "table-dining-hall-2",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 0,
-              "col": 2
-            },
-            {
-              "row": 0,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "fireplace-dining-hall-2",
-          "kind": "fireplace",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 2,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "table-game-room-1",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 3
-            },
-            {
-              "row": 3,
-              "col": 4
-            }
-          ]
-        },
-        {
-          "id": "table-game-room-2",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 5
-            },
-            {
-              "row": 4,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "bookshelf-game-room-2",
-          "kind": "bookshelf",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 2,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "chair-game-room-3",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 4,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "bed-bedroom-suite-1",
-          "kind": "bed",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 5,
-              "col": 5
-            },
-            {
               "row": 5,
               "col": 4
             }
           ]
         },
         {
-          "id": "bed-bedroom-suite-2",
-          "kind": "bed",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 4,
-              "col": 2
-            },
-            {
-              "row": 5,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "table-bedroom-suite-2",
+          "id": "table-study-2",
           "kind": "table",
           "occupiable": "non-occupiable",
           "cells": [
             {
               "row": 4,
-              "col": 1
-            },
-            {
-              "row": 5,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "wardrobe-bedroom-suite-3",
-          "kind": "wardrobe",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 5,
               "col": 3
-            }
-          ]
-        },
-        {
-          "id": "table-wine-cellar-1",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 5
-            },
-            {
-              "row": 2,
-              "col": 5
-            }
-          ]
-        }
-      ],
-      "people": [
-        {
-          "id": "viktor",
-          "name": "Viktor",
-          "role": "victim",
-          "avatarEmoji": "👨🏻‍🦳"
-        },
-        {
-          "id": "anya",
-          "name": "Anya",
-          "role": "suspect",
-          "avatarEmoji": "👩🏼‍🦱"
-        },
-        {
-          "id": "bjorn",
-          "name": "Bjorn",
-          "role": "suspect",
-          "avatarEmoji": "🧔🏼"
-        },
-        {
-          "id": "clara",
-          "name": "Clara",
-          "role": "suspect",
-          "avatarEmoji": "👩🏻‍🦰"
-        },
-        {
-          "id": "dieter",
-          "name": "Dieter",
-          "role": "suspect",
-          "avatarEmoji": "👴🏻"
-        },
-        {
-          "id": "elsa",
-          "name": "Elsa",
-          "role": "suspect",
-          "avatarEmoji": "👱🏻‍♀️"
-        }
-      ],
-      "clues": [
-        {
-          "kind": "person-in-corner",
-          "person": "clara",
-          "text": "Clara is in a corner of the grid"
-        },
-        {
-          "kind": "person-in-corner",
-          "person": "bjorn",
-          "text": "Bjorn is in a corner of the grid"
-        },
-        {
-          "kind": "person-in-room-with",
-          "person": "anya",
-          "count": 0,
-          "text": "Anya is in a room with exactly 0 other people"
-        },
-        {
-          "kind": "person-alone-in-room",
-          "person": "dieter",
-          "roomId": "sauna",
-          "text": "Dieter is alone in the Sauna"
-        },
-        {
-          "kind": "persons-same-room",
-          "personA": "bjorn",
-          "personB": "elsa",
-          "text": "Bjorn and Elsa are in the same room"
-        },
-        {
-          "kind": "person-in-room",
-          "person": "clara",
-          "roomId": "bedroom-suite",
-          "text": "Clara is in the Bedroom Suite"
-        },
-        {
-          "kind": "person-in-room-with",
-          "person": "elsa",
-          "count": 1,
-          "text": "Elsa is in a room with exactly 1 other person"
-        }
-      ],
-      "suspectSummaries": [
-        {
-          "personId": "anya",
-          "text": "Anya is alone in a room."
-        },
-        {
-          "personId": "bjorn",
-          "text": "Bjorn is in a corner of the grid and in the same room as Elsa."
-        },
-        {
-          "personId": "clara",
-          "text": "Clara is in a corner of the grid and in the Bedroom Suite."
-        },
-        {
-          "personId": "dieter",
-          "text": "Dieter is alone in the Sauna."
-        },
-        {
-          "personId": "elsa",
-          "text": "Elsa is in a room with exactly 1 other person."
-        }
-      ],
-      "solution": {
-        "placements": [
-          {
-            "personId": "anya",
-            "coord": {
-              "row": 1,
-              "col": 3
-            }
-          },
-          {
-            "personId": "bjorn",
-            "coord": {
-              "row": 0,
-              "col": 5
-            }
-          },
-          {
-            "personId": "dieter",
-            "coord": {
-              "row": 3,
-              "col": 1
-            }
-          },
-          {
-            "personId": "elsa",
-            "coord": {
-              "row": 2,
-              "col": 4
-            }
-          },
-          {
-            "personId": "clara",
-            "coord": {
-              "row": 5,
-              "col": 0
-            }
-          },
-          {
-            "personId": "viktor",
-            "coord": {
-              "row": 4,
-              "col": 2
-            }
-          }
-        ],
-        "murdererId": "clara",
-        "victimId": "viktor",
-        "murderRoom": "bedroom-suite"
-      },
-      "generatedAt": "2026-03-08T00:41:48.631Z",
-      "difficulty": "easy"
-    },
-    {
-      "id": "the-observatory-mmh125nm",
-      "title": "The Observatory",
-      "subtitle": "Secrets hidden among the stars.",
-      "gridSize": {
-        "rows": 6,
-        "cols": 6
-      },
-      "rooms": [
-        {
-          "id": "great-dome",
-          "name": "Great Dome",
-          "pattern": {
-            "kind": "striped",
-            "colorA": "#C0C0C0",
-            "colorB": "#A9A9A9"
-          },
-          "cells": [
-            {
-              "row": 0,
-              "col": 0
-            },
-            {
-              "row": 0,
-              "col": 1
-            },
-            {
-              "row": 0,
-              "col": 2
-            },
-            {
-              "row": 0,
-              "col": 3
-            },
-            {
-              "row": 0,
-              "col": 4
-            },
-            {
-              "row": 0,
-              "col": 5
-            },
-            {
-              "row": 1,
-              "col": 0
-            },
-            {
-              "row": 1,
-              "col": 3
-            },
-            {
-              "row": 1,
-              "col": 4
-            },
-            {
-              "row": 1,
-              "col": 5
-            },
-            {
-              "row": 2,
-              "col": 0
-            },
-            {
-              "row": 3,
-              "col": 0
-            },
-            {
-              "row": 4,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "library",
-          "name": "Library",
-          "pattern": {
-            "kind": "solid",
-            "color": "#4A3D35"
-          },
-          "cells": [
-            {
-              "row": 3,
-              "col": 1
-            },
-            {
-              "row": 3,
-              "col": 2
-            },
-            {
-              "row": 4,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "living-quarters",
-          "name": "Living Quarters",
-          "pattern": {
-            "kind": "checkered",
-            "colorA": "#E3DAC9",
-            "colorB": "#D1C0AC"
-          },
-          "cells": [
-            {
-              "row": 4,
-              "col": 5
-            },
-            {
-              "row": 5,
-              "col": 0
-            },
-            {
-              "row": 5,
-              "col": 1
-            },
-            {
-              "row": 5,
-              "col": 2
-            },
-            {
-              "row": 5,
-              "col": 3
-            },
-            {
-              "row": 5,
-              "col": 4
-            },
-            {
-              "row": 5,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "dark-room",
-          "name": "Dark Room",
-          "pattern": {
-            "kind": "solid",
-            "color": "#2F4F4F"
-          },
-          "cells": [
-            {
-              "row": 4,
-              "col": 2
-            },
-            {
-              "row": 4,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "laboratory",
-          "name": "Laboratory",
-          "pattern": {
-            "kind": "striped",
-            "colorA": "#A7B0A8",
-            "colorB": "#8F978F"
-          },
-          "cells": [
-            {
-              "row": 1,
-              "col": 1
-            },
-            {
-              "row": 1,
-              "col": 2
-            },
-            {
-              "row": 2,
-              "col": 1
-            },
-            {
-              "row": 2,
-              "col": 2
-            },
-            {
-              "row": 2,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "storeroom",
-          "name": "Storeroom",
-          "pattern": {
-            "kind": "solid",
-            "color": "#808080"
-          },
-          "cells": [
-            {
-              "row": 2,
-              "col": 4
-            },
-            {
-              "row": 2,
-              "col": 5
-            },
-            {
-              "row": 3,
-              "col": 3
-            },
-            {
-              "row": 3,
-              "col": 4
-            },
-            {
-              "row": 3,
-              "col": 5
             },
             {
               "row": 4,
               "col": 4
-            }
-          ]
-        }
-      ],
-      "objects": [
-        {
-          "id": "plant-great-dome-1",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "table-great-dome-2",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 0
-            },
-            {
-              "row": 2,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "bookshelf-great-dome-3",
-          "kind": "bookshelf",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 0,
-              "col": 4
-            }
-          ]
-        },
-        {
-          "id": "chair-great-dome-4",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 0,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "bookshelf-library-1",
-          "kind": "bookshelf",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 2
             }
           ]
         },
@@ -1931,12 +3380,12 @@
           "occupiable": "occupiable",
           "cells": [
             {
-              "row": 5,
-              "col": 1
+              "row": 2,
+              "col": 4
             },
             {
-              "row": 5,
-              "col": 0
+              "row": 3,
+              "col": 4
             }
           ]
         },
@@ -1946,33 +3395,11 @@
           "occupiable": "occupiable",
           "cells": [
             {
-              "row": 4,
-              "col": 5
+              "row": 2,
+              "col": 3
             },
             {
-              "row": 5,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "chair-living-quarters-2",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 5,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "wardrobe-living-quarters-3",
-          "kind": "wardrobe",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 5,
+              "row": 2,
               "col": 2
             }
           ]
@@ -1983,12 +3410,12 @@
           "occupiable": "non-occupiable",
           "cells": [
             {
-              "row": 2,
-              "col": 2
+              "row": 3,
+              "col": 1
             },
             {
-              "row": 2,
-              "col": 3
+              "row": 4,
+              "col": 1
             }
           ]
         },
@@ -1998,858 +3425,253 @@
           "occupiable": "non-occupiable",
           "cells": [
             {
-              "row": 1,
+              "row": 5,
               "col": 1
             },
             {
-              "row": 2,
-              "col": 1
+              "row": 5,
+              "col": 2
             }
           ]
         },
         {
-          "id": "table-storeroom-1",
-          "kind": "table",
-          "occupiable": "non-occupiable",
+          "id": "chair-dark-room-1",
+          "kind": "chair",
+          "occupiable": "occupiable",
           "cells": [
             {
               "row": 2,
-              "col": 4
-            },
-            {
-              "row": 3,
-              "col": 4
+              "col": 5
             }
           ]
         }
       ],
       "people": [
         {
-          "id": "vivienne",
-          "name": "Vivienne",
+          "id": "vincent",
+          "name": "Vincent",
           "role": "victim",
+          "avatarEmoji": "🧑‍🚀"
+        },
+        {
+          "id": "alice-moreau",
+          "name": "Alice Moreau",
+          "role": "suspect",
           "avatarEmoji": "👩‍🔬"
         },
         {
-          "id": "alistair",
-          "name": "Alistair",
+          "id": "bob-carter",
+          "name": "Bob Carter",
           "role": "suspect",
-          "avatarEmoji": "👨‍🚀"
+          "avatarEmoji": "👨‍💻"
         },
         {
-          "id": "beatrice",
-          "name": "Beatrice",
+          "id": "charles-dubois",
+          "name": "Charles Dubois",
           "role": "suspect",
-          "avatarEmoji": "🔭"
+          "avatarEmoji": "👨‍⚕️"
         },
         {
-          "id": "clarence",
-          "name": "Clarence",
+          "id": "diana-prince",
+          "name": "Diana Prince",
           "role": "suspect",
-          "avatarEmoji": "🌌"
+          "avatarEmoji": "👩‍🚀"
         },
         {
-          "id": "dorothea",
-          "name": "Dorothea",
-          "role": "suspect",
-          "avatarEmoji": "🌠"
-        },
-        {
-          "id": "edmund",
-          "name": "Edmund",
-          "role": "suspect",
-          "avatarEmoji": "🧑‍🚀"
-        }
-      ],
-      "clues": [
-        {
-          "kind": "person-in-col",
-          "person": "beatrice",
-          "col": 3,
-          "text": "Beatrice is in column 4"
-        },
-        {
-          "kind": "person-alone-in-room",
-          "person": "clarence",
-          "roomId": "laboratory",
-          "text": "Clarence is alone in the Laboratory"
-        },
-        {
-          "kind": "person-in-room-with",
-          "person": "dorothea",
-          "count": 0,
-          "text": "Dorothea is in a room with exactly 0 other people"
-        },
-        {
-          "kind": "person-in-room",
-          "person": "alistair",
-          "roomId": "living-quarters",
-          "text": "Alistair is in the Living Quarters"
-        },
-        {
-          "kind": "person-in-room",
-          "person": "edmund",
-          "roomId": "great-dome",
-          "text": "Edmund is in the Great Dome"
-        }
-      ],
-      "suspectSummaries": [
-        {
-          "personId": "alistair",
-          "text": "Alistair is in the Living Quarters."
-        },
-        {
-          "personId": "beatrice",
-          "text": "Beatrice is in the 4th column."
-        },
-        {
-          "personId": "clarence",
-          "text": "Clarence is alone in the Laboratory."
-        },
-        {
-          "personId": "dorothea",
-          "text": "Dorothea is alone in a room."
-        },
-        {
-          "personId": "edmund",
-          "text": "Edmund is in the Great Dome."
-        }
-      ],
-      "solution": {
-        "placements": [
-          {
-            "personId": "alistair",
-            "coord": {
-              "row": 5,
-              "col": 4
-            }
-          },
-          {
-            "personId": "clarence",
-            "coord": {
-              "row": 1,
-              "col": 2
-            }
-          },
-          {
-            "personId": "dorothea",
-            "coord": {
-              "row": 4,
-              "col": 1
-            }
-          },
-          {
-            "personId": "edmund",
-            "coord": {
-              "row": 0,
-              "col": 0
-            }
-          },
-          {
-            "personId": "beatrice",
-            "coord": {
-              "row": 3,
-              "col": 3
-            }
-          },
-          {
-            "personId": "vivienne",
-            "coord": {
-              "row": 2,
-              "col": 5
-            }
-          }
-        ],
-        "murdererId": "beatrice",
-        "victimId": "vivienne",
-        "murderRoom": "storeroom"
-      },
-      "generatedAt": "2026-03-08T00:42:05.097Z",
-      "difficulty": "easy+"
-    },
-    {
-      "id": "the-lighthouse-mmh12bzz",
-      "title": "The Lighthouse",
-      "subtitle": "Secrets cast long shadows.",
-      "gridSize": {
-        "rows": 6,
-        "cols": 6
-      },
-      "rooms": [
-        {
-          "id": "lantern-room",
-          "name": "Lantern Room",
-          "pattern": {
-            "kind": "solid",
-            "color": "#D8BFD8"
-          },
-          "cells": [
-            {
-              "row": 1,
-              "col": 4
-            },
-            {
-              "row": 1,
-              "col": 5
-            },
-            {
-              "row": 2,
-              "col": 4
-            },
-            {
-              "row": 2,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "radio-room",
-          "name": "Radio Room",
-          "pattern": {
-            "kind": "striped",
-            "colorA": "#A9A9A9",
-            "colorB": "#C0C0C0"
-          },
-          "cells": [
-            {
-              "row": 3,
-              "col": 4
-            },
-            {
-              "row": 4,
-              "col": 4
-            },
-            {
-              "row": 5,
-              "col": 4
-            }
-          ]
-        },
-        {
-          "id": "living-quarters",
-          "name": "Living Quarters",
-          "pattern": {
-            "kind": "solid",
-            "color": "#E9DAC6"
-          },
-          "cells": [
-            {
-              "row": 0,
-              "col": 0
-            },
-            {
-              "row": 1,
-              "col": 0
-            },
-            {
-              "row": 1,
-              "col": 1
-            },
-            {
-              "row": 2,
-              "col": 0
-            },
-            {
-              "row": 2,
-              "col": 1
-            },
-            {
-              "row": 3,
-              "col": 0
-            },
-            {
-              "row": 3,
-              "col": 1
-            },
-            {
-              "row": 4,
-              "col": 0
-            },
-            {
-              "row": 4,
-              "col": 1
-            },
-            {
-              "row": 5,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "kitchen",
-          "name": "Kitchen",
-          "pattern": {
-            "kind": "checkered",
-            "colorA": "#F0E68C",
-            "colorB": "#BDB76B"
-          },
-          "cells": [
-            {
-              "row": 2,
-              "col": 3
-            },
-            {
-              "row": 3,
-              "col": 2
-            },
-            {
-              "row": 3,
-              "col": 3
-            },
-            {
-              "row": 4,
-              "col": 2
-            },
-            {
-              "row": 4,
-              "col": 3
-            },
-            {
-              "row": 5,
-              "col": 1
-            },
-            {
-              "row": 5,
-              "col": 2
-            },
-            {
-              "row": 5,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "storage-room",
-          "name": "Storage Room",
-          "pattern": {
-            "kind": "solid",
-            "color": "#8FBC8F"
-          },
-          "cells": [
-            {
-              "row": 3,
-              "col": 5
-            },
-            {
-              "row": 4,
-              "col": 5
-            },
-            {
-              "row": 5,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "landing",
-          "name": "Landing",
-          "pattern": {
-            "kind": "striped",
-            "colorA": "#778899",
-            "colorB": "#B0C4DE"
-          },
-          "cells": [
-            {
-              "row": 0,
-              "col": 1
-            },
-            {
-              "row": 0,
-              "col": 2
-            },
-            {
-              "row": 0,
-              "col": 3
-            },
-            {
-              "row": 0,
-              "col": 4
-            },
-            {
-              "row": 0,
-              "col": 5
-            },
-            {
-              "row": 1,
-              "col": 2
-            },
-            {
-              "row": 1,
-              "col": 3
-            },
-            {
-              "row": 2,
-              "col": 2
-            }
-          ]
-        }
-      ],
-      "objects": [
-        {
-          "id": "table-lantern-room-1",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 5
-            },
-            {
-              "row": 2,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "chair-lantern-room-2",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 2,
-              "col": 4
-            }
-          ]
-        },
-        {
-          "id": "bed-living-quarters-1",
-          "kind": "bed",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 1
-            },
-            {
-              "row": 1,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "bed-living-quarters-2",
-          "kind": "bed",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 1
-            },
-            {
-              "row": 4,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "chair-living-quarters-2",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 2,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "table-living-quarters-3",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 0
-            },
-            {
-              "row": 4,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "wardrobe-living-quarters-4",
-          "kind": "wardrobe",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 2,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "counter-kitchen-1",
-          "kind": "counter",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 2
-            },
-            {
-              "row": 4,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "counter-kitchen-2",
-          "kind": "counter",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 5,
-              "col": 1
-            },
-            {
-              "row": 5,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "table-kitchen-2",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 4,
-              "col": 3
-            },
-            {
-              "row": 5,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "chair-kitchen-3",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "chair-storage-room-1",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 5,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "table-landing-1",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 0,
-              "col": 1
-            },
-            {
-              "row": 0,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "table-landing-2",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 0,
-              "col": 3
-            },
-            {
-              "row": 1,
-              "col": 3
-            }
-          ]
-        }
-      ],
-      "people": [
-        {
-          "id": "vincent-mallory",
-          "name": "Vincent Mallory",
-          "role": "victim",
-          "avatarEmoji": "👨‍✈️"
-        },
-        {
-          "id": "alistair-finch",
-          "name": "Alistair Finch",
-          "role": "suspect",
-          "avatarEmoji": "👓"
-        },
-        {
-          "id": "beatrice-thorne",
-          "name": "Beatrice Thorne",
-          "role": "suspect",
-          "avatarEmoji": "👩‍⚕️"
-        },
-        {
-          "id": "clarence-abernathy",
-          "name": "Clarence Abernathy",
-          "role": "suspect",
-          "avatarEmoji": "👨‍🎨"
-        },
-        {
-          "id": "doris-bellweather",
-          "name": "Doris Bellweather",
-          "role": "suspect",
-          "avatarEmoji": "👩‍🍳"
-        },
-        {
-          "id": "edgar-cromwell",
-          "name": "Edgar Cromwell",
+          "id": "eric-vale",
+          "name": "Eric Vale",
           "role": "suspect",
           "avatarEmoji": "👨‍🔬"
         }
       ],
       "clues": [
         {
-          "kind": "person-beside-object",
-          "person": "clarence-abernathy",
-          "objectKind": "table",
-          "text": "Clarence Abernathy is beside a table"
+          "kind": "person-in-row",
+          "person": "diana-prince",
+          "row": 4,
+          "text": "Diana Prince is in row 5"
         },
         {
-          "kind": "person-sole-occupant",
-          "person": "beatrice-thorne",
-          "objectKind": "bed",
-          "text": "Beatrice Thorne is the only person on a bed"
+          "kind": "person-in-row",
+          "person": "alice-moreau",
+          "row": 3,
+          "text": "Alice Moreau is in row 4"
+        },
+        {
+          "kind": "person-in-row",
+          "person": "eric-vale",
+          "row": 0,
+          "text": "Eric Vale is in row 1"
         },
         {
           "kind": "person-in-room",
-          "person": "doris-bellweather",
+          "person": "bob-carter",
+          "roomId": "dome-room",
+          "text": "Bob Carter is in the Dome Room"
+        },
+        {
+          "kind": "person-in-room-with",
+          "person": "eric-vale",
+          "count": 2,
+          "text": "Eric Vale is in a room with exactly 2 other people"
+        },
+        {
+          "kind": "person-in-room",
+          "person": "charles-dubois",
           "roomId": "living-quarters",
-          "text": "Doris Bellweather is in the Living Quarters"
-        },
-        {
-          "kind": "person-in-room",
-          "person": "edgar-cromwell",
-          "roomId": "kitchen",
-          "text": "Edgar Cromwell is in the Kitchen"
-        },
-        {
-          "kind": "person-in-room",
-          "person": "alistair-finch",
-          "roomId": "lantern-room",
-          "text": "Alistair Finch is in the Lantern Room"
-        }
-      ],
-      "suspectSummaries": [
-        {
-          "personId": "alistair-finch",
-          "text": "Alistair Finch is in the Lantern Room."
-        },
-        {
-          "personId": "beatrice-thorne",
-          "text": "Beatrice Thorne is the only person on a bed."
-        },
-        {
-          "personId": "clarence-abernathy",
-          "text": "Clarence Abernathy is beside a table."
-        },
-        {
-          "personId": "doris-bellweather",
-          "text": "Doris Bellweather is in the Living Quarters."
-        },
-        {
-          "personId": "edgar-cromwell",
-          "text": "Edgar Cromwell is in the Kitchen."
+          "text": "Charles Dubois is in the Living Quarters"
         }
       ],
       "solution": {
         "placements": [
           {
-            "personId": "alistair-finch",
+            "personId": "alice-moreau",
             "coord": {
-              "row": 2,
-              "col": 4
-            }
-          },
-          {
-            "personId": "beatrice-thorne",
-            "coord": {
-              "row": 4,
-              "col": 1
-            }
-          },
-          {
-            "personId": "doris-bellweather",
-            "coord": {
-              "row": 5,
+              "row": 3,
               "col": 0
             }
           },
           {
-            "personId": "edgar-cromwell",
-            "coord": {
-              "row": 3,
-              "col": 3
-            }
-          },
-          {
-            "personId": "clarence-abernathy",
+            "personId": "bob-carter",
             "coord": {
               "row": 1,
               "col": 2
             }
           },
           {
-            "personId": "vincent-mallory",
+            "personId": "charles-dubois",
+            "coord": {
+              "row": 2,
+              "col": 4
+            }
+          },
+          {
+            "personId": "eric-vale",
             "coord": {
               "row": 0,
+              "col": 1
+            }
+          },
+          {
+            "personId": "diana-prince",
+            "coord": {
+              "row": 4,
               "col": 5
+            }
+          },
+          {
+            "personId": "vincent",
+            "coord": {
+              "row": 5,
+              "col": 3
             }
           }
         ],
-        "murdererId": "clarence-abernathy",
-        "victimId": "vincent-mallory",
-        "murderRoom": "landing"
+        "murdererId": "diana-prince",
+        "victimId": "vincent",
+        "murderRoom": "study"
       },
-      "generatedAt": "2026-03-08T00:42:13.764Z",
-      "difficulty": "easy+"
+      "title": "The Observatory",
+      "subtitle": "Secrets under the stars.",
+      "generatedAt": "2026-03-08T15:57:34.345Z",
+      "id": "the-observatory-mmhxrh0c",
+      "difficulty": "easy+",
+      "suspectSummaries": [
+        {
+          "personId": "alice-moreau",
+          "text": "Alice Moreau is in the fourth row."
+        },
+        {
+          "personId": "bob-carter",
+          "text": "Bob Carter is in the Dome Room."
+        },
+        {
+          "personId": "charles-dubois",
+          "text": "Charles Dubois is in the Living Quarters."
+        },
+        {
+          "personId": "diana-prince",
+          "text": "Diana Prince is in the fifth row."
+        },
+        {
+          "personId": "eric-vale",
+          "text": "Eric Vale is in the first row and in a room with exactly two other people."
+        }
+      ]
     },
     {
-      "id": "starlight-casino-mmh12hxx",
-      "title": "Starlight Casino",
-      "subtitle": "Luck ran out last night...",
       "gridSize": {
         "rows": 6,
         "cols": 6
       },
       "rooms": [
         {
-          "id": "roulette-room",
-          "name": "Roulette Room",
-          "pattern": {
-            "kind": "checkered",
-            "colorA": "#B8860B",
-            "colorB": "#D4A017"
-          },
-          "cells": [
-            {
-              "row": 4,
-              "col": 5
-            },
-            {
-              "row": 5,
-              "col": 4
-            },
-            {
-              "row": 5,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "poker-room",
-          "name": "Poker Room",
-          "pattern": {
-            "kind": "striped",
-            "colorA": "#8B4513",
-            "colorB": "#A0522D"
-          },
-          "cells": [
-            {
-              "row": 4,
-              "col": 3
-            },
-            {
-              "row": 4,
-              "col": 4
-            },
-            {
-              "row": 5,
-              "col": 1
-            },
-            {
-              "row": 5,
-              "col": 2
-            },
-            {
-              "row": 5,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "penthouse-suite",
-          "name": "Penthouse Suite",
+          "id": "auction-hall",
+          "name": "Auction Hall",
           "pattern": {
             "kind": "solid",
-            "color": "#708090"
+            "color": "#D8BFD8"
           },
           "cells": [
             {
-              "row": 2,
-              "col": 0
-            },
-            {
-              "row": 3,
-              "col": 0
-            },
-            {
-              "row": 3,
+              "row": 0,
               "col": 1
             },
             {
-              "row": 3,
+              "row": 0,
               "col": 2
             },
             {
-              "row": 3,
+              "row": 0,
               "col": 3
             },
             {
-              "row": 4,
-              "col": 0
+              "row": 0,
+              "col": 4
             },
             {
-              "row": 4,
+              "row": 0,
+              "col": 5
+            },
+            {
+              "row": 1,
               "col": 1
             },
             {
-              "row": 4,
+              "row": 1,
               "col": 2
             },
             {
-              "row": 5,
-              "col": 0
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 4
+            },
+            {
+              "row": 1,
+              "col": 5
+            },
+            {
+              "row": 2,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 2
             }
           ]
         },
         {
-          "id": "backstage",
-          "name": "Backstage",
+          "id": "display-room",
+          "name": "Display Room",
           "pattern": {
             "kind": "striped",
-            "colorA": "#696969",
-            "colorB": "#808080"
+            "colorA": "#E6E6FA",
+            "colorB": "#D3D3D3"
           },
           "cells": [
-            {
-              "row": 0,
-              "col": 2
-            },
-            {
-              "row": 0,
-              "col": 3
-            },
-            {
-              "row": 1,
-              "col": 3
-            },
             {
               "row": 2,
               "col": 3
@@ -2857,71 +3679,6 @@
             {
               "row": 2,
               "col": 4
-            }
-          ]
-        },
-        {
-          "id": "vault",
-          "name": "Vault",
-          "pattern": {
-            "kind": "solid",
-            "color": "#2F4F4F"
-          },
-          "cells": [
-            {
-              "row": 0,
-              "col": 0
-            },
-            {
-              "row": 0,
-              "col": 1
-            },
-            {
-              "row": 1,
-              "col": 0
-            },
-            {
-              "row": 1,
-              "col": 1
-            },
-            {
-              "row": 1,
-              "col": 2
-            },
-            {
-              "row": 2,
-              "col": 1
-            },
-            {
-              "row": 2,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "casino-bar",
-          "name": "Casino Bar",
-          "pattern": {
-            "kind": "checkered",
-            "colorA": "#A9A9A9",
-            "colorB": "#C0C0C0"
-          },
-          "cells": [
-            {
-              "row": 0,
-              "col": 4
-            },
-            {
-              "row": 0,
-              "col": 5
-            },
-            {
-              "row": 1,
-              "col": 4
-            },
-            {
-              "row": 1,
-              "col": 5
             },
             {
               "row": 2,
@@ -2934,1671 +3691,14 @@
             {
               "row": 3,
               "col": 5
-            }
-          ]
-        }
-      ],
-      "objects": [
-        {
-          "id": "table-poker-room-1",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 5,
-              "col": 1
-            },
-            {
-              "row": 5,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "table-poker-room-2",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 4,
-              "col": 3
-            },
-            {
-              "row": 5,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "plant-poker-room-2",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 4,
-              "col": 4
-            }
-          ]
-        },
-        {
-          "id": "bed-penthouse-suite-1",
-          "kind": "bed",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 1
-            },
-            {
-              "row": 4,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "bed-penthouse-suite-2",
-          "kind": "bed",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 3
-            },
-            {
-              "row": 3,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "chair-penthouse-suite-2",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 2,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "sofa-penthouse-suite-3",
-          "kind": "sofa",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 0
-            },
-            {
-              "row": 4,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "table-backstage-1",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 2,
-              "col": 3
-            },
-            {
-              "row": 2,
-              "col": 4
-            }
-          ]
-        },
-        {
-          "id": "chair-backstage-2",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "table-vault-1",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 0
-            },
-            {
-              "row": 1,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "counter-casino-bar-1",
-          "kind": "counter",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 5
-            },
-            {
-              "row": 2,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "counter-casino-bar-2",
-          "kind": "counter",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 0,
-              "col": 4
-            },
-            {
-              "row": 0,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "chair-casino-bar-2",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 5
-            }
-          ]
-        }
-      ],
-      "people": [
-        {
-          "id": "veronica-lake",
-          "name": "Veronica Lake",
-          "role": "victim",
-          "avatarEmoji": "💃"
-        },
-        {
-          "id": "anthony-scala",
-          "name": "Anthony Scala",
-          "role": "suspect",
-          "avatarEmoji": "👨"
-        },
-        {
-          "id": "betty-monroe",
-          "name": "Betty Monroe",
-          "role": "suspect",
-          "avatarEmoji": "👩"
-        },
-        {
-          "id": "charles-russo",
-          "name": "Charles Russo",
-          "role": "suspect",
-          "avatarEmoji": "👨"
-        },
-        {
-          "id": "dolly-diamond",
-          "name": "Dolly Diamond",
-          "role": "suspect",
-          "avatarEmoji": "👩"
-        },
-        {
-          "id": "edward-bloom",
-          "name": "Edward Bloom",
-          "role": "suspect",
-          "avatarEmoji": "🤵"
-        }
-      ],
-      "clues": [
-        {
-          "kind": "person-beside-object",
-          "person": "charles-russo",
-          "objectKind": "bed",
-          "text": "Charles Russo is beside a bed"
-        },
-        {
-          "kind": "person-in-room",
-          "person": "dolly-diamond",
-          "roomId": "backstage",
-          "text": "Dolly Diamond is in the Backstage"
-        },
-        {
-          "kind": "person-alone-in-room",
-          "person": "anthony-scala",
-          "roomId": "vault",
-          "text": "Anthony Scala is alone in the Vault"
-        },
-        {
-          "kind": "person-alone-in-room",
-          "person": "betty-monroe",
-          "roomId": "roulette-room",
-          "text": "Betty Monroe is alone in the Roulette Room"
-        },
-        {
-          "kind": "person-in-room-with",
-          "person": "edward-bloom",
-          "count": 0,
-          "text": "Edward Bloom is in a room with exactly 0 other people"
-        },
-        {
-          "kind": "object-occupancy",
-          "objectKind": "chair",
-          "count": 3,
-          "text": "Exactly 3 people are sitting in a chair."
-        }
-      ],
-      "suspectSummaries": [
-        {
-          "personId": "anthony-scala",
-          "text": "Anthony Scala is alone in the Vault."
-        },
-        {
-          "personId": "betty-monroe",
-          "text": "Betty Monroe is alone in the Roulette Room."
-        },
-        {
-          "personId": "charles-russo",
-          "text": "Charles Russo is beside a bed."
-        },
-        {
-          "personId": "dolly-diamond",
-          "text": "Dolly Diamond is in the Backstage."
-        },
-        {
-          "personId": "edward-bloom",
-          "text": "Edward Bloom is alone in a room."
-        }
-      ],
-      "solution": {
-        "placements": [
-          {
-            "personId": "anthony-scala",
-            "coord": {
-              "row": 0,
-              "col": 1
-            }
-          },
-          {
-            "personId": "betty-monroe",
-            "coord": {
-              "row": 5,
-              "col": 4
-            }
-          },
-          {
-            "personId": "dolly-diamond",
-            "coord": {
-              "row": 1,
-              "col": 3
-            }
-          },
-          {
-            "personId": "edward-bloom",
-            "coord": {
-              "row": 3,
-              "col": 5
-            }
-          },
-          {
-            "personId": "charles-russo",
-            "coord": {
-              "row": 4,
-              "col": 2
-            }
-          },
-          {
-            "personId": "veronica-lake",
-            "coord": {
-              "row": 2,
-              "col": 0
-            }
-          }
-        ],
-        "murdererId": "charles-russo",
-        "victimId": "veronica-lake",
-        "murderRoom": "penthouse-suite"
-      },
-      "generatedAt": "2026-03-08T00:42:21.433Z",
-      "difficulty": "easy+"
-    },
-    {
-      "id": "seaside-villa-mmh12mua",
-      "title": "Seaside Villa",
-      "subtitle": "Secrets washed ashore.",
-      "gridSize": {
-        "rows": 6,
-        "cols": 6
-      },
-      "rooms": [
-        {
-          "id": "grand-foyer",
-          "name": "Grand Foyer",
-          "pattern": {
-            "kind": "checkered",
-            "colorA": "#D8C3A3",
-            "colorB": "#A89A82"
-          },
-          "cells": [
-            {
-              "row": 0,
-              "col": 0
-            },
-            {
-              "row": 0,
-              "col": 1
-            },
-            {
-              "row": 0,
-              "col": 2
-            },
-            {
-              "row": 0,
-              "col": 3
-            },
-            {
-              "row": 0,
-              "col": 4
-            },
-            {
-              "row": 0,
-              "col": 5
-            },
-            {
-              "row": 1,
-              "col": 0
-            },
-            {
-              "row": 2,
-              "col": 0
-            },
-            {
-              "row": 3,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "dining-room",
-          "name": "Dining Room",
-          "pattern": {
-            "kind": "solid",
-            "color": "#877761"
-          },
-          "cells": [
-            {
-              "row": 1,
-              "col": 2
-            },
-            {
-              "row": 1,
-              "col": 3
-            },
-            {
-              "row": 2,
-              "col": 1
-            },
-            {
-              "row": 2,
-              "col": 2
-            },
-            {
-              "row": 2,
-              "col": 3
-            },
-            {
-              "row": 3,
-              "col": 1
-            },
-            {
-              "row": 3,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "billiard-room",
-          "name": "Billiard Room",
-          "pattern": {
-            "kind": "striped",
-            "colorA": "#594F4F",
-            "colorB": "#3F3838"
-          },
-          "cells": [
-            {
-              "row": 4,
-              "col": 0
-            },
-            {
-              "row": 4,
-              "col": 1
-            },
-            {
-              "row": 4,
-              "col": 2
             },
             {
               "row": 4,
               "col": 3
-            },
-            {
-              "row": 5,
-              "col": 0
-            },
-            {
-              "row": 5,
-              "col": 1
-            },
-            {
-              "row": 5,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "sunroom",
-          "name": "Sunroom",
-          "pattern": {
-            "kind": "solid",
-            "color": "#C1B7A3"
-          },
-          "cells": [
-            {
-              "row": 4,
-              "col": 4
-            },
-            {
-              "row": 4,
-              "col": 5
-            },
-            {
-              "row": 5,
-              "col": 3
-            },
-            {
-              "row": 5,
-              "col": 4
-            },
-            {
-              "row": 5,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "study",
-          "name": "Study",
-          "pattern": {
-            "kind": "striped",
-            "colorA": "#736357",
-            "colorB": "#5A4E43"
-          },
-          "cells": [
-            {
-              "row": 1,
-              "col": 4
-            },
-            {
-              "row": 1,
-              "col": 5
-            },
-            {
-              "row": 2,
-              "col": 4
-            },
-            {
-              "row": 2,
-              "col": 5
-            },
-            {
-              "row": 3,
-              "col": 3
-            },
-            {
-              "row": 3,
-              "col": 4
-            },
-            {
-              "row": 3,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "balcony",
-          "name": "Balcony",
-          "pattern": {
-            "kind": "solid",
-            "color": "#B9A288"
-          },
-          "cells": [
-            {
-              "row": 1,
-              "col": 1
-            }
-          ]
-        }
-      ],
-      "objects": [
-        {
-          "id": "table-grand-foyer-1",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 0,
-              "col": 2
-            },
-            {
-              "row": 0,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "chair-grand-foyer-2",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 0,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "table-dining-room-1",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 2,
-              "col": 1
-            },
-            {
-              "row": 3,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "table-dining-room-2",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 2,
-              "col": 2
-            },
-            {
-              "row": 2,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "plant-dining-room-2",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "chair-dining-room-3",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "table-billiard-room-1",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 4,
-              "col": 0
-            },
-            {
-              "row": 5,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "table-billiard-room-2",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 5,
-              "col": 1
-            },
-            {
-              "row": 5,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "chair-billiard-room-2",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 4,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "plant-billiard-room-3",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 4,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "plant-sunroom-1",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 5,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "chair-sunroom-2",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 5,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "bookshelf-study-1",
-          "kind": "bookshelf",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "fireplace-study-2",
-          "kind": "fireplace",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 4
-            }
-          ]
-        },
-        {
-          "id": "chair-study-3",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "plant-balcony-1",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 1
-            }
-          ]
-        }
-      ],
-      "people": [
-        {
-          "id": "valentina",
-          "name": "Valentina",
-          "role": "victim",
-          "avatarEmoji": "💃"
-        },
-        {
-          "id": "anthony",
-          "name": "Anthony",
-          "role": "suspect",
-          "avatarEmoji": "👨‍🍳"
-        },
-        {
-          "id": "beatrice",
-          "name": "Beatrice",
-          "role": "suspect",
-          "avatarEmoji": "👩‍🎨"
-        },
-        {
-          "id": "charles",
-          "name": "Charles",
-          "role": "suspect",
-          "avatarEmoji": "👨‍💼"
-        },
-        {
-          "id": "diana",
-          "name": "Diana",
-          "role": "suspect",
-          "avatarEmoji": "👩‍⚕️"
-        },
-        {
-          "id": "edward",
-          "name": "Edward",
-          "role": "suspect",
-          "avatarEmoji": "👨‍🌾"
-        }
-      ],
-      "clues": [
-        {
-          "kind": "person-in-room-corner",
-          "person": "charles",
-          "text": "Charles is in a corner of the Grand Foyer"
-        },
-        {
-          "kind": "person-in-room",
-          "person": "diana",
-          "roomId": "billiard-room",
-          "text": "Diana is in the Billiard Room"
-        },
-        {
-          "kind": "person-in-room",
-          "person": "edward",
-          "roomId": "sunroom",
-          "text": "Edward is in the Sunroom"
-        },
-        {
-          "kind": "person-in-room-with",
-          "person": "charles",
-          "count": 1,
-          "text": "Charles is in a room with exactly 1 other person"
-        },
-        {
-          "kind": "object-occupancy",
-          "objectKind": "chair",
-          "count": 2,
-          "text": "Exactly two chairs are occupied."
-        },
-        {
-          "kind": "person-in-room",
-          "person": "anthony",
-          "roomId": "study",
-          "text": "Anthony is in the Study"
-        },
-        {
-          "kind": "person-alone-in-room",
-          "person": "beatrice",
-          "roomId": "dining-room",
-          "text": "Beatrice is alone in the Dining Room"
-        }
-      ],
-      "suspectSummaries": [
-        {
-          "personId": "anthony",
-          "text": "Anthony is in the Study."
-        },
-        {
-          "personId": "beatrice",
-          "text": "Beatrice is alone in the Dining Room."
-        },
-        {
-          "personId": "charles",
-          "text": "Charles is in a corner of the Grand Foyer with one other person."
-        },
-        {
-          "personId": "diana",
-          "text": "Diana is in the Billiard Room."
-        },
-        {
-          "personId": "edward",
-          "text": "Edward is in the Sunroom."
-        }
-      ],
-      "solution": {
-        "placements": [
-          {
-            "personId": "anthony",
-            "coord": {
-              "row": 2,
-              "col": 5
-            }
-          },
-          {
-            "personId": "beatrice",
-            "coord": {
-              "row": 1,
-              "col": 3
-            }
-          },
-          {
-            "personId": "diana",
-            "coord": {
-              "row": 4,
-              "col": 2
-            }
-          },
-          {
-            "personId": "edward",
-            "coord": {
-              "row": 5,
-              "col": 4
-            }
-          },
-          {
-            "personId": "charles",
-            "coord": {
-              "row": 3,
-              "col": 0
-            }
-          },
-          {
-            "personId": "valentina",
-            "coord": {
-              "row": 0,
-              "col": 1
-            }
-          }
-        ],
-        "murdererId": "charles",
-        "victimId": "valentina",
-        "murderRoom": "grand-foyer"
-      },
-      "generatedAt": "2026-03-08T00:42:27.333Z",
-      "difficulty": "easy+"
-    },
-    {
-      "id": "the-pasha-s-palace-mmh12ttz",
-      "title": "The Pasha's Palace",
-      "subtitle": "A tangled web of secrets, sealed within gilded walls.",
-      "gridSize": {
-        "rows": 6,
-        "cols": 6
-      },
-      "rooms": [
-        {
-          "id": "harem-quarters",
-          "name": "Harem Quarters",
-          "pattern": {
-            "kind": "striped",
-            "colorA": "#E9DAC1",
-            "colorB": "#D5B9A2"
-          },
-          "cells": [
-            {
-              "row": 1,
-              "col": 1
-            },
-            {
-              "row": 1,
-              "col": 2
-            },
-            {
-              "row": 1,
-              "col": 3
-            },
-            {
-              "row": 1,
-              "col": 4
-            },
-            {
-              "row": 1,
-              "col": 5
-            },
-            {
-              "row": 2,
-              "col": 3
-            },
-            {
-              "row": 2,
-              "col": 4
-            },
-            {
-              "row": 2,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "dining-hall",
-          "name": "Dining Hall",
-          "pattern": {
-            "kind": "solid",
-            "color": "#A9927D"
-          },
-          "cells": [
-            {
-              "row": 2,
-              "col": 2
-            },
-            {
-              "row": 3,
-              "col": 2
-            },
-            {
-              "row": 4,
-              "col": 1
-            },
-            {
-              "row": 4,
-              "col": 2
-            },
-            {
-              "row": 4,
-              "col": 3
-            },
-            {
-              "row": 5,
-              "col": 1
-            },
-            {
-              "row": 5,
-              "col": 2
-            },
-            {
-              "row": 5,
-              "col": 3
-            },
-            {
-              "row": 5,
-              "col": 4
-            }
-          ]
-        },
-        {
-          "id": "private-collection",
-          "name": "Private Collection",
-          "pattern": {
-            "kind": "checkered",
-            "colorA": "#827081",
-            "colorB": "#6D5B61"
-          },
-          "cells": [
-            {
-              "row": 3,
-              "col": 3
-            },
-            {
-              "row": 3,
-              "col": 4
-            },
-            {
-              "row": 3,
-              "col": 5
             },
             {
               "row": 4,
               "col": 4
-            },
-            {
-              "row": 4,
-              "col": 5
-            },
-            {
-              "row": 5,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "smoking-lounge",
-          "name": "Smoking Lounge",
-          "pattern": {
-            "kind": "solid",
-            "color": "#4A3F35"
-          },
-          "cells": [
-            {
-              "row": 0,
-              "col": 0
-            },
-            {
-              "row": 1,
-              "col": 0
-            },
-            {
-              "row": 2,
-              "col": 0
-            },
-            {
-              "row": 2,
-              "col": 1
-            },
-            {
-              "row": 3,
-              "col": 0
-            },
-            {
-              "row": 3,
-              "col": 1
-            },
-            {
-              "row": 4,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "library-alcove",
-          "name": "Library Alcove",
-          "pattern": {
-            "kind": "striped",
-            "colorA": "#9E7676",
-            "colorB": "#816797"
-          },
-          "cells": [
-            {
-              "row": 0,
-              "col": 1
-            },
-            {
-              "row": 0,
-              "col": 2
-            },
-            {
-              "row": 0,
-              "col": 3
-            },
-            {
-              "row": 0,
-              "col": 4
-            },
-            {
-              "row": 0,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "hidden-passage",
-          "name": "Hidden Passage",
-          "pattern": {
-            "kind": "checkered",
-            "colorA": "#6D8B74",
-            "colorB": "#5D7165"
-          },
-          "cells": [
-            {
-              "row": 5,
-              "col": 0
-            }
-          ]
-        }
-      ],
-      "objects": [
-        {
-          "id": "sofa-harem-quarters-1",
-          "kind": "sofa",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 4
-            },
-            {
-              "row": 2,
-              "col": 4
-            }
-          ]
-        },
-        {
-          "id": "sofa-harem-quarters-2",
-          "kind": "sofa",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 1
-            },
-            {
-              "row": 1,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "plant-harem-quarters-2",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 2,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "chair-harem-quarters-3",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "table-dining-hall-1",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 4,
-              "col": 1
-            },
-            {
-              "row": 4,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "table-dining-hall-2",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 4,
-              "col": 3
-            },
-            {
-              "row": 5,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "plant-dining-hall-2",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 5,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "chair-dining-hall-3",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 2,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "bookshelf-private-collection-1",
-          "kind": "bookshelf",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 4
-            }
-          ]
-        },
-        {
-          "id": "counter-private-collection-2",
-          "kind": "counter",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 4,
-              "col": 5
-            },
-            {
-              "row": 5,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "sofa-smoking-lounge-1",
-          "kind": "sofa",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 2,
-              "col": 0
-            },
-            {
-              "row": 2,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "sofa-smoking-lounge-2",
-          "kind": "sofa",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 0
-            },
-            {
-              "row": 4,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "plant-smoking-lounge-2",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "bookshelf-library-alcove-1",
-          "kind": "bookshelf",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 0,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "chair-library-alcove-2",
-          "kind": "chair",
-          "occupiable": "occupiable",
-          "cells": [
-            {
-              "row": 0,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "plant-library-alcove-3",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 0,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "wardrobe-hidden-passage-1",
-          "kind": "wardrobe",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 5,
-              "col": 0
-            }
-          ]
-        }
-      ],
-      "people": [
-        {
-          "id": "vali-zdemir",
-          "name": "Vali Özdemir",
-          "role": "victim",
-          "avatarEmoji": "💎"
-        },
-        {
-          "id": "ali-r-za",
-          "name": "Ali Rıza",
-          "role": "suspect",
-          "avatarEmoji": "👨"
-        },
-        {
-          "id": "belgin-kaya",
-          "name": "Belgin Kaya",
-          "role": "suspect",
-          "avatarEmoji": "💃"
-        },
-        {
-          "id": "cemil-demir",
-          "name": "Cemil Demir",
-          "role": "suspect",
-          "avatarEmoji": "👳"
-        },
-        {
-          "id": "deniz-yilmaz",
-          "name": "Deniz Yilmaz",
-          "role": "suspect",
-          "avatarEmoji": "👩"
-        },
-        {
-          "id": "emin-g-rsoy",
-          "name": "Emin Gürsoy",
-          "role": "suspect",
-          "avatarEmoji": "🕵️"
-        }
-      ],
-      "clues": [
-        {
-          "kind": "person-beside-object",
-          "person": "cemil-demir",
-          "objectKind": "table",
-          "text": "Cemil Demir is beside a table"
-        },
-        {
-          "kind": "object-occupancy",
-          "objectKind": "sofa",
-          "count": 2,
-          "text": "Exactly two sofas are occupied."
-        },
-        {
-          "kind": "person-alone-in-room",
-          "person": "deniz-yilmaz",
-          "roomId": "library-alcove",
-          "text": "Deniz Yilmaz is alone in the Library Alcove"
-        },
-        {
-          "kind": "person-in-room",
-          "person": "emin-g-rsoy",
-          "roomId": "smoking-lounge",
-          "text": "Emin Gürsoy is in the Smoking Lounge"
-        },
-        {
-          "kind": "person-in-room",
-          "person": "belgin-kaya",
-          "roomId": "private-collection",
-          "text": "Belgin Kaya is in the Private Collection"
-        },
-        {
-          "kind": "person-in-room-with",
-          "person": "ali-r-za",
-          "count": 0,
-          "text": "Ali Rıza is in a room with exactly 0 other people"
-        },
-        {
-          "kind": "object-occupancy",
-          "objectKind": "chair",
-          "count": 2,
-          "text": "Exactly two chairs are occupied."
-        }
-      ],
-      "suspectSummaries": [
-        {
-          "personId": "ali-r-za",
-          "text": "Ali Rıza is alone in a room."
-        },
-        {
-          "personId": "belgin-kaya",
-          "text": "Belgin Kaya is in the Private Collection."
-        },
-        {
-          "personId": "cemil-demir",
-          "text": "Cemil Demir is beside a table."
-        },
-        {
-          "personId": "deniz-yilmaz",
-          "text": "Deniz Yilmaz is alone in the Library Alcove."
-        },
-        {
-          "personId": "emin-g-rsoy",
-          "text": "Emin Gürsoy is in the Smoking Lounge."
-        }
-      ],
-      "solution": {
-        "placements": [
-          {
-            "personId": "ali-r-za",
-            "coord": {
-              "row": 1,
-              "col": 1
-            }
-          },
-          {
-            "personId": "belgin-kaya",
-            "coord": {
-              "row": 3,
-              "col": 3
-            }
-          },
-          {
-            "personId": "deniz-yilmaz",
-            "coord": {
-              "row": 0,
-              "col": 5
-            }
-          },
-          {
-            "personId": "emin-g-rsoy",
-            "coord": {
-              "row": 4,
-              "col": 0
-            }
-          },
-          {
-            "personId": "cemil-demir",
-            "coord": {
-              "row": 5,
-              "col": 4
-            }
-          },
-          {
-            "personId": "vali-zdemir",
-            "coord": {
-              "row": 2,
-              "col": 2
-            }
-          }
-        ],
-        "murdererId": "cemil-demir",
-        "victimId": "vali-zdemir",
-        "murderRoom": "dining-hall"
-      },
-      "generatedAt": "2026-03-08T00:42:36.429Z",
-      "difficulty": "easy+"
-    },
-    {
-      "id": "speakeasy-mmh13gjd",
-      "title": "Speakeasy",
-      "subtitle": "Secrets and shadows in the city that never sleeps.",
-      "gridSize": {
-        "rows": 6,
-        "cols": 6
-      },
-      "rooms": [
-        {
-          "id": "back-room",
-          "name": "Back Room",
-          "pattern": {
-            "kind": "checkered",
-            "colorA": "#C0B283",
-            "colorB": "#A99272"
-          },
-          "cells": [
-            {
-              "row": 0,
-              "col": 4
-            },
-            {
-              "row": 0,
-              "col": 5
-            },
-            {
-              "row": 1,
-              "col": 5
-            },
-            {
-              "row": 2,
-              "col": 4
-            },
-            {
-              "row": 2,
-              "col": 5
-            },
-            {
-              "row": 3,
-              "col": 5
-            },
-            {
-              "row": 4,
-              "col": 5
-            },
-            {
-              "row": 5,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "main-bar",
-          "name": "Main Bar",
-          "pattern": {
-            "kind": "striped",
-            "colorA": "#5D4E3A",
-            "colorB": "#796A54"
-          },
-          "cells": [
-            {
-              "row": 3,
-              "col": 0
-            },
-            {
-              "row": 3,
-              "col": 2
-            },
-            {
-              "row": 3,
-              "col": 3
-            },
-            {
-              "row": 4,
-              "col": 0
-            },
-            {
-              "row": 4,
-              "col": 1
-            },
-            {
-              "row": 4,
-              "col": 2
-            },
-            {
-              "row": 5,
-              "col": 0
-            },
-            {
-              "row": 5,
-              "col": 1
-            },
-            {
-              "row": 5,
-              "col": 2
-            },
-            {
-              "row": 5,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "office",
-          "name": "Office",
-          "pattern": {
-            "kind": "solid",
-            "color": "#6E573E"
-          },
-          "cells": [
-            {
-              "row": 0,
-              "col": 0
-            },
-            {
-              "row": 0,
-              "col": 1
-            },
-            {
-              "row": 1,
-              "col": 0
-            },
-            {
-              "row": 1,
-              "col": 1
-            },
-            {
-              "row": 2,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "kitchen",
-          "name": "Kitchen",
-          "pattern": {
-            "kind": "striped",
-            "colorA": "#BFA180",
-            "colorB": "#DBC9A7"
-          },
-          "cells": [
-            {
-              "row": 0,
-              "col": 2
-            },
-            {
-              "row": 0,
-              "col": 3
-            },
-            {
-              "row": 1,
-              "col": 2
-            },
-            {
-              "row": 1,
-              "col": 3
-            },
-            {
-              "row": 1,
-              "col": 4
-            },
-            {
-              "row": 2,
-              "col": 2
-            },
-            {
-              "row": 2,
-              "col": 3
             }
           ]
         },
@@ -4606,88 +3706,188 @@
           "id": "wine-cellar",
           "name": "Wine Cellar",
           "pattern": {
-            "kind": "solid",
-            "color": "#4A3B2B"
+            "kind": "checkered",
+            "colorA": "#A9A9A9",
+            "colorB": "#808080"
           },
           "cells": [
             {
-              "row": 2,
+              "row": 4,
+              "col": 0
+            },
+            {
+              "row": 4,
+              "col": 2
+            },
+            {
+              "row": 5,
+              "col": 0
+            },
+            {
+              "row": 5,
+              "col": 1
+            },
+            {
+              "row": 5,
+              "col": 2
+            }
+          ]
+        },
+        {
+          "id": "security-office",
+          "name": "Security Office",
+          "pattern": {
+            "kind": "solid",
+            "color": "#C0C0C0"
+          },
+          "cells": [
+            {
+              "row": 3,
               "col": 1
             },
             {
               "row": 3,
+              "col": 2
+            },
+            {
+              "row": 3,
+              "col": 3
+            },
+            {
+              "row": 4,
               "col": 1
             }
           ]
         },
         {
-          "id": "storage-room",
-          "name": "Storage Room",
+          "id": "backstage-area",
+          "name": "Backstage Area",
           "pattern": {
-            "kind": "checkered",
-            "colorA": "#87765D",
-            "colorB": "#A3937A"
+            "kind": "striped",
+            "colorA": "#B0C4DE",
+            "colorB": "#778899"
           },
           "cells": [
             {
-              "row": 3,
-              "col": 4
+              "row": 4,
+              "col": 5
             },
             {
-              "row": 4,
+              "row": 5,
               "col": 3
-            },
-            {
-              "row": 4,
-              "col": 4
             },
             {
               "row": 5,
               "col": 4
+            },
+            {
+              "row": 5,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "bathroom",
+          "name": "Bathroom",
+          "pattern": {
+            "kind": "checkered",
+            "colorA": "#F0FFFF",
+            "colorB": "#ADD8E6"
+          },
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            },
+            {
+              "row": 1,
+              "col": 0
+            },
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 3,
+              "col": 0
             }
           ]
         }
       ],
       "objects": [
         {
-          "id": "sofa-back-room-1",
-          "kind": "sofa",
+          "id": "rug-auction-hall-1",
+          "kind": "rug",
           "occupiable": "occupiable",
           "cells": [
             {
-              "row": 4,
-              "col": 5
+              "row": 0,
+              "col": 2
             },
             {
-              "row": 5,
-              "col": 5
-            }
-          ]
-        },
-        {
-          "id": "sofa-back-room-2",
-          "kind": "sofa",
-          "occupiable": "occupiable",
-          "cells": [
+              "row": 0,
+              "col": 3
+            },
             {
               "row": 0,
               "col": 4
             },
             {
-              "row": 0,
+              "row": 1,
+              "col": 2
+            },
+            {
+              "row": 1,
+              "col": 3
+            },
+            {
+              "row": 1,
+              "col": 4
+            }
+          ]
+        },
+        {
+          "id": "sofa-auction-hall-2",
+          "kind": "sofa",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 1,
+              "col": 1
+            },
+            {
+              "row": 2,
+              "col": 1
+            }
+          ]
+        },
+        {
+          "id": "rug-auction-hall-3",
+          "kind": "rug",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 1,
               "col": 5
             }
           ]
         },
         {
-          "id": "table-back-room-2",
-          "kind": "table",
+          "id": "bookshelf-display-room-1",
+          "kind": "bookshelf",
           "occupiable": "non-occupiable",
           "cells": [
             {
               "row": 2,
               "col": 5
-            },
+            }
+          ]
+        },
+        {
+          "id": "plant-display-room-2",
+          "kind": "plant",
+          "occupiable": "non-occupiable",
+          "cells": [
             {
               "row": 3,
               "col": 5
@@ -4695,326 +3895,239 @@
           ]
         },
         {
-          "id": "plant-back-room-3",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 2,
-              "col": 4
-            }
-          ]
-        },
-        {
-          "id": "counter-main-bar-1",
-          "kind": "counter",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 5,
-              "col": 0
-            },
-            {
-              "row": 5,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "counter-main-bar-2",
-          "kind": "counter",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 3,
-              "col": 2
-            },
-            {
-              "row": 4,
-              "col": 2
-            }
-          ]
-        },
-        {
-          "id": "plant-main-bar-2",
-          "kind": "plant",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 4,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "chair-main-bar-3",
+          "id": "chair-wine-cellar-1",
           "kind": "chair",
           "occupiable": "occupiable",
           "cells": [
             {
               "row": 4,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "table-office-1",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 0
-            },
-            {
-              "row": 2,
-              "col": 0
-            }
-          ]
-        },
-        {
-          "id": "table-office-2",
-          "kind": "table",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 0,
-              "col": 0
-            },
-            {
-              "row": 0,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "bookshelf-office-2",
-          "kind": "bookshelf",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 1,
-              "col": 1
-            }
-          ]
-        },
-        {
-          "id": "counter-kitchen-1",
-          "kind": "counter",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 0,
               "col": 2
-            },
-            {
-              "row": 0,
-              "col": 3
             }
           ]
         },
         {
-          "id": "counter-kitchen-2",
-          "kind": "counter",
-          "occupiable": "non-occupiable",
+          "id": "chair-security-office-1",
+          "kind": "chair",
+          "occupiable": "occupiable",
           "cells": [
             {
-              "row": 1,
-              "col": 3
-            },
-            {
-              "row": 2,
-              "col": 3
-            }
-          ]
-        },
-        {
-          "id": "bookshelf-wine-cellar-1",
-          "kind": "bookshelf",
-          "occupiable": "non-occupiable",
-          "cells": [
-            {
-              "row": 2,
+              "row": 3,
               "col": 1
             }
           ]
         },
         {
-          "id": "table-storage-room-1",
-          "kind": "table",
+          "id": "tv-security-office-2",
+          "kind": "tv",
           "occupiable": "non-occupiable",
           "cells": [
             {
               "row": 4,
-              "col": 4
-            },
-            {
-              "row": 5,
-              "col": 4
+              "col": 1
             }
           ]
         },
         {
-          "id": "wardrobe-storage-room-2",
+          "id": "chair-backstage-area-1",
+          "kind": "chair",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 5,
+              "col": 3
+            }
+          ]
+        },
+        {
+          "id": "wardrobe-backstage-area-2",
           "kind": "wardrobe",
           "occupiable": "non-occupiable",
           "cells": [
             {
-              "row": 4,
-              "col": 3
+              "row": 5,
+              "col": 5
+            }
+          ]
+        },
+        {
+          "id": "toilet-bathroom-1",
+          "kind": "toilet",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 0,
+              "col": 0
+            }
+          ]
+        },
+        {
+          "id": "rug-bathroom-2",
+          "kind": "rug",
+          "occupiable": "occupiable",
+          "cells": [
+            {
+              "row": 2,
+              "col": 0
+            },
+            {
+              "row": 3,
+              "col": 0
             }
           ]
         }
       ],
       "people": [
         {
-          "id": "victor-moreau",
-          "name": "Victor Moreau",
+          "id": "vera-sterling",
+          "name": "Vera Sterling",
           "role": "victim",
-          "avatarEmoji": "🍸"
-        },
-        {
-          "id": "archibald-sterling",
-          "name": "Archibald Sterling",
-          "role": "suspect",
-          "avatarEmoji": "💼"
-        },
-        {
-          "id": "bartholomew-benny-piazza",
-          "name": "Bartholomew 'Benny' Piazza",
-          "role": "suspect",
-          "avatarEmoji": "🎶"
-        },
-        {
-          "id": "carmine-the-canary-rossi",
-          "name": "Carmine 'The Canary' Rossi",
-          "role": "suspect",
-          "avatarEmoji": "🎤"
-        },
-        {
-          "id": "delores-dolly-evergreen",
-          "name": "Delores 'Dolly' Evergreen",
-          "role": "suspect",
           "avatarEmoji": "💃"
         },
         {
-          "id": "evelyn-frost",
-          "name": "Evelyn Frost",
+          "id": "adam-blake",
+          "name": "Adam Blake",
           "role": "suspect",
-          "avatarEmoji": "🕵️‍♀️"
+          "avatarEmoji": "👨‍🎨"
+        },
+        {
+          "id": "beth-carter",
+          "name": "Beth Carter",
+          "role": "suspect",
+          "avatarEmoji": "👩‍💼"
+        },
+        {
+          "id": "chris-davids",
+          "name": "Chris Davids",
+          "role": "suspect",
+          "avatarEmoji": "👨‍🍳"
+        },
+        {
+          "id": "daniel-lee",
+          "name": "Daniel Lee",
+          "role": "suspect",
+          "avatarEmoji": "🕵️"
+        },
+        {
+          "id": "eva-morgan",
+          "name": "Eva Morgan",
+          "role": "suspect",
+          "avatarEmoji": "👩‍🎤"
         }
       ],
       "clues": [
         {
-          "kind": "person-in-col",
-          "person": "bartholomew-benny-piazza",
-          "col": 2,
-          "text": "Bartholomew 'Benny' Piazza is in column 3"
-        },
-        {
-          "kind": "person-sole-occupant",
-          "person": "carmine-the-canary-rossi",
+          "kind": "person-beside-object",
+          "person": "daniel-lee",
           "objectKind": "chair",
-          "text": "Carmine 'The Canary' Rossi is the only person on a chair"
+          "text": "Daniel Lee is beside a chair"
         },
         {
-          "kind": "persons-same-room",
-          "personA": "bartholomew-benny-piazza",
-          "personB": "victor-moreau",
-          "text": "Bartholomew 'Benny' Piazza and Victor Moreau are in the same room"
-        },
-        {
-          "kind": "person-in-room-with",
-          "person": "evelyn-frost",
-          "count": 1,
-          "text": "Evelyn Frost is in a room with exactly 1 other person"
-        },
-        {
-          "kind": "person-in-room-with",
-          "person": "archibald-sterling",
-          "count": 0,
-          "text": "Archibald Sterling is in a room with exactly 0 other people"
-        },
-        {
-          "kind": "person-sole-occupant",
-          "person": "delores-dolly-evergreen",
+          "kind": "person-beside-object",
+          "person": "adam-blake",
           "objectKind": "sofa",
-          "text": "Delores 'Dolly' Evergreen is the only person on a sofa"
-        }
-      ],
-      "suspectSummaries": [
-        {
-          "personId": "archibald-sterling",
-          "text": "Archibald Sterling is alone in a room."
+          "text": "Adam Blake is beside a sofa"
         },
         {
-          "personId": "bartholomew-benny-piazza",
-          "text": "Bartholomew 'Benny' Piazza is in the 3rd column and in the same room as Victor Moreau."
+          "kind": "person-beside-object",
+          "person": "chris-davids",
+          "objectKind": "chair",
+          "text": "Chris Davids is beside a chair"
         },
         {
-          "personId": "carmine-the-canary-rossi",
-          "text": "Carmine 'The Canary' Rossi is the only person sitting in a chair."
+          "kind": "person-in-room",
+          "person": "eva-morgan",
+          "roomId": "backstage-area",
+          "text": "Eva Morgan is in the Backstage Area"
         },
         {
-          "personId": "delores-dolly-evergreen",
-          "text": "Delores 'Dolly' Evergreen is the only person sitting on a sofa."
+          "kind": "person-alone-in-room",
+          "person": "chris-davids",
+          "roomId": "security-office",
+          "text": "Chris Davids is alone in the Security Office"
         },
         {
-          "personId": "evelyn-frost",
-          "text": "Evelyn Frost is in a room with exactly 1 other person."
+          "kind": "person-in-room-with",
+          "person": "beth-carter",
+          "count": 0,
+          "text": "Beth Carter is in a room with exactly 0 other people"
         }
       ],
       "solution": {
         "placements": [
           {
-            "personId": "archibald-sterling",
+            "personId": "beth-carter",
             "coord": {
-              "row": 3,
-              "col": 1
-            }
-          },
-          {
-            "personId": "carmine-the-canary-rossi",
-            "coord": {
-              "row": 4,
+              "row": 2,
               "col": 0
             }
           },
           {
-            "personId": "delores-dolly-evergreen",
+            "personId": "chris-davids",
             "coord": {
-              "row": 0,
-              "col": 5
-            }
-          },
-          {
-            "personId": "evelyn-frost",
-            "coord": {
-              "row": 5,
-              "col": 3
-            }
-          },
-          {
-            "personId": "bartholomew-benny-piazza",
-            "coord": {
-              "row": 2,
+              "row": 3,
               "col": 2
             }
           },
           {
-            "personId": "victor-moreau",
+            "personId": "daniel-lee",
+            "coord": {
+              "row": 5,
+              "col": 4
+            }
+          },
+          {
+            "personId": "eva-morgan",
+            "coord": {
+              "row": 4,
+              "col": 5
+            }
+          },
+          {
+            "personId": "adam-blake",
+            "coord": {
+              "row": 0,
+              "col": 1
+            }
+          },
+          {
+            "personId": "vera-sterling",
             "coord": {
               "row": 1,
-              "col": 4
+              "col": 3
             }
           }
         ],
-        "murdererId": "bartholomew-benny-piazza",
-        "victimId": "victor-moreau",
-        "murderRoom": "kitchen"
+        "murdererId": "adam-blake",
+        "victimId": "vera-sterling",
+        "murderRoom": "auction-hall"
       },
-      "generatedAt": "2026-03-08T00:43:06.347Z",
-      "difficulty": "easy"
+      "title": "Silent Auction",
+      "subtitle": "Greed. Glamour. Gone.",
+      "generatedAt": "2026-03-08T15:57:41.111Z",
+      "id": "silent-auction-mmhxrm2f",
+      "difficulty": "easy+",
+      "suspectSummaries": [
+        {
+          "personId": "adam-blake",
+          "text": "Adam Blake is beside a sofa."
+        },
+        {
+          "personId": "beth-carter",
+          "text": "Beth Carter is alone in a room."
+        },
+        {
+          "personId": "chris-davids",
+          "text": "Chris Davids is beside a chair and alone in the Security Office."
+        },
+        {
+          "personId": "daniel-lee",
+          "text": "Daniel Lee is beside a chair."
+        },
+        {
+          "personId": "eva-morgan",
+          "text": "Eva Morgan is in the Backstage Area."
+        }
+      ]
     }
   ]
 }
