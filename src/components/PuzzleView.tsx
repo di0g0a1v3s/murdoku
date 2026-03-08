@@ -171,6 +171,18 @@ export function PuzzleView({
 		setPopup(null);
 	}
 
+	function handleUncommit(row: number, col: number) {
+		const key = `${row},${col}`;
+		onUndoStackChange([...undoStack, { marks: cellMarks, committed: committedCells }]);
+		setCommittedCells((prev) => {
+			const next = new Map(prev);
+			next.delete(key);
+			return next;
+		});
+		setVerifyResult(null);
+		setPopup(null);
+	}
+
 	function handleCommit(row: number, col: number, personId: string) {
 		const key = `${row},${col}`;
 		onUndoStackChange([...undoStack, { marks: cellMarks, committed: committedCells }]);
@@ -235,6 +247,34 @@ export function PuzzleView({
 				setVerifyResult('wrong');
 			}
 		}
+	}
+
+	function handleVerify() {
+		const { placements } = puzzle.solution;
+		const userPlacements: { personId: string; key: string }[] = [];
+		for (const [key, marks] of cellMarks) {
+			const personIds = [...marks].filter((m) => m !== 'X');
+			if (personIds.length > 1) {
+				setVerifyResult('wrong');
+				return;
+			}
+			if (personIds.length === 1) {
+				userPlacements.push({ personId: personIds[0]!, key });
+			}
+		}
+		if (userPlacements.length !== placements.length) {
+			setVerifyResult('wrong');
+			return;
+		}
+		for (const { personId, coord } of placements) {
+			const key = `${coord.row},${coord.col}`;
+			if (!userPlacements.some((u) => u.key === key && u.personId === personId)) {
+				setVerifyResult('wrong');
+				return;
+			}
+		}
+		setVerifyResult('correct');
+		onComplete();
 	}
 
 	function handleUndo() {
@@ -517,6 +557,22 @@ export function PuzzleView({
 										Clear
 									</button>
 								</div>
+								<button
+									onClick={handleVerify}
+									style={{
+										padding: '10px 28px',
+										background: '#1a1a2e',
+										color: 'white',
+										border: 'none',
+										borderRadius: 8,
+										fontSize: 17,
+										fontWeight: 700,
+										cursor: 'pointer',
+										boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+									}}
+								>
+									Verify Solution
+								</button>
 								{verifyResult === 'wrong' && (
 									<div
 										style={{
@@ -530,7 +586,25 @@ export function PuzzleView({
 								)}
 							</div>
 						))}
+				</div>
 
+				{/* Clues panel */}
+				<div
+					style={{
+						flex: 1,
+						minWidth: 0,
+						width: isMobile ? '100%' : undefined,
+						display: 'flex',
+						flexDirection: 'column',
+						gap: 12,
+					}}
+				>
+					<CluesPanel
+						clues={puzzle.clues}
+						people={puzzle.people}
+						suspectSummaries={puzzle.suspectSummaries}
+						lockedPersonIds={new Set(committedCells.values())}
+					/>
 					{/* Reveal button */}
 					{!showSolution ? (
 						<button
@@ -545,6 +619,7 @@ export function PuzzleView({
 								fontWeight: 700,
 								cursor: 'pointer',
 								boxShadow: '0 4px 12px rgba(124,58,237,0.4)',
+								alignSelf: 'center',
 							}}
 						>
 							Reveal Solution
@@ -561,26 +636,12 @@ export function PuzzleView({
 								fontSize: 17,
 								fontWeight: 700,
 								cursor: 'pointer',
+								alignSelf: 'center',
 							}}
 						>
 							Hide Solution
 						</button>
 					)}
-				</div>
-
-				{/* Clues panel */}
-				<div
-					style={{
-						flex: 1,
-						minWidth: 0,
-						width: isMobile ? '100%' : undefined,
-					}}
-				>
-					<CluesPanel
-						clues={puzzle.clues}
-						people={puzzle.people}
-						suspectSummaries={puzzle.suspectSummaries}
-					/>
 				</div>
 			</div>
 
@@ -639,9 +700,9 @@ export function PuzzleView({
 					</p>
 					<p style={{ margin: 0 }}>
 						Click any cell to annotate it with a suspect&apos;s initial (or ✕ to rule someone out).
-						When you&apos;re confident about a placement, hit <strong>Commit</strong> to lock it in
-						— this clears that person from other cells and marks the rest of their row and column
-						with ✕. Once everyone is committed, you&apos;ll find out if you solved it.
+						When you&apos;re confident about a placement, hit <strong>Lock</strong> to lock it in —
+						this clears that person from other cells and marks the rest of their row and column with
+						✕. Once everyone is locked, you&apos;ll find out if you solved it.
 					</p>
 				</div>
 			</details>
@@ -655,6 +716,7 @@ export function PuzzleView({
 					position={{ x: popup.x, y: popup.y }}
 					onToggle={handleToggleMark}
 					onCommit={(personId) => handleCommit(popup.row, popup.col, personId)}
+					onUncommit={() => handleUncommit(popup.row, popup.col)}
 					onClose={() => setPopup(null)}
 				/>
 			)}

@@ -242,13 +242,21 @@ export function GridCanvas({
 											<span
 												key={pid}
 												style={{
-													fontSize,
-													fontWeight: 700,
-													color,
-													lineHeight: 1,
+													display: 'inline-flex',
+													alignItems: 'center',
+													justifyContent: 'center',
+													flexShrink: 0,
+													...(isCommitted && {
+														border: '2px solid #15803d',
+														borderRadius: '50%',
+														width: fontSize * 2.5,
+														height: fontSize * 2.5,
+													}),
 												}}
 											>
-												{letter}
+												<span style={{ fontSize, fontWeight: 700, color, lineHeight: 1 }}>
+													{letter}
+												</span>
 											</span>
 										);
 									})

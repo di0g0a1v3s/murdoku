@@ -7,6 +7,7 @@ interface CellPopupProps {
 	position: { x: number; y: number };
 	onToggle: (mark: string) => void;
 	onCommit: (personId: string) => void;
+	onUncommit: () => void;
 	onClose: () => void;
 }
 
@@ -17,6 +18,7 @@ export function CellPopup({
 	position,
 	onToggle,
 	onCommit,
+	onUncommit,
 	onClose,
 }: CellPopupProps) {
 	const personIds = [...marks].filter((m) => m !== 'X');
@@ -89,54 +91,53 @@ export function CellPopup({
 								</button>
 							);
 						})}
-					{/* X button */}
+				</div>
+				{/* Bottom row: X + Commit */}
+				<div style={{ display: 'flex', gap: 6 }}>
 					<button
 						onClick={() => onToggle('X')}
 						style={{
-							width: 38,
-							height: 38,
+							flex: '0 0 auto',
+							padding: '7px 14px',
 							borderRadius: 8,
 							border: '2px solid',
-							borderColor: marks.has('X') ? '#dc2626' : 'rgba(0,0,0,0.15)',
+							borderColor: marks.has('X') ? '#dc2626' : '#dc2626',
 							background: marks.has('X') ? '#dc2626' : 'white',
-							color: marks.has('X') ? 'white' : '#999',
-							fontSize: 15,
+							color: marks.has('X') ? 'white' : '#dc2626',
+							fontSize: 14,
 							fontWeight: 700,
 							cursor: 'pointer',
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center',
-							lineHeight: 1,
 						}}
 						title="Mark as empty"
 					>
-						✕
+						✕ Rule out
+					</button>
+					<button
+						onClick={() => {
+							if (committed) {
+								onUncommit();
+							} else if (canCommit) {
+								onCommit(personIds[0]!);
+							}
+						}}
+						disabled={!committed && !canCommit}
+						style={{
+							flex: 1,
+							padding: '7px 0',
+							borderRadius: 8,
+							border: '2px solid',
+							borderColor: committed ? '#16a34a' : canCommit ? '#16a34a' : 'rgba(0,0,0,0.1)',
+							background: committed ? '#dcfce7' : canCommit ? '#16a34a' : 'rgba(0,0,0,0.04)',
+							color: committed ? '#15803d' : canCommit ? 'white' : 'rgba(0,0,0,0.25)',
+							fontSize: 13,
+							fontWeight: 700,
+							cursor: canCommit ? 'pointer' : 'default',
+						}}
+						title="Lock this suspect here"
+					>
+						{committed ? '✓ Locked' : 'Lock ✓'}
 					</button>
 				</div>
-				{/* Commit button */}
-				<button
-					onClick={() => {
-						if (canCommit) {
-							onCommit(personIds[0]!);
-						}
-					}}
-					disabled={!canCommit}
-					style={{
-						width: '100%',
-						padding: '7px 0',
-						borderRadius: 8,
-						border: '2px solid',
-						borderColor: committed ? '#16a34a' : canCommit ? '#16a34a' : 'rgba(0,0,0,0.1)',
-						background: committed ? '#dcfce7' : canCommit ? '#16a34a' : 'rgba(0,0,0,0.04)',
-						color: committed ? '#15803d' : canCommit ? 'white' : 'rgba(0,0,0,0.25)',
-						fontSize: 13,
-						fontWeight: 700,
-						cursor: canCommit ? 'pointer' : 'default',
-					}}
-					title="Lock in this placement"
-				>
-					{committed ? '✓ Committed' : 'Commit ✓'}
-				</button>
 			</div>
 		</>
 	);

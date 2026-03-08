@@ -7,6 +7,7 @@ interface CluesPanelProps {
 	clues: Clue[];
 	people: Person[];
 	suspectSummaries: { personId: string; text: string }[];
+	lockedPersonIds?: Set<string>;
 }
 
 function CheckMark({ checked }: { checked: boolean }) {
@@ -38,7 +39,7 @@ function clueCardStyle(checked: boolean, extra?: React.CSSProperties): React.CSS
 	};
 }
 
-export function CluesPanel({ clues, people, suspectSummaries }: CluesPanelProps) {
+export function CluesPanel({ clues, people, suspectSummaries, lockedPersonIds }: CluesPanelProps) {
 	const [checked, setChecked] = useState<Set<string>>(new Set());
 	const toggle = (key: string) =>
 		setChecked((prev) => {
@@ -88,7 +89,7 @@ export function CluesPanel({ clues, people, suspectSummaries }: CluesPanelProps)
 			{/* Suspect sections — one summary sentence each */}
 			{suspectSections.map(({ person, summary }) => {
 				const key = `suspect-${person.id}`;
-				const isChecked = checked.has(key);
+				const isChecked = (lockedPersonIds?.has(person.id) ?? false) || checked.has(key);
 				return (
 					<div key={person.id} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
 						<div
