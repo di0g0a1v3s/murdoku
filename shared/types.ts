@@ -135,6 +135,7 @@ export interface FullPuzzle extends Puzzle {
   difficulty: PuzzleDifficulty;
   suspectSummaries: { personId: string; text: string }[];
   generatedAt: string;
+  backtrackingScore: number;
 }
 
 // ─── Puzzle Collection ────────────────────────────────────────────────────────

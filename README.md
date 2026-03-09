@@ -96,17 +96,20 @@ Puzzles are generated locally by the developer and committed to the repo. The fr
 # Install dependencies
 npm install
 
-# Generate one puzzle (default 6×6)
+# Generate one medium puzzle (6×6, default)
 GEMINI_API_KEY=your_key_here npm run generate
 
 # Generate multiple puzzles at once
 GEMINI_API_KEY=your_key_here npm run generate -- --count=5
 
-# Generate a puzzle with N people on an N×N grid (minimum 4)
-GEMINI_API_KEY=your_key_here npm run generate -- --people=4
+# Generate a puzzle at a specific difficulty
+GEMINI_API_KEY=your_key_here npm run generate -- --difficulty=easy       # 5×5
+GEMINI_API_KEY=your_key_here npm run generate -- --difficulty=medium     # 6×6
+GEMINI_API_KEY=your_key_here npm run generate -- --difficulty=hard       # 9×9
+GEMINI_API_KEY=your_key_here npm run generate -- --difficulty=very-hard  # 12×12
 
 # Combine flags
-GEMINI_API_KEY=your_key_here npm run generate -- --count=3 --people=8
+GEMINI_API_KEY=your_key_here npm run generate -- --count=3 --difficulty=hard
 
 # Clear all puzzles
 npm run clear-puzzles
@@ -116,8 +119,8 @@ The generator will:
 1. Call Gemini to create a theme (title, rooms, characters, atmosphere)
 2. Algorithmically build the grid layout and place all people
 3. Algorithmically derive every possible true fact from the placement
-4. Remove any clues that would let a player trivially pin a suspect without cross-suspect reasoning
-5. Minimize the clue set — greedily remove redundant clues while keeping a unique solution
+4. Minimize the clue set — greedily remove redundant clues while keeping a unique solution and at least one clue per suspect
+5. Reject any puzzle where a suspect can still be pinned from their clues alone (and retry); store the solver's backtracking score as a difficulty signal
 6. Call Gemini once to write all suspect summaries and general clue texts
 7. Automatically save to `src/puzzles/puzzles.json`
 
@@ -162,11 +165,11 @@ Algorithm → derive ALL true facts from the placement (shuffled for variety,
             then sorted by weight: direction/distance clues first so they are
             pruned preferentially)
   ↓
-Algorithm → de-pin: remove clues that let a player trivially locate a suspect
-            without any cross-suspect reasoning
-  ↓
 Algorithm → minimize: greedily remove redundant clues while keeping
             (a) unique solution and (b) ≥1 clue per suspect
+  ↓
+Algorithm → reject if any suspect is still pinned by their clues alone
+            (retry up to 20×); store solver backtracking count as difficulty signal
   ↓
 LLM → single call writes one summary sentence per suspect + naturalizes
       any remaining general clues (room-population, object-occupancy)

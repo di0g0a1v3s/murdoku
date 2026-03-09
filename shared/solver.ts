@@ -3,8 +3,12 @@ import { evaluateClue } from './clue-evaluator.js';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+export interface SolveMetrics {
+  backtracks: number;
+}
+
 export type SolveResult =
-  | { status: 'unique'; solution: PlacedPerson[] }
+  | { status: 'unique'; solution: PlacedPerson[]; metrics: SolveMetrics }
   | { status: 'multiple'; solutions: PlacedPerson[][] }
   | { status: 'none' };
 
@@ -127,6 +131,8 @@ export function solve(puzzle: Puzzle, clues: Clue[]): SolveResult {
     });
   }
 
+  let backtracks = 0;
+
   const assignment = new Map<string, Coord>();
 
   function backtrack(): void {
@@ -155,12 +161,14 @@ export function solve(puzzle: Puzzle, clues: Clue[]): SolveResult {
     }
 
     // Step 2: propagate — iterate until stable or contradiction detected.
-    // Two rules:
-    //   Row/col locking: if a person's entire domain lies in one row (or col),
+    // Three rules:
+    //   Row/col locking (N=1): if a person's entire domain lies in one row (or col),
     //     that row (col) is reserved for them → remove it from everyone else's domain.
     //   2-cell cross elimination: if domain = {(r1,c1),(r2,c2)} with r1≠r2, c1≠c2,
     //     then cells (r1,c2) and (r2,c1) are blocked for ALL people regardless of which
     //     cell this person takes (proven by Latin-square: both cross-cells are always used).
+    //   Hidden singles: if only one person has domain cells in a given row (or col),
+    //     that row (col) must belong to them → lock it and remove from all others' domains.
     let changed = true;
     while (changed) {
       changed = false;
@@ -201,6 +209,45 @@ export function solve(puzzle: Puzzle, clues: Clue[]): SolveResult {
           if (a.row !== b.row && a.col !== b.col) {
             crossForbidden.add(`${a.row},${b.col}`);
             crossForbidden.add(`${b.row},${a.col}`);
+          }
+        }
+      }
+
+      // Hidden singles: if only one unplaced person has domain cells in a given
+      // row (or col), that row (col) must belong to them — lock it.
+      if (!contradiction) {
+        const rowCandidates = new Map<number, string | null>(); // row → sole pid, null if contested
+        const colCandidates = new Map<number, string | null>();
+        for (const [pid, domain] of domains) {
+          for (const c of domain) {
+            rowCandidates.set(
+              c.row,
+              rowCandidates.has(c.row) && rowCandidates.get(c.row) !== pid ? null : pid,
+            );
+            colCandidates.set(
+              c.col,
+              colCandidates.has(c.col) && colCandidates.get(c.col) !== pid ? null : pid,
+            );
+          }
+        }
+        for (const [row, pid] of rowCandidates) {
+          if (pid !== null) {
+            if (lockedRows.has(row) && lockedRows.get(row) !== pid) {
+              contradiction = true;
+              break;
+            }
+            lockedRows.set(row, pid);
+          }
+        }
+        if (!contradiction) {
+          for (const [col, pid] of colCandidates) {
+            if (pid !== null) {
+              if (lockedCols.has(col) && lockedCols.get(col) !== pid) {
+                contradiction = true;
+                break;
+              }
+              lockedCols.set(col, pid);
+            }
           }
         }
       }
@@ -253,6 +300,8 @@ export function solve(puzzle: Puzzle, clues: Clue[]): SolveResult {
       return;
     }
 
+    backtracks += bestDomain.length - 1; // one branch leads to the solution, rest are wrong
+
     for (const { row, col } of bestDomain) {
       assignment.set(nextPerson, { row, col });
       backtrack();
@@ -269,7 +318,11 @@ export function solve(puzzle: Puzzle, clues: Clue[]): SolveResult {
     return { status: 'none' };
   }
   if (solutions.length === 1) {
-    return { status: 'unique', solution: solutions[0] };
+    return {
+      status: 'unique',
+      solution: solutions[0],
+      metrics: { backtracks },
+    };
   }
   return { status: 'multiple', solutions: solutions.slice(0, 2) };
 }

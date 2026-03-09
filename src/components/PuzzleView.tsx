@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import type { FullPuzzle } from '@shared/types';
 import { evaluateClue } from '@shared/clue-evaluator';
+import { makeVictimClue } from '@shared/solver';
 import { GridCanvas } from './GridCanvas';
 import { CluesPanel } from './CluesPanel';
 import { CellPopup } from './CellPopup';
@@ -236,20 +237,11 @@ export function PuzzleView({
 
     // Auto-verify when all people are committed
     if (newCommitted.size === puzzle.people.length) {
-      const { placements } = puzzle.solution;
-      const correct = placements.every(
-        ({ personId: pid, coord }) => newCommitted.get(`${coord.row},${coord.col}`) === pid,
-      );
-      if (correct) {
-        setVerifyResult('correct');
-        onComplete();
-      } else {
-        setVerifyResult('wrong');
-      }
+      runVerify(newMarks);
     }
   }
 
-  function handleVerify() {
+  function runVerify(marks: Map<string, Set<string>>) {
     const fail = (hint: string) => {
       setVerifyHint(hint);
       setVerifyResult('wrong');
@@ -258,27 +250,39 @@ export function PuzzleView({
     // Build person → cell mapping from marks
     let hasMultipleMarks = false;
     const personToKey = new Map<string, string>();
-    for (const [key, marks] of cellMarks) {
-      const personIds = [...marks].filter((m) => m !== 'X');
+    const duplicates: string[] = [];
+    for (const [key, cellMarkSet] of marks) {
+      const personIds = [...cellMarkSet].filter((m) => m !== 'X');
       if (personIds.length > 1) {
         hasMultipleMarks = true;
       } else if (personIds.length === 1) {
         const pid = personIds[0]!;
         if (personToKey.has(pid)) {
-          const name = puzzle.people.find((p) => p.id === pid)!.name;
-          return fail(`${name} is marked in more than one cell.`);
+          duplicates.push(puzzle.people.find((p) => p.id === pid)!.name);
+        } else {
+          personToKey.set(pid, key);
         }
-        personToKey.set(pid, key);
       }
     }
 
     if (hasMultipleMarks) {
-      return fail('Some cells have multiple suspects marked.');
+      fail('Some cells have multiple suspects marked.');
+      return;
+    }
+
+    if (duplicates.length > 0) {
+      const names =
+        duplicates.length === 1
+          ? duplicates[0]
+          : `${duplicates.slice(0, -1).join(', ')} and ${duplicates.at(-1)}`;
+      fail(`${names} ${duplicates.length === 1 ? 'is' : 'are'} marked in more than one cell.`);
+      return;
     }
 
     const unplaced = puzzle.people.filter((p) => !personToKey.has(p.id));
     if (unplaced.length > 0) {
-      return fail(`Not yet placed: ${unplaced.map((p) => p.name).join(', ')}.`);
+      fail(`Not yet placed: ${unplaced.map((p) => p.name).join(', ')}.`);
+      return;
     }
 
     // Check Latin square
@@ -288,15 +292,17 @@ export function PuzzleView({
       const [row, col] = key.split(',').map(Number);
       const name = puzzle.people.find((p) => p.id === pid)!.name;
       if (rowOwner.has(row)) {
-        return fail(
+        fail(
           `${name} and ${puzzle.people.find((p) => p.id === rowOwner.get(row))!.name} are in the same row.`,
         );
+        return;
       }
       rowOwner.set(row, pid);
       if (colOwner.has(col)) {
-        return fail(
+        fail(
           `${name} and ${puzzle.people.find((p) => p.id === colOwner.get(col))!.name} are in the same column.`,
         );
+        return;
       }
       colOwner.set(col, pid);
     }
@@ -312,13 +318,24 @@ export function PuzzleView({
       (c) => evaluateClue(c, assignment, puzzle) === 'violated',
     );
     if (violatedClue) {
-      return fail(`At least one clue is not satisfied: "${violatedClue.text}"`);
+      fail(`At least one clue is not satisfied: "${violatedClue.text}"`);
+      return;
+    }
+
+    // Check victim clue: victim must be alone in a room with exactly the murderer
+    if (evaluateClue(makeVictimClue(puzzle), assignment, puzzle) !== 'satisfied') {
+      fail('The victim is not alone in a room with the murderer.');
+      return;
     }
 
     setVerifyHint(null);
     setVerifyResult('correct');
     onComplete();
     setCommittedCells(new Map([...personToKey].map(([pid, key]) => [key, pid])));
+  }
+
+  function handleVerify() {
+    runVerify(cellMarks);
   }
 
   function handleUndo() {

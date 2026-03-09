@@ -266,6 +266,7 @@ Rules:
 - Natural word order: "alone in the Library" not "in the Library and alone"
 - When combining "alone in a room" with other facts, join with "and": "Anya is alone in the Server Room and south of Chen Wei" — never use a comma clause like "Anya, alone in the Server Room, is south of Chen Wei"
 - "in a room with 0 other people" means alone — write "alone in a room", not "in a room with exactly 0 other people"
+- NEVER use "alone" for object occupancy — "the only person on/at the [object]" is NOT the same as being alone in a room. Write "the only person sitting on a rug" not "alone on a rug"
 - Row/column numbers use written ordinals: "in the third row" / "in the fourth column" — never digits or digit-ordinals like "3rd" or "4"
 - All other numbers are also written out: "two chairs", "three people", "exactly one"
 - Use "sitting in a chair" not "occupying a chair"

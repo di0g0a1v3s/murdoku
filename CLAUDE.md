@@ -157,18 +157,18 @@ GEMINI_API_KEY=your_key npm run generate -- --debug                             
            (person, personA, and personB === victimId all filtered out)
            facts are weighted and sorted: person-direction/distance (weight 1) first,
            all others (weight 5) last
-5. Algo → de-pin pass — for each suspect, if their clues individually pin them to one cell,
-           try removing each clue; remove it if either (a) the remaining set no longer pins,
-           OR (b) this clue alone already pins (making it redundant given the rest)
-6. Algo → minimize pass — greedily remove redundant clues while maintaining
+5. Algo → minimize pass — greedily remove redundant clues while maintaining
            (a) unique solution and (b) ≥1 clue per suspect
            (lower-weight clues tried first → person-direction/distance pruned preferentially)
-7. LLM  → generateAllTexts() — single LLM call produces:
+           after minimization: reject puzzle if any suspect is still pinned by their clues
+           alone (evaluated in isolation); retry up to 20× per theme
+           store solver backtracking count as `backtrackingScore` on the puzzle
+6. LLM  → generateAllTexts() — single LLM call produces:
            - one summary sentence per suspect (covering all their clue facts)
            - natural language text for each general clue (room-population, object-occupancy)
            temperature=0.4 for accurate factual prose; all numbers written out in words
            (e.g. "two" not "2", "third" not "3rd"); victim clue hardcoded in UI, never stored
-8. Auto-save → append to src/puzzles/puzzles.json
+7. Auto-save → append to src/puzzles/puzzles.json
 ```
 
 **Key design principle:** LLM handles creative content only (theme, clue text phrasing). All clue selection and constraint satisfaction is fully algorithmic.
@@ -187,13 +187,13 @@ Puzzle {
 
 // Full stored record — extends Puzzle, used by the frontend
 FullPuzzle extends Puzzle {
-  id, title, subtitle, difficulty, suspectSummaries, generatedAt
+  id, title, subtitle, difficulty, suspectSummaries, generatedAt, backtrackingScore
 }
 
 PuzzleCollection { version, puzzles: FullPuzzle[] }
 ```
 
-`clues` is a discriminated union of all clue kinds; each carries a `.text` field with LLM-written prose. `suspectSummaries` holds one sentence per suspect combining all their facts (used for UI display). The victim clue is hardcoded in the UI ("The victim is alone in a room with the murderer.") and never stored in `clues`.
+`clues` is a discriminated union of all clue kinds; each carries a `.text` field with LLM-written prose. `suspectSummaries` holds one sentence per suspect combining all their facts (used for UI display). `backtrackingScore` is the solver's backtracking count on the minimized clue set — used as a difficulty signal and shown in the puzzle selector. The victim clue is hardcoded in the UI ("The victim is alone in a room with the murderer.") and never stored in `clues`.
 
 **`person-alone-in-room` encodes `roomId`:** This clue stores the room explicitly, so the evaluator can prune immediately if any other person enters that room — making `room-population count=1` for the same room genuinely redundant and removable by the minimizer.
 
@@ -201,7 +201,7 @@ PuzzleCollection { version, puzzles: FullPuzzle[] }
 
 ## Solver (shared/solver.ts)
 
-- `solve(puzzle, clues) → { status: 'unique'|'multiple'|'none', ... }`
+- `solve(puzzle, clues) → { status: 'unique'|'multiple'|'none', ... }` — unique result includes `metrics: { backtracks }` where `backtracks = Σ(domain.length - 1)` across all branching decisions (order-independent)
 - Backtracking with early pruning via clue evaluators
 - **`computeDomain(pid, assignment)`** — computes valid cells for a person given the current partial assignment. Temporarily places the candidate cell in the assignment and calls `evaluateClue` for all relevant clues; any `'violated'` result eliminates the cell. `'unknown'` passes through (partner not yet placed).
 - **Clue evaluators** (`shared/clue-evaluator.ts`) — per-kind constraint checks returning `'satisfied' | 'violated' | 'unknown'`. All O(1) via a per-puzzle WeakMap cache (coordToRoomId, coordToObjects, coordToAdjacentKinds, occupiableCoordToObj). Direction/distance evaluators also return `'violated'` for geometrically impossible partial placements (e.g. "A is N of B" → if only A is placed in the last row, violated immediately).
@@ -232,7 +232,7 @@ Grid uses **layered CSS Grid** (not SVG/Canvas):
 
 **Lock ✓:** popup shows a green "Lock ✓" button (active only when exactly one person is marked). Locking: (1) removes that person from all other cells, (2) crosses out all other occupiable cells in the same row/col that aren't already locked, (3) turns the letter green on the grid. When all people are locked, auto-checks the solution: correct → green banner ("X killed Y in the Z") + all letters locked; wrong → specific hint. Action is undoable.
 
-**Verify Solution:** available at any time. Checks in priority order: (1) multiple marks on a cell, (2) someone not yet placed, (3) row/column conflict (names the two people), (4) first violated clue (shows the clue text). Only one hint shown at a time.
+**Verify Solution:** available at any time (also runs automatically when all people are locked). Implemented as `runVerify(marks)` — reused by both the button and auto-lock. Checks in priority order: (1) multiple marks on a cell, (2) duplicate person placement (lists all names), (3) someone not yet placed, (4) row/column conflict (names the two people), (5) first violated clue (shows the clue text), (6) victim clue (victim not alone with murderer). Only one hint shown at a time.
 
 **Solution reveal:** "Reveal Solution" button sits below the evidence panel (clues column). Clicking it shows all placements as locked (green) on the grid — no modal. A "Hide Solution" button appears below the grid to return to normal view.
 
@@ -267,6 +267,13 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 - [x] LLM picks the murderer — `murdererInitial` in theme schema; plausible/surprising culprit per prompt
 - [x] Object placement bug fixes — required objects now placed once per kind (not once per rotation slot); `unplaceTemplate` uses exact id match to avoid removing the wrong object
 - [x] Removed `MurdererReveal.tsx` (unused component)
+- [x] Solver metrics — `SolveMetrics { backtracks }` returned from `solve()` on unique result; order-independent count (`Σ domain.length - 1` per branching decision)
+- [x] `backtrackingScore` stored on `FullPuzzle`; displayed in puzzle selector next to title
+- [x] PNG sprite support in `ObjectSprite` — `OBJECT_SPRITES` map overrides icon+label with full-cell image when present
+- [x] De-pin pass removed; post-minimize pin check discards and retries (up to 20×) instead of mutating
+- [x] Verify refactor — `runVerify(marks)` shared between button and auto-lock; victim clue check added; duplicate placement lists all names
+- [x] `--debug` flag gates all verbose step logs; clean output by default
+- [x] LLM prompt fix — prevent "alone" for object-occupancy clues
 
 ## Future Ideas
 

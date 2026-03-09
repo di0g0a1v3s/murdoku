@@ -14,6 +14,8 @@ import { printCostSummary, resetCosts } from './cost-tracker.js';
 const OUTPUT_PATH = 'src/puzzles/puzzles.json';
 const MAX_LAYOUT_RETRIES = 100;
 
+let debug = false;
+
 // ─── CLI helpers ──────────────────────────────────────────────────────────────
 
 function shuffle<T>(arr: T[]): T[] {
@@ -143,12 +145,191 @@ async function generatePuzzle(
   victimClueRequired: boolean,
   difficulty: FullPuzzle['difficulty'],
 ): Promise<{ puzzle: FullPuzzle; theme: PuzzleTheme }> {
-  console.log('\n🎲 Step 1: Generating theme via LLM...');
+  if (debug) {
+    console.log('\n🎲 Step 1: Generating theme via LLM...');
+  }
   const theme = await generateTheme(n, existingTitles);
-  console.log(`✅ Theme: "${theme.title}"`);
+  if (debug) {
+    console.log(`✅ Theme: "${theme.title}"`);
+  }
 
+  let puzzle: Puzzle;
+  let clues: StoredClue[];
+  let backtrackingScore: number;
+  let tries = 0;
+  const MAX_RETRIES = 20;
+  while (true) {
+    try {
+      tries++;
+      const generatePuzzleRes = generatePuzzleFromTheme(theme, n, victimClueRequired);
+      puzzle = generatePuzzleRes.puzzle;
+      clues = generatePuzzleRes.clues;
+      backtrackingScore = generatePuzzleRes.backtrackingScore;
+      break;
+    } catch (e) {
+      if (tries >= MAX_RETRIES) {
+        throw new Error(`Failed to create puzzle for ${theme.title} after ${MAX_RETRIES} tries`);
+      }
+      if (e instanceof Error) {
+        console.error('Failed to generate puzzle. Retrying...', e.message);
+      }
+    }
+  }
+
+  const puzzleMeta = {
+    title: theme.title,
+    subtitle: theme.subtitle,
+    generatedAt: new Date().toISOString(),
+  };
+  // Step 6: Generate all clue texts in one LLM call
+  if (debug) {
+    console.log('\n✍️  Step 6: Generating clue texts...');
+  }
+
+  const suspectInputs = puzzle.people
+    .filter((p) => p.role === 'suspect')
+    .map((p) => ({
+      personId: p.id,
+      name: p.name,
+      factDescriptions: clues.filter((c) => getCluePersonId(c) === p.id).map((c) => c.text),
+    }))
+    .filter((s) => s.factDescriptions.length > 0);
+
+  const generalClueInputs = clues
+    .filter((c) => getCluePersonId(c) === null)
+    .map((c) => ({ kind: c.kind, description: c.text }));
+
+  const { suspectTexts, generalClueTexts } = await generateAllTexts(
+    suspectInputs,
+    generalClueInputs,
+  );
+
+  const suspectSummaries = suspectTexts.map(({ personId, text }) => {
+    if (debug) {
+      const suspect = puzzle.people.find((p) => p.id === personId)!;
+      console.log(`  ✅ ${suspect.avatarEmoji} ${suspect.name}: "${text}"`);
+    }
+    return { personId, text };
+  });
+
+  // Update clue.text for general clues with naturalized text
+  const generalClues = clues.filter((c) => getCluePersonId(c) === null);
+  for (let i = 0; i < generalClues.length; i++) {
+    const naturalText = generalClueTexts[i];
+    if (!naturalText) {
+      continue;
+    }
+    const idx = clues.indexOf(generalClues[i]!);
+    if (idx !== -1) {
+      clues[idx] = { ...clues[idx]!, text: naturalText };
+    }
+    if (debug) {
+      console.log(`  ✅ [${generalClues[i]!.kind}] "${naturalText}"`);
+    }
+  }
+
+  // Step 7: Build final puzzle
+  const id =
+    theme.title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .slice(0, 40) +
+    '-' +
+    Date.now().toString(36);
+
+  return {
+    puzzle: {
+      ...puzzle,
+      ...puzzleMeta,
+      id,
+      difficulty,
+      clues,
+      suspectSummaries,
+      backtrackingScore,
+    },
+    theme,
+  };
+}
+
+// ─── Entry point ──────────────────────────────────────────────────────────────
+
+async function main(): Promise<void> {
+  if (!process.env.GEMINI_API_KEY) {
+    console.error('❌ GEMINI_API_KEY environment variable is not set.');
+    process.exit(1);
+  }
+
+  if (process.argv.includes('--debug')) {
+    debug = true;
+    setDebug(true);
+    console.log('🐛 Debug mode enabled — LLM prompts and responses will be printed');
+  }
+
+  const countArg = process.argv.find((a) => a.startsWith('--count='));
+  const count = countArg ? parseInt(countArg.split('=')[1]!, 10) : 1;
+  if (isNaN(count) || count < 1) {
+    console.error('❌ --count must be a positive integer');
+    process.exit(1);
+  }
+
+  const VALID_DIFFICULTIES = ['easy', 'medium', 'hard', 'very-hard'] as const;
+  const difficultyArg = process.argv.find((a) => a.startsWith('--difficulty='));
+  const difficulty = (difficultyArg?.split('=')[1] ??
+    'easy') as (typeof VALID_DIFFICULTIES)[number];
+  if (!VALID_DIFFICULTIES.includes(difficulty)) {
+    console.error(`❌ --difficulty must be one of: ${VALID_DIFFICULTIES.join(', ')}`);
+    process.exit(1);
+  }
+  const DIFFICULTY_PEOPLE: Record<string, number> = {
+    easy: 5,
+    medium: 6,
+    hard: 9,
+    'very-hard': 12,
+  };
+  const n = DIFFICULTY_PEOPLE[difficulty]!;
+  const victimClueRequired = difficulty !== 'easy';
+
+  console.log('🕵️  Murdoku Puzzle Generator');
+  console.log('━'.repeat(40));
+
+  resetCosts();
+  const usedTitles = loadCollection(OUTPUT_PATH).puzzles.map((p) => p.title);
+  let succeeded = 0;
+  for (let i = 0; i < count; i++) {
+    if (count > 1) {
+      console.log(`\n📦 Puzzle ${i + 1} of ${count}`);
+    }
+    try {
+      const { puzzle, theme } = await generatePuzzle(usedTitles, n, victimClueRequired, difficulty);
+      usedTitles.push(puzzle.title);
+      if (debug) {
+        printGrid(puzzle);
+        printPuzzleSummary(puzzle, theme);
+      }
+      appendPuzzle(puzzle, OUTPUT_PATH);
+      console.log(`✅ Puzzle saved to ${OUTPUT_PATH}`);
+      succeeded++;
+    } catch (err) {
+      console.error(`❌ Error generating puzzle ${i + 1}:`, err);
+    }
+  }
+
+  printCostSummary();
+  if (count > 1) {
+    console.log(`\n📊 Generated ${succeeded}/${count} puzzles successfully`);
+  }
+  console.log('\n👋 Done!');
+}
+
+function generatePuzzleFromTheme(
+  theme: PuzzleTheme,
+  n: number,
+  victimClueRequired: boolean,
+): { puzzle: Puzzle; clues: StoredClue[]; backtrackingScore: number } {
   // Step 2: Build grid layout
-  console.log(`\n🏗️  Step 2: Building layout...`);
+  if (debug) {
+    console.log(`\n🏗️  Step 2: Building layout...`);
+  }
   let layout = null;
   const layoutSeed = randomInt(0, 1_000_000);
   for (let attempt = 0; attempt < MAX_LAYOUT_RETRIES; attempt++) {
@@ -165,10 +346,14 @@ async function generatePuzzle(
   if (!layout) {
     throw new Error(`Failed to build valid layout after ${MAX_LAYOUT_RETRIES} retries`);
   }
-  console.log(`✅ Layout built: ${layout.rooms.length} rooms, ${layout.objects.length} objects`);
+  if (debug) {
+    console.log(`✅ Layout built: ${layout.rooms.length} rooms, ${layout.objects.length} objects`);
+  }
 
   // Step 3: Place people (exhaustive search — no retries needed)
-  console.log(`\n👥 Step 3: Placing people...`);
+  if (debug) {
+    console.log(`\n👥 Step 3: Placing people...`);
+  }
   const placerResult = placePeople(
     theme.people,
     layout,
@@ -180,9 +365,11 @@ async function generatePuzzle(
   if (!placerResult) {
     throw new Error('Failed to place people: no valid placement exists for this layout');
   }
-  console.log(
-    `✅ Placed ${theme.people.length} people. Murderer: ${theme.people.find((p) => p.id === placerResult!.murdererId)?.name}`,
-  );
+  if (debug) {
+    console.log(
+      `✅ Placed ${theme.people.length} people. Murderer: ${theme.people.find((p) => p.id === placerResult!.murdererId)?.name}`,
+    );
+  }
 
   // Build partial puzzle for fact computation
   const puzzle: Puzzle = {
@@ -198,16 +385,15 @@ async function generatePuzzle(
       murderRoom: placerResult.murderRoom,
     },
   };
-  const puzzleMeta = {
-    title: theme.title,
-    subtitle: theme.subtitle,
-    generatedAt: new Date().toISOString(),
-  };
 
   // Step 4: Compute derivable facts
-  console.log('\n📊 Step 4: Computing derivable facts...');
+  if (debug) {
+    console.log('\n📊 Step 4: Computing derivable facts...');
+  }
   const facts = computeAllFacts(puzzle, placerResult.placements);
-  console.log(`✅ Found ${facts.length} derivable facts`);
+  if (debug) {
+    console.log(`✅ Found ${facts.length} derivable facts`);
+  }
 
   // Verify that every clue is actually satisfied by the known solution
   function auditClues(label: string, cluesToCheck: Clue[]): void {
@@ -216,14 +402,19 @@ async function generatePuzzle(
     for (const clue of cluesToCheck) {
       const result = evaluateClue(clue, knownAssignment, puzzle);
       if (result !== 'satisfied') {
-        if (!anyViolated) {
-          console.log(`\n🔎 Clue audit [${label}]:`);
+        if (debug) {
+          if (!anyViolated) {
+            console.log(`\n🔎 Clue audit [${label}]:`);
+          }
+          console.log(`  ❌ ${result.toUpperCase()}: [${clue.kind}] ${JSON.stringify(clue)}`);
         }
         anyViolated = true;
-        console.log(`  ❌ ${result.toUpperCase()}: [${clue.kind}] ${JSON.stringify(clue)}`);
       }
     }
-    if (!anyViolated) {
+    if (anyViolated) {
+      throw new Error('Not all facts are satisfied');
+    }
+    if (debug) {
       console.log(`  ✅ All ${cluesToCheck.length} clues satisfy the known solution`);
     }
   }
@@ -279,7 +470,9 @@ async function generatePuzzle(
   // (a) De-pin: while the pool is large, greedily remove any clue that pins a suspect
   //     (evaluated in isolation). No uniqueness check here — we have many facts to spare.
   // (b) Minimize: greedily remove redundant clues (uniqueness + coverage only).
-  console.log('\n✂️  Step 5: Minimizing clue set...');
+  if (debug) {
+    console.log('\n✂️  Step 5: Minimizing clue set...');
+  }
   // Lower weight = sorted to front = tried for removal first = less likely to survive.
   const CLUE_WEIGHT: Record<Clue['kind'], number> = {
     'person-direction': 1,
@@ -305,47 +498,12 @@ async function generatePuzzle(
   let clues: StoredClue[] = shuffle(
     nonVictimFacts.map((f) => ({ ...f.clue, text: f.description })),
   ).sort((a, b) => CLUE_WEIGHT[a.kind] - CLUE_WEIGHT[b.kind]);
-  console.log(`  Starting with ${clues.length} candidate clues`);
+  if (debug) {
+    console.log(`  Starting with ${clues.length} candidate clues`);
+  }
   auditClues('all facts', clues);
 
   const suspectIds = new Set(puzzle.people.filter((p) => p.role === 'suspect').map((p) => p.id));
-
-  // (a) De-pin pass — remove over-constraining clues while the pool is still large
-  let pinChanged = true;
-  while (pinChanged) {
-    pinChanged = false;
-    for (const suspect of puzzle.people.filter((p) => p.role === 'suspect')) {
-      const suspectClues = clues.filter((c) => getCluePersonId(c) === suspect.id);
-      if (!suspectIsPinned(suspect.id, suspectClues)) {
-        continue;
-      }
-      for (let i = 0; i < clues.length; i++) {
-        if (getCluePersonId(clues[i]!) !== suspect.id) {
-          continue;
-        }
-        const candidate = [...clues.slice(0, i), ...clues.slice(i + 1)];
-        if (
-          suspectIsPinned(
-            suspect.id,
-            candidate.filter((c) => getCluePersonId(c) === suspect.id),
-          )
-        ) {
-          continue;
-        }
-        console.log(`  ✂️  De-pinned [${suspect.name}]: ${clues[i]!.kind}`);
-        clues = candidate;
-        pinChanged = true;
-        break;
-      }
-    }
-  }
-  console.log(`  ${clues.length} clues after de-pinning`);
-
-  for (const suspect of puzzle.people.filter((p) => p.role === 'suspect')) {
-    if (!clues.some((c) => getCluePersonId(c) === suspect.id)) {
-      throw new Error(`De-pin left suspect ${suspect.name} with no clues — puzzle is degenerate`);
-    }
-  }
 
   // Minimize: sweep through, removing any redundant clue (O(clues × passes)).
   const victimClue = makeVictimClue(puzzle);
@@ -358,148 +516,66 @@ async function generatePuzzle(
       const candidate = [...clues.slice(0, i), ...clues.slice(i + 1)];
       const covered = new Set(candidate.map((c) => getCluePersonId(c)).filter(Boolean));
       if ([...suspectIds].some((id) => !covered.has(id))) {
-        console.log(`  📌 Kept (last clue for suspect): ${clues[i]!.text}`);
+        if (debug) {
+          console.log(`  📌 Kept (last clue for suspect): ${clues[i]!.text}`);
+        }
         i++;
         continue;
       }
       const solveClues = victimClueRequired ? [...candidate, victimClue] : candidate;
-      if (solve(puzzle, solveClues).status !== 'unique') {
-        console.log(`  📌 Kept (needed for uniqueness): ${clues[i]!.text}`);
+      const solverResult = solve(puzzle, solveClues);
+      if (solverResult.status === 'none') {
+        if (debug) {
+          console.log(`  📌 Kept (needed for solvability): ${clues[i]!.text}`);
+        }
         i++;
         continue;
       }
-      console.log(
-        `  ✂️  Removed: ${clues[i]!.text}, current: ${candidate.length}/${nonVictimFacts.length}`,
-      );
+      if (solverResult.status === 'multiple') {
+        if (debug) {
+          console.log(`  📌 Kept (needed for uniqueness): ${clues[i]!.text}`);
+        }
+        i++;
+        continue;
+      }
+      if (debug) {
+        console.log(
+          `  ✂️  Removed: ${clues[i]!.text}, current: ${candidate.length}/${nonVictimFacts.length}`,
+        );
+      }
       clues = candidate;
       puzzle.clues = clues;
       passChanged = true;
       // Don't increment i — the array shifted left, next clue is now at position i
     }
   }
-  console.log(`✅ Minimized to ${clues.length} clues`);
+  if (debug) {
+    console.log(`✅ Minimized to ${clues.length} clues`);
+  }
 
-  // Step 6: Generate all clue texts in one LLM call
-  console.log('\n✍️  Step 6: Generating clue texts...');
+  for (const suspect of puzzle.people.filter((p) => p.role === 'suspect')) {
+    if (
+      suspectIsPinned(
+        suspect.id,
+        clues.filter((c) => getCluePersonId(c) === suspect.id),
+      )
+    ) {
+      throw new Error(`Suspect ${suspect.name} is pinned after minimization — discarding puzzle`);
+    }
+    if (!clues.some((c) => getCluePersonId(c) === suspect.id)) {
+      throw new Error(`De-pin left suspect ${suspect.name} with no clues — puzzle is degenerate`);
+    }
+  }
 
-  const suspectInputs = puzzle.people
-    .filter((p) => p.role === 'suspect')
-    .map((p) => ({
-      personId: p.id,
-      name: p.name,
-      factDescriptions: clues.filter((c) => getCluePersonId(c) === p.id).map((c) => c.text),
-    }))
-    .filter((s) => s.factDescriptions.length > 0);
-
-  const generalClueInputs = clues
-    .filter((c) => getCluePersonId(c) === null)
-    .map((c) => ({ kind: c.kind, description: c.text }));
-
-  const { suspectTexts, generalClueTexts } = await generateAllTexts(
-    suspectInputs,
-    generalClueInputs,
+  const solveClues = [...clues, victimClue];
+  const solveResult = solve(puzzle, solveClues);
+  if (solveResult.status !== 'unique') {
+    throw new Error('Generated puzzle is not unique');
+  }
+  console.log(
+    `✅ Found puzzle with unique solution and no pins. Clues: ${clues.length}, backtracks: ${solveResult.metrics.backtracks}`,
   );
-
-  const suspectSummaries = suspectTexts.map(({ personId, text }) => {
-    const suspect = puzzle.people.find((p) => p.id === personId)!;
-    console.log(`  ✅ ${suspect.avatarEmoji} ${suspect.name}: "${text}"`);
-    return { personId, text };
-  });
-
-  // Update clue.text for general clues with naturalized text
-  const generalClues = clues.filter((c) => getCluePersonId(c) === null);
-  for (let i = 0; i < generalClues.length; i++) {
-    const naturalText = generalClueTexts[i];
-    if (!naturalText) {
-      continue;
-    }
-    const idx = clues.indexOf(generalClues[i]!);
-    if (idx !== -1) {
-      clues[idx] = { ...clues[idx]!, text: naturalText };
-    }
-    console.log(`  ✅ [${generalClues[i]!.kind}] "${naturalText}"`);
-  }
-
-  // Step 7: Build final puzzle
-  const id =
-    theme.title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .slice(0, 40) +
-    '-' +
-    Date.now().toString(36);
-
-  return {
-    puzzle: { ...puzzle, ...puzzleMeta, id, difficulty, clues, suspectSummaries },
-    theme,
-  };
-}
-
-// ─── Entry point ──────────────────────────────────────────────────────────────
-
-async function main(): Promise<void> {
-  if (!process.env.GEMINI_API_KEY) {
-    console.error('❌ GEMINI_API_KEY environment variable is not set.');
-    process.exit(1);
-  }
-
-  if (process.argv.includes('--debug')) {
-    setDebug(true);
-    console.log('🐛 Debug mode enabled — LLM prompts and responses will be printed');
-  }
-
-  const countArg = process.argv.find((a) => a.startsWith('--count='));
-  const count = countArg ? parseInt(countArg.split('=')[1]!, 10) : 1;
-  if (isNaN(count) || count < 1) {
-    console.error('❌ --count must be a positive integer');
-    process.exit(1);
-  }
-
-  const VALID_DIFFICULTIES = ['easy', 'medium', 'hard', 'very-hard'] as const;
-  const difficultyArg = process.argv.find((a) => a.startsWith('--difficulty='));
-  const difficulty = (difficultyArg?.split('=')[1] ??
-    'easy') as (typeof VALID_DIFFICULTIES)[number];
-  if (!VALID_DIFFICULTIES.includes(difficulty)) {
-    console.error(`❌ --difficulty must be one of: ${VALID_DIFFICULTIES.join(', ')}`);
-    process.exit(1);
-  }
-  const DIFFICULTY_PEOPLE: Record<string, number> = {
-    easy: 5,
-    medium: 6,
-    hard: 9,
-    'very-hard': 12,
-  };
-  const n = DIFFICULTY_PEOPLE[difficulty]!;
-  const victimClueRequired = difficulty !== 'easy';
-
-  console.log('🕵️  Murdoku Puzzle Generator');
-  console.log('━'.repeat(40));
-
-  resetCosts();
-  const usedTitles = loadCollection(OUTPUT_PATH).puzzles.map((p) => p.title);
-  let succeeded = 0;
-  for (let i = 0; i < count; i++) {
-    if (count > 1) {
-      console.log(`\n📦 Puzzle ${i + 1} of ${count}`);
-    }
-    try {
-      const { puzzle, theme } = await generatePuzzle(usedTitles, n, victimClueRequired, difficulty);
-      usedTitles.push(puzzle.title);
-      printGrid(puzzle);
-      printPuzzleSummary(puzzle, theme);
-      appendPuzzle(puzzle, OUTPUT_PATH);
-      console.log(`✅ Puzzle saved to ${OUTPUT_PATH}`);
-      succeeded++;
-    } catch (err) {
-      console.error(`❌ Error generating puzzle ${i + 1}:`, err);
-    }
-  }
-
-  printCostSummary();
-  if (count > 1) {
-    console.log(`\n📊 Generated ${succeeded}/${count} puzzles successfully`);
-  }
-  console.log('\n👋 Done!');
+  return { puzzle, clues, backtrackingScore: solveResult.metrics.backtracks };
 }
 
 main().catch(console.error);

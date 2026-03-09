@@ -90,7 +90,7 @@ export function PuzzleSelector({
                   }}
                 >
                   {isCompleted && '✓ '}
-                  {puzzle.title}
+                  {`${puzzle.title} ${puzzle.backtrackingScore != null ? `(${puzzle.backtrackingScore})` : ''}`.trim()}
                 </button>
               );
             })}
