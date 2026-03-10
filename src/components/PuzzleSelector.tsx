@@ -60,40 +60,42 @@ export function PuzzleSelector({
             {DIFFICULTY_LABEL[label]}
           </div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            {group.map((puzzle) => {
-              const isSelected = puzzle.id === selectedId;
-              const isCompleted = completedIds.has(puzzle.id);
-              return (
-                <button
-                  key={puzzle.id}
-                  onClick={() => onSelect(puzzle.id)}
-                  style={{
-                    padding: '7px 14px',
-                    borderRadius: 20,
-                    border: '2px solid',
-                    borderColor: isSelected
-                      ? DIFFICULTY_COLOR[puzzle.difficulty]
-                      : isCompleted
-                        ? '#16a34a'
-                        : 'rgba(0,0,0,0.15)',
-                    background: isSelected
-                      ? DIFFICULTY_COLOR[puzzle.difficulty]
-                      : isCompleted
-                        ? '#f0fdf4'
-                        : 'white',
-                    color: isSelected ? 'white' : isCompleted ? '#15803d' : '#333',
-                    fontSize: 15,
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {isCompleted && '✓ '}
-                  {`${puzzle.title} ${puzzle.backtrackingScore != null ? `(${puzzle.backtrackingScore})` : ''}`.trim()}
-                </button>
-              );
-            })}
+            {group
+              .sort((a, b) => a.backtrackingScore - b.backtrackingScore)
+              .map((puzzle) => {
+                const isSelected = puzzle.id === selectedId;
+                const isCompleted = completedIds.has(puzzle.id);
+                return (
+                  <button
+                    key={puzzle.id}
+                    onClick={() => onSelect(puzzle.id)}
+                    style={{
+                      padding: '7px 14px',
+                      borderRadius: 20,
+                      border: '2px solid',
+                      borderColor: isSelected
+                        ? DIFFICULTY_COLOR[puzzle.difficulty]
+                        : isCompleted
+                          ? '#16a34a'
+                          : 'rgba(0,0,0,0.15)',
+                      background: isSelected
+                        ? DIFFICULTY_COLOR[puzzle.difficulty]
+                        : isCompleted
+                          ? '#f0fdf4'
+                          : 'white',
+                      color: isSelected ? 'white' : isCompleted ? '#15803d' : '#333',
+                      fontSize: 15,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {isCompleted && '✓ '}
+                    {`${puzzle.title} ${puzzle.backtrackingScore != null ? `(${puzzle.backtrackingScore})` : ''}`.trim()}
+                  </button>
+                );
+              })}
           </div>
         </div>
       ))}

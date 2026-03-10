@@ -259,6 +259,7 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
+  // TODO: generate random difficulties by default
   if (process.argv.includes('--debug')) {
     debug = true;
     setDebug(true);
