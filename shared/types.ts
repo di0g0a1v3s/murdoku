@@ -62,7 +62,9 @@ export interface Person {
 
 // ─── Clues ────────────────────────────────────────────────────────────────────
 
-export type Direction = 'N' | 'S' | 'E' | 'W' | 'NE' | 'NW' | 'SE' | 'SW';
+export const VALID_DIRECTIONS = ['N', 'S', 'E', 'W', 'NE', 'NW', 'SE', 'SW'] as const;
+
+export type Direction = (typeof VALID_DIRECTIONS)[number];
 
 export type Clue =
   | {
@@ -92,7 +94,7 @@ export type Clue =
   | { kind: 'person-in-row'; person: string; row: number }
   | { kind: 'person-in-col'; person: string; col: number }
   | { kind: 'person-in-corner'; person: string }
-  | { kind: 'person-in-room-corner'; person: string }
+  | { kind: 'person-in-room-corner'; person: string; roomId: string }
   | { kind: 'person-sole-occupant'; person: string; objectKind: ObjectKind }
   | { kind: 'empty-rooms'; count: number };
 

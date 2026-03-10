@@ -1,5 +1,5 @@
 import { assertNever } from './types.js';
-import type { Clue, Coord, GridObject, ObjectKind, Puzzle } from './types.js';
+import type { Clue, Coord, Direction, GridObject, ObjectKind, Puzzle } from './types.js';
 
 type EvalResult = 'satisfied' | 'violated' | 'unknown';
 
@@ -115,7 +115,7 @@ function getObjectsAdjacentInRoom(coord: Coord, puzzle: Puzzle): GridObject[] {
 }
 
 // Returns direction from A to B
-function directionFromAToB(a: Coord, b: Coord): string {
+function directionFromAToB(a: Coord, b: Coord): Direction | '' {
   const rowDiff = b.row - a.row; // positive = B is south of A
   const colDiff = b.col - a.col; // positive = B is east of A
 
@@ -539,6 +539,9 @@ function evalPersonInRoomCorner(
   const { coordToRoomId } = getCaches(puzzle);
   const roomId = coordToRoomId.get(`${coord.row},${coord.col}`);
   if (!roomId) {
+    return 'violated';
+  }
+  if (roomId !== clue.roomId) {
     return 'violated';
   }
   const { rows, cols } = puzzle.gridSize;

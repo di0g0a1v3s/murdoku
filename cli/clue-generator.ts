@@ -1,4 +1,12 @@
-import type { Clue, Direction, ObjectKind, PlacedPerson, Puzzle, Room } from '../shared/types.js';
+import {
+  VALID_DIRECTIONS,
+  type Clue,
+  type Direction,
+  type ObjectKind,
+  type PlacedPerson,
+  type Puzzle,
+  type Room,
+} from '../shared/types.js';
 import {
   getObjectsAdjacentInRoom,
   getObjectsAtCoord,
@@ -35,8 +43,6 @@ function getRoomForPerson(
     r.cells.some((c) => c.row === placement.coord.row && c.col === placement.coord.col),
   );
 }
-
-const VALID_DIRECTIONS = new Set(['N', 'S', 'E', 'W', 'NE', 'NW', 'SE', 'SW']);
 
 const DIRECTION_LABEL: Record<string, string> = {
   N: 'north',
@@ -112,7 +118,7 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
       if (isRoomCorner) {
         facts.push({
           description: `${name} is in a corner of the ${roomForCorner.name}`,
-          clue: { kind: 'person-in-room-corner', person: personId },
+          clue: { kind: 'person-in-room-corner', person: personId, roomId: roomForCorner.id },
         });
       }
     }
@@ -126,7 +132,7 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
           clue: {
             kind: 'person-on-object',
             person: personId,
-            objectKind: obj.kind as ObjectKind,
+            objectKind: obj.kind,
           },
         });
       }
@@ -143,7 +149,7 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
           clue: {
             kind: 'person-beside-object',
             person: personId,
-            objectKind: obj.kind as ObjectKind,
+            objectKind: obj.kind,
           },
         });
       }
@@ -160,25 +166,25 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
     // Directional (general)
     // "A is [dir] of B" requires the direction of A as seen from B, i.e. directionFromAToB(cB, cA)
     const dirArelB = directionFromAToB(cB, cA); // where A is, relative to B
-    if (dirArelB && VALID_DIRECTIONS.has(dirArelB)) {
+    if (dirArelB && VALID_DIRECTIONS.includes(dirArelB)) {
       facts.push({
         description: `${nameA} is ${DIRECTION_LABEL[dirArelB] ?? dirArelB} of ${nameB}`,
         clue: {
           kind: 'person-direction',
           personA: pA.personId,
-          direction: dirArelB as Direction,
+          direction: dirArelB,
           personB: pB.personId,
         },
       });
     }
     const dirBrelA = directionFromAToB(cA, cB); // where B is, relative to A
-    if (dirBrelA && VALID_DIRECTIONS.has(dirBrelA)) {
+    if (dirBrelA && VALID_DIRECTIONS.includes(dirBrelA)) {
       facts.push({
         description: `${nameB} is ${DIRECTION_LABEL[dirBrelA] ?? dirBrelA} of ${nameA}`,
         clue: {
           kind: 'person-direction',
           personA: pB.personId,
-          direction: dirBrelA as Direction,
+          direction: dirBrelA,
           personB: pA.personId,
         },
       });
@@ -387,7 +393,7 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
           clue: {
             kind: 'person-sole-occupant',
             person: personId,
-            objectKind: obj.kind as ObjectKind,
+            objectKind: obj.kind,
           },
         });
       }
@@ -395,7 +401,7 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
   }
 
   // Object occupancy facts
-  const kindGroups = new Map<string, { total: number; occupied: number }>();
+  const kindGroups = new Map<ObjectKind, { total: number; occupied: number }>();
   for (const obj of puzzle.objects) {
     if (!kindGroups.has(obj.kind)) {
       kindGroups.set(obj.kind, { total: 0, occupied: 0 });
@@ -417,7 +423,7 @@ export function computeAllFacts(puzzle: Puzzle, placements: PlacedPerson[]): Der
         description: `Exactly ${occupied} ${kind}(s) are occupied`,
         clue: {
           kind: 'object-occupancy',
-          objectKind: kind as ObjectKind,
+          objectKind: kind,
           count: occupied,
         },
       });
