@@ -50,7 +50,6 @@ export interface PuzzleTheme {
   subtitle: string;
   setting: string;
   people: Person[];
-  murdererId: string;
   rooms: (Pick<Room, 'id' | 'name' | 'pattern'> & {
     allowedObjects: ObjectKind[];
     requiredObjects: ObjectKind[];
@@ -128,11 +127,6 @@ export async function generateTheme(
             .map((l, i) => `index ${i + 1} is suspect ${l} (name starts with ${l})`)
             .join(', '),
       ),
-    murdererInitial: z
-      .enum(suspectInitials as [string, ...string[]])
-      .describe(
-        `The initial letter of the suspect who is the murderer (one of: ${suspectInitials.join(', ')})`,
-      ),
   });
 
   const avoidLine =
@@ -177,7 +171,6 @@ ${peopleRules}
   Good examples: Victor, Vera Morin, Alex, Blake Sandhu, Casey, Dana Voss
   Bad examples: "Archibald 'Ace' Abernathy", "Baron Von Drake", "Lady Sinclair"
 - Each person gets one emoji avatar
-- Choose one suspect as the murderer (murdererInitial). Pick someone whose personality or role makes them a plausible but surprising culprit.
 
 Make it creative and varied — avoid clichés.`;
 
@@ -214,16 +207,12 @@ Make it creative and varied — avoid clichés.`;
     };
   });
 
-  const murdererIdx = allInitials.indexOf(object.murdererInitial);
-  const murdererId = (murdererIdx > 0 ? people[murdererIdx] : people[1])!.id;
-
   return {
     title: object.title,
     subtitle: object.subtitle,
     setting: object.setting,
     rooms,
     people,
-    murdererId,
   };
 }
 

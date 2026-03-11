@@ -40,7 +40,6 @@ export function placePeople(
   gridRows: number,
   gridCols: number,
   seed: number,
-  murdererId: string,
 ): PlacerResult | null {
   const { rooms, objects } = layout;
 
@@ -123,8 +122,11 @@ export function placePeople(
     (cell) => coordToRoomId.get(cell) === murderRoom!.id,
   );
 
-  const murderer =
-    people.find((p) => p.id === murdererId) ?? people.find((p) => p.role === 'suspect')!;
+  // Pick murderer at random
+  const murderer = lcgShuffle(
+    people.filter((p) => p.role === 'suspect'),
+    seed,
+  )[0];
 
   const notGuiltySuspects = people.filter((p) => p.role === 'suspect' && p.id != murderer.id);
   const notGuiltySuspectsPositions = [...occupiedCells].filter(

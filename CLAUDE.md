@@ -138,9 +138,8 @@ GEMINI_API_KEY=your_key npm run generate -- --debug                             
 ## CLI Generation Pipeline
 
 ```
-1. LLM  → theme (title, subtitle, room names, patterns, character names/emojis, murdererInitial)
+1. LLM  → theme (title, subtitle, room names, patterns, character names/emojis)
            victim name starts with V; suspects start with A, B, C, D, E, …
-           LLM also picks which suspect is the murderer (murdererInitial)
            temperature=1.5 for maximum variety
 2. Algo → grid layout (weighted Voronoi BFS room partitioning + object placement)
            - LLM provides `sizePercentage` per room; BFS expands the room most behind its
@@ -264,7 +263,6 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 - [x] New object types: car (1×2, occupiable), rug (1×1 to 2×3, occupiable), tv (1×1, non-occupiable)
 - [x] Room labels placed in widest row instead of topmost row
 - [x] Difficulty overhaul — easy(5×5)/medium(6×6)/hard(9×9)/very-hard(12×12); victim clue required for all except easy
-- [x] LLM picks the murderer — `murdererInitial` in theme schema; plausible/surprising culprit per prompt
 - [x] Object placement bug fixes — required objects now placed once per kind (not once per rotation slot); `unplaceTemplate` uses exact id match to avoid removing the wrong object
 - [x] Removed `MurdererReveal.tsx` (unused component)
 - [x] Solver metrics — `SolveMetrics { backtracks }` returned from `solve()` on unique result; order-independent count (`Σ domain.length - 1` per branching decision)

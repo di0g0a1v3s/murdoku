@@ -363,14 +363,7 @@ function generatePuzzleFromTheme(
   if (debug) {
     console.log(`\n👥 Step 3: Placing people...`);
   }
-  const placerResult = placePeople(
-    theme.people,
-    layout,
-    n,
-    n,
-    randomInt(0, 1_000_000),
-    theme.murdererId,
-  );
+  const placerResult = placePeople(theme.people, layout, n, n, randomInt(0, 1_000_000));
   if (!placerResult) {
     throw new Error('Failed to place people: no valid placement exists for this layout');
   }
