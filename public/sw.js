@@ -1,3 +1,5 @@
+// Cache key is replaced with the git SHA by the GHA deploy workflow on each deploy,
+// forcing a SW reinstall and fresh cache on every new version.
 const CACHE = 'murdoku-v1'
 
 self.addEventListener('install', e => {
@@ -15,21 +17,24 @@ self.addEventListener('activate', e => {
 })
 
 self.addEventListener('fetch', e => {
-  // Network-first for HTML navigation: always fetch fresh content when online,
-  // update the cache, and only fall back to the cache when offline.
-  if (e.request.mode === 'navigate') {
-    e.respondWith(
-      fetch(e.request)
-        .then(response => {
-          caches.open(CACHE).then(c => c.put(e.request, response.clone()))
-          return response
-        })
-        .catch(() => caches.match(e.request))
-    )
+  // Ignore cross-origin requests.
+  if (!e.request.url.startsWith(self.location.origin)) {
     return
   }
-  // Cache-first for everything else (fonts, icons, etc.)
+
+  // Stale-while-revalidate: serve from cache immediately,
+  // then fetch in background and update the cache for next time.
   e.respondWith(
-    caches.match(e.request).then(cached => cached ?? fetch(e.request))
+    caches.open(CACHE).then(cache =>
+      cache.match(e.request).then(cached => {
+        const networkFetch = fetch(e.request).then(response => {
+          if (response.ok) {
+            cache.put(e.request, response.clone());
+          }
+          return response
+        })
+        return cached ?? networkFetch
+      })
+    )
   )
 })

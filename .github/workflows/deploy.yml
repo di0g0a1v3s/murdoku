@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Bump SW cache key
+        run: sed -i "s/murdoku-v[^']*/murdoku-${{ github.sha }}/g" public/sw.js
+
       - name: Build
         run: npm run build
 
