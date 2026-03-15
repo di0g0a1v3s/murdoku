@@ -474,41 +474,6 @@ export function PuzzleView({
             {puzzle.subtitle}
           </p>
         )}
-
-        {/* Suspects list */}
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 8,
-            justifyContent: 'center',
-            marginBottom: 16,
-          }}
-        >
-          {[...puzzle.people]
-            .sort((a, b) => (a.role === 'victim' ? 1 : 0) - (b.role === 'victim' ? 1 : 0))
-            .map((person) => (
-              <div
-                key={person.id}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 5,
-                  padding: '4px 10px',
-                  borderRadius: 20,
-                  background: person.role === 'victim' ? '#fee2e2' : '#f1f5f9',
-                  border: `1px solid ${person.role === 'victim' ? '#fca5a5' : 'rgba(0,0,0,0.1)'}`,
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: person.role === 'victim' ? '#dc2626' : '#334155',
-                }}
-              >
-                <span>{person.avatarEmoji}</span>
-                <span>{person.name}</span>
-                {person.role === 'victim' && <span style={{ opacity: 0.6 }}>· victim</span>}
-              </div>
-            ))}
-        </div>
       </div>
 
       {/* Main content area */}
