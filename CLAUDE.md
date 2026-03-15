@@ -272,10 +272,19 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 - [x] Verify refactor — `runVerify(marks)` shared between button and auto-lock; victim clue check added; duplicate placement lists all names
 - [x] `--debug` flag gates all verbose step logs; clean output by default
 - [x] LLM prompt fix — prevent "alone" for object-occupancy clues
+- [x] Daily puzzle — deterministic date-based selection; archive modal behind "All Puzzles" button; future puzzles hidden; `EPOCH_DAY` anchors the sequence so adding new puzzles never remaps past days
+
+## Frontend: Daily Puzzle
+
+- `EPOCH_DAY` (hardcoded, 2026-03-05) + `TODAY_DAY_OFFSET = today - EPOCH_DAY` computed once at module load (avoids React purity lint errors)
+- `getDailyPuzzle(puzzles)` sorts by `generatedAt` → `sorted[TODAY_DAY_OFFSET % sorted.length]`
+- `releasedPuzzles = sorted.slice(0, TODAY_DAY_OFFSET + 1)` — only released puzzles shown in archive
+- "DAILY PUZZLE" label rendered above the puzzle title in `PuzzleView` via `isDailyPuzzle` prop
+- Archive modal opened via "All Puzzles" button in top bar; backdrop click closes it
+- "← Daily Puzzle" back-link band shown only when viewing an archive puzzle
 
 ## Future Ideas
 
 - App icon
 - Object sprites
 - Non-square grids
-- Daily puzzle

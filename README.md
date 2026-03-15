@@ -4,7 +4,7 @@
 
 > Place every suspect on the grid. Find who was alone with the victim. Solve the case.
 
-**[▶ Play online](https://di0g0a1v3s.github.io/murdoku/)** — installable PWA, works offline
+**[▶ Play online](https://di0g0a1v3s.github.io/murdoku/)** — a new puzzle every day, installable PWA, works offline
 
 ---
 

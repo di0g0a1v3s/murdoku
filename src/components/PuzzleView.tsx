@@ -11,6 +11,7 @@ type UndoEntry = { marks: Map<string, Set<string>>; committed: Map<string, strin
 interface PuzzleViewProps {
   puzzle: FullPuzzle;
   isCompleted: boolean;
+  isDailyPuzzle?: boolean;
   undoStack: UndoEntry[];
   onUndoStackChange: (stack: UndoEntry[]) => void;
   onComplete: () => void;
@@ -59,6 +60,7 @@ function loadCommitted(puzzleId: string): Map<string, string> {
 export function PuzzleView({
   puzzle,
   isCompleted,
+  isDailyPuzzle,
   undoStack,
   onUndoStackChange,
   onComplete,
@@ -434,6 +436,20 @@ export function PuzzleView({
           width: '100%',
         }}
       >
+        {isDailyPuzzle && (
+          <p
+            style={{
+              margin: '0 0 6px 0',
+              fontSize: 13,
+              fontWeight: 700,
+              color: 'rgba(0,0,0,0.35)',
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+            }}
+          >
+            Daily Puzzle
+          </p>
+        )}
         <h1
           style={{
             margin: '0 0 4px 0',

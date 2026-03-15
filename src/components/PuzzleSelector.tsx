@@ -5,6 +5,7 @@ interface PuzzleSelectorProps {
   selectedId: string;
   onSelect: (id: string) => void;
   completedIds: Set<string>;
+  dailyPuzzleId?: string;
 }
 
 function getDifficulty(puzzle: FullPuzzle): PuzzleDifficulty {
@@ -32,6 +33,7 @@ export function PuzzleSelector({
   selectedId,
   onSelect,
   completedIds,
+  dailyPuzzleId,
 }: PuzzleSelectorProps) {
   if (puzzles.length <= 1) {
     return null;
@@ -61,7 +63,7 @@ export function PuzzleSelector({
           </div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {group
-              .sort((a, b) => a.backtrackingScore - b.backtrackingScore)
+              .sort((a, b) => a.generatedAt.localeCompare(b.generatedAt))
               .map((puzzle) => {
                 const isSelected = puzzle.id === selectedId;
                 const isCompleted = completedIds.has(puzzle.id);
@@ -92,7 +94,8 @@ export function PuzzleSelector({
                     }}
                   >
                     {isCompleted && '✓ '}
-                    {`${puzzle.title} ${puzzle.backtrackingScore != null ? `(${puzzle.backtrackingScore})` : ''}`.trim()}
+                    {puzzle.id === dailyPuzzleId && '📅 '}
+                    {puzzle.title}
                   </button>
                 );
               })}
