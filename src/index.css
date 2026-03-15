@@ -23,3 +23,9 @@ body {
 button {
   font-family: "Josefin Sans", system-ui, sans-serif;
 }
+
+@media (max-width: 480px) {
+  .header-subtitle {
+    display: none;
+  }
+}

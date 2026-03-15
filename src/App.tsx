@@ -148,6 +148,7 @@ export function App() {
         <span style={{ fontSize: 26 }}>🕵️</span>
         <span style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-0.01em' }}>Murdoku</span>
         <span
+          className="header-subtitle"
           style={{
             fontSize: 13,
             color: 'rgba(255,255,255,0.4)',
