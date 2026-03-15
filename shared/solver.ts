@@ -10,7 +10,8 @@ export interface SolveMetrics {
 export type SolveResult =
   | { status: 'unique'; solution: PlacedPerson[]; metrics: SolveMetrics }
   | { status: 'multiple'; solutions: PlacedPerson[][] }
-  | { status: 'none' };
+  | { status: 'none' }
+  | { status: 'exceeded' };
 
 // ─── Solver ───────────────────────────────────────────────────────────────────
 
@@ -22,7 +23,7 @@ export function makeVictimClue(puzzle: Puzzle): Clue {
   return { kind: 'person-in-room-with', person: victimId, count: 1 };
 }
 
-export function solve(puzzle: Puzzle, clues: Clue[]): SolveResult {
+export function solve(puzzle: Puzzle, clues: Clue[], maxBacktracks?: number): SolveResult {
   const { rows, cols } = puzzle.gridSize;
   const allPersonIds = puzzle.people.map((p) => p.id);
   const solutions: PlacedPerson[][] = [];
@@ -132,11 +133,12 @@ export function solve(puzzle: Puzzle, clues: Clue[]): SolveResult {
   }
 
   let backtracks = 0;
+  let exceeded = false;
 
   const assignment = new Map<string, Coord>();
 
   function backtrack(): void {
-    if (solutions.length > 1) {
+    if (solutions.length > 1 || exceeded) {
       return;
     }
 
@@ -301,6 +303,10 @@ export function solve(puzzle: Puzzle, clues: Clue[]): SolveResult {
     }
 
     backtracks += bestDomain.length - 1; // one branch leads to the solution, rest are wrong
+    if (maxBacktracks !== undefined && backtracks > maxBacktracks) {
+      exceeded = true;
+      return;
+    }
 
     for (const { row, col } of bestDomain) {
       assignment.set(nextPerson, { row, col });
@@ -314,6 +320,9 @@ export function solve(puzzle: Puzzle, clues: Clue[]): SolveResult {
 
   backtrack();
 
+  if (exceeded) {
+    return { status: 'exceeded' };
+  }
   if (solutions.length === 0) {
     return { status: 'none' };
   }

@@ -8,7 +8,7 @@ const collection = puzzleData as PuzzleCollection;
 
 // Fixed epoch: the day this daily-puzzle feature was deployed.
 // New puzzles added later always get newer generatedAt → appended to end → stable.
-const EPOCH_DAY = Math.floor(new Date('2026-03-05').getTime() / 86400000);
+const EPOCH_DAY = Math.floor(new Date('2026-02-23').getTime() / 86400000);
 const TODAY_DAY_OFFSET = Math.max(0, Math.floor(Date.now() / 86400000) - EPOCH_DAY);
 
 function getDailyPuzzle(puzzles: FullPuzzle[]): FullPuzzle | undefined {

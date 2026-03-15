@@ -96,7 +96,7 @@ Puzzles are generated locally by the developer and committed to the repo. The fr
 # Install dependencies
 npm install
 
-# Generate one medium puzzle (6×6, default)
+# Generate one puzzle at a random difficulty (20% easy, 45% medium, 30% hard, 5% very-hard)
 GEMINI_API_KEY=your_key_here npm run generate
 
 # Generate multiple puzzles at once

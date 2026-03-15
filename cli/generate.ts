@@ -13,6 +13,7 @@ import { printCostSummary, resetCosts } from './cost-tracker.js';
 
 const OUTPUT_PATH = 'src/puzzles/puzzles.json';
 const MAX_LAYOUT_RETRIES = 100;
+const MAX_BACKTRACKS = 50;
 
 let debug = false;
 
@@ -283,9 +284,23 @@ async function main(): Promise<void> {
 
   const VALID_DIFFICULTIES = ['easy', 'medium', 'hard', 'very-hard'] as const;
   const difficultyArg = process.argv.find((a) => a.startsWith('--difficulty='));
-  const difficulty = (difficultyArg?.split('=')[1] ??
-    'easy') as (typeof VALID_DIFFICULTIES)[number];
-  if (!VALID_DIFFICULTIES.includes(difficulty)) {
+  function randomDifficulty(): (typeof VALID_DIFFICULTIES)[number] {
+    const r = Math.random();
+    if (r < 0.2) {
+      return 'easy';
+    }
+    if (r < 0.65) {
+      return 'medium';
+    }
+    if (r < 0.95) {
+      return 'hard';
+    }
+    return 'very-hard';
+  }
+  const fixedDifficulty = difficultyArg?.split('=')[1] as
+    | (typeof VALID_DIFFICULTIES)[number]
+    | undefined;
+  if (fixedDifficulty !== undefined && !VALID_DIFFICULTIES.includes(fixedDifficulty)) {
     console.error(`❌ --difficulty must be one of: ${VALID_DIFFICULTIES.join(', ')}`);
     process.exit(1);
   }
@@ -295,8 +310,6 @@ async function main(): Promise<void> {
     hard: 9,
     'very-hard': 12,
   };
-  const n = DIFFICULTY_PEOPLE[difficulty]!;
-  const victimClueRequired = difficulty !== 'easy';
 
   console.log('🕵️  Murdoku Puzzle Generator');
   console.log('━'.repeat(40));
@@ -305,9 +318,14 @@ async function main(): Promise<void> {
   const usedTitles = loadCollection(OUTPUT_PATH).puzzles.map((p) => p.title);
   let succeeded = 0;
   for (let i = 0; i < count; i++) {
+    const difficulty = fixedDifficulty ?? randomDifficulty();
     if (count > 1) {
-      console.log(`\n📦 Puzzle ${i + 1} of ${count}`);
+      console.log(`\n📦 Puzzle ${i + 1} of ${count} [${difficulty}]`);
+    } else {
+      console.log(`\n📦 Difficulty: ${difficulty}`);
     }
+    const n = DIFFICULTY_PEOPLE[difficulty]!;
+    const victimClueRequired = difficulty !== 'easy';
     try {
       const { puzzle, theme } = await generatePuzzle(usedTitles, n, victimClueRequired, difficulty);
       usedTitles.push(puzzle.title);
@@ -475,14 +493,26 @@ function generatePuzzleFromTheme(
   if (debug) {
     console.log('\n✂️  Step 5: Minimizing clue set...');
   }
-  // Lower weight = sorted to front = tried for removal first = less likely to survive.
 
   let clues: StoredClue[] = nonVictimFacts.map((f) => ({ ...f.clue, text: f.description }));
   const clueCountsPerType = new Map<string, number>();
   for (const clue of clues) {
     clueCountsPerType.set(clue.kind, (clueCountsPerType.get(clue.kind) ?? 0) + 1);
   }
+  // Lower weight = sorted to front = tried for removal first = less likely to survive.
   clues = weightedShuffle(clues.map((u) => ({ value: u, weight: clueCountsPerType.get(u.kind)! })));
+
+  // Cap the combined total of person-in-row and person-in-col to at most 3 (keep the last ones after shuffling).
+  {
+    const indices = clues
+      .map((c, i) => (c.kind === 'person-in-row' || c.kind === 'person-in-col' ? i : -1))
+      .filter((i) => i !== -1);
+    if (indices.length > 3) {
+      const toRemove = new Set(indices.slice(0, indices.length - 3));
+      clues = clues.filter((_, i) => !toRemove.has(i));
+    }
+  }
+
   if (debug) {
     console.log(`  Starting with ${clues.length} candidate clues`);
   }
@@ -508,7 +538,7 @@ function generatePuzzleFromTheme(
         continue;
       }
       const solveClues = victimClueRequired ? [...candidate, victimClue] : candidate;
-      const solverResult = solve(puzzle, solveClues);
+      const solverResult = solve(puzzle, solveClues, MAX_BACKTRACKS);
       if (solverResult.status === 'none') {
         if (debug) {
           console.log(`  📌 Kept (needed for solvability): ${clues[i]!.text}`);
@@ -516,7 +546,7 @@ function generatePuzzleFromTheme(
         i++;
         continue;
       }
-      if (solverResult.status === 'multiple') {
+      if (solverResult.status === 'multiple' || solverResult.status === 'exceeded') {
         if (debug) {
           console.log(`  📌 Kept (needed for uniqueness): ${clues[i]!.text}`);
         }
@@ -553,7 +583,10 @@ function generatePuzzleFromTheme(
   }
 
   const solveClues = [...clues, victimClue];
-  const solveResult = solve(puzzle, solveClues);
+  const solveResult = solve(puzzle, solveClues, MAX_BACKTRACKS);
+  if (solveResult.status === 'exceeded') {
+    throw new Error(`Puzzle exceeds ${MAX_BACKTRACKS} backtracks — discarding`);
+  }
   if (solveResult.status !== 'unique') {
     throw new Error('Generated puzzle is not unique');
   }

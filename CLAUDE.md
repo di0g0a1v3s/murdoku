@@ -156,6 +156,7 @@ GEMINI_API_KEY=your_key npm run generate -- --debug                             
            (person, personA, and personB === victimId all filtered out)
            facts are weighted and sorted: person-direction/distance (weight 1) first,
            all others (weight 5) last
+           after sorting, combined count of person-in-row + person-in-col capped at 3
 5. Algo → minimize pass — greedily remove redundant clues while maintaining
            (a) unique solution and (b) ≥1 clue per suspect
            (lower-weight clues tried first → person-direction/distance pruned preferentially)
@@ -273,13 +274,16 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 - [x] `--debug` flag gates all verbose step logs; clean output by default
 - [x] LLM prompt fix — prevent "alone" for object-occupancy clues
 - [x] Daily puzzle — deterministic date-based selection; archive modal behind "All Puzzles" button; future puzzles hidden; `EPOCH_DAY` anchors the sequence so adding new puzzles never remaps past days
+- [x] Difficulty shown in puzzle view header (colour-coded; separated from "Daily Puzzle" label by `|`)
+- [x] Random difficulty when no `--difficulty` flag given (20% easy / 45% medium / 30% hard / 5% very-hard), independently per puzzle in a batch
+- [x] Combined cap of 3 on `person-in-row` + `person-in-col` clues before minimization
 
 ## Frontend: Daily Puzzle
 
-- `EPOCH_DAY` (hardcoded, 2026-03-05) + `TODAY_DAY_OFFSET = today - EPOCH_DAY` computed once at module load (avoids React purity lint errors)
+- `EPOCH_DAY` (hardcoded, 2026-02-23) + `TODAY_DAY_OFFSET = today - EPOCH_DAY` computed once at module load (avoids React purity lint errors)
 - `getDailyPuzzle(puzzles)` sorts by `generatedAt` → `sorted[TODAY_DAY_OFFSET % sorted.length]`
 - `releasedPuzzles = sorted.slice(0, TODAY_DAY_OFFSET + 1)` — only released puzzles shown in archive
-- "DAILY PUZZLE" label rendered above the puzzle title in `PuzzleView` via `isDailyPuzzle` prop
+- "Daily Puzzle | Difficulty" label rendered above the puzzle title in `PuzzleView` via `isDailyPuzzle` prop; difficulty always shown (colour-coded), "Daily Puzzle |" prefix only when applicable
 - Archive modal opened via "All Puzzles" button in top bar; backdrop click closes it
 - "← Daily Puzzle" back-link band shown only when viewing an archive puzzle
 

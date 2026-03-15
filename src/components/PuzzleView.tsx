@@ -436,20 +436,52 @@ export function PuzzleView({
           width: '100%',
         }}
       >
-        {isDailyPuzzle && (
-          <p
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 8,
+            marginBottom: 6,
+          }}
+        >
+          {isDailyPuzzle && (
+            <>
+              <span
+                style={{
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: 'rgba(0,0,0,0.35)',
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Daily Puzzle
+              </span>
+              <span style={{ color: 'rgba(0,0,0,0.3)', fontSize: 13 }}>|</span>
+            </>
+          )}
+          <span
             style={{
-              margin: '0 0 6px 0',
-              fontSize: 13,
+              fontSize: 12,
               fontWeight: 700,
-              color: 'rgba(0,0,0,0.35)',
               letterSpacing: '0.06em',
               textTransform: 'uppercase',
+              color:
+                puzzle.difficulty === 'easy'
+                  ? '#16a34a'
+                  : puzzle.difficulty === 'medium'
+                    ? '#d97706'
+                    : puzzle.difficulty === 'hard'
+                      ? '#dc2626'
+                      : '#7f1d1d',
             }}
           >
-            Daily Puzzle
-          </p>
-        )}
+            {puzzle.difficulty === 'very-hard'
+              ? 'Very Hard'
+              : puzzle.difficulty.charAt(0).toUpperCase() + puzzle.difficulty.slice(1)}
+          </span>
+        </div>
         <h1
           style={{
             margin: '0 0 4px 0',
