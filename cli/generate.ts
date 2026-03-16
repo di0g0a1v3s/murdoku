@@ -10,12 +10,18 @@ import { placePeople } from './placer.js';
 import { computeAllFacts } from './clue-generator.js';
 import { appendPuzzle, loadCollection } from './output.js';
 import { printCostSummary, resetCosts } from './cost-tracker.js';
+import { coordToKey } from '../shared/helpers.js';
 
 const OUTPUT_PATH = 'src/puzzles/puzzles.json';
 const MAX_LAYOUT_RETRIES = 100;
 const MAX_BACKTRACKS = 50;
 
 let debug = false;
+const dlog = (...args: Parameters<typeof console.log>) => {
+  if (debug) {
+    console.log(...args);
+  }
+};
 
 // ─── CLI helpers ──────────────────────────────────────────────────────────────
 
@@ -70,7 +76,7 @@ function printPuzzleSummary(puzzle: FullPuzzle, theme: PuzzleTheme): void {
       puzzle.solution.placements.some((p) => p.coord.row === c.row && p.coord.col === c.col),
     );
     console.log(
-      `  ${obj.kind} (${obj.occupiable}) at [${obj.cells.map((c) => `${c.row},${c.col}`).join(' | ')}]${isOccupied ? ' ← OCCUPIED' : ''}`,
+      `  ${obj.kind} (${obj.occupiable}) at [${obj.cells.map(coordToKey).join(' | ')}]${isOccupied ? ' ← OCCUPIED' : ''}`,
     );
   }
 
@@ -154,13 +160,9 @@ async function generatePuzzle(
   victimClueRequired: boolean,
   difficulty: FullPuzzle['difficulty'],
 ): Promise<{ puzzle: FullPuzzle; theme: PuzzleTheme }> {
-  if (debug) {
-    console.log('\n🎲 Step 1: Generating theme via LLM...');
-  }
+  dlog('\n🎲 Step 1: Generating theme via LLM...');
   const theme = await generateTheme(n, existingTitles);
-  if (debug) {
-    console.log(`✅ Theme: "${theme.title}"`);
-  }
+  dlog(`✅ Theme: "${theme.title}"`);
 
   let puzzle: Puzzle;
   let clues: StoredClue[];
@@ -191,9 +193,7 @@ async function generatePuzzle(
     generatedAt: new Date().toISOString(),
   };
   // Step 6: Generate all clue texts in one LLM call
-  if (debug) {
-    console.log('\n✍️  Step 6: Generating clue texts...');
-  }
+  dlog('\n✍️  Step 6: Generating clue texts...');
 
   const suspectInputs = puzzle.people
     .filter((p) => p.role === 'suspect')
@@ -214,10 +214,8 @@ async function generatePuzzle(
   );
 
   const suspectSummaries = suspectTexts.map(({ personId, text }) => {
-    if (debug) {
-      const suspect = puzzle.people.find((p) => p.id === personId)!;
-      console.log(`  ✅ ${suspect.avatarEmoji} ${suspect.name}: "${text}"`);
-    }
+    const suspect = puzzle.people.find((p) => p.id === personId)!;
+    dlog(`  ✅ ${suspect.avatarEmoji} ${suspect.name}: "${text}"`);
     return { personId, text };
   });
 
@@ -232,9 +230,7 @@ async function generatePuzzle(
     if (idx !== -1) {
       clues[idx] = { ...clues[idx]!, text: naturalText };
     }
-    if (debug) {
-      console.log(`  ✅ [${generalClues[i]!.kind}] "${naturalText}"`);
-    }
+    dlog(`  ✅ [${generalClues[i]!.kind}] "${naturalText}"`);
   }
 
   // Step 7: Build final puzzle
@@ -354,9 +350,7 @@ function generatePuzzleFromTheme(
   victimClueRequired: boolean,
 ): { puzzle: Puzzle; clues: StoredClue[]; backtrackingScore: number } {
   // Step 2: Build grid layout
-  if (debug) {
-    console.log(`\n🏗️  Step 2: Building layout...`);
-  }
+  dlog(`\n🏗️  Step 2: Building layout...`);
   let layout = null;
   const layoutSeed = randomInt(0, 1_000_000);
   for (let attempt = 0; attempt < MAX_LAYOUT_RETRIES; attempt++) {
@@ -373,23 +367,17 @@ function generatePuzzleFromTheme(
   if (!layout) {
     throw new Error(`Failed to build valid layout after ${MAX_LAYOUT_RETRIES} retries`);
   }
-  if (debug) {
-    console.log(`✅ Layout built: ${layout.rooms.length} rooms, ${layout.objects.length} objects`);
-  }
+  dlog(`✅ Layout built: ${layout.rooms.length} rooms, ${layout.objects.length} objects`);
 
   // Step 3: Place people (exhaustive search — no retries needed)
-  if (debug) {
-    console.log(`\n👥 Step 3: Placing people...`);
-  }
+  dlog(`\n👥 Step 3: Placing people...`);
   const placerResult = placePeople(theme.people, layout, n, n, randomInt(0, 1_000_000));
   if (!placerResult) {
     throw new Error('Failed to place people: no valid placement exists for this layout');
   }
-  if (debug) {
-    console.log(
-      `✅ Placed ${theme.people.length} people. Murderer: ${theme.people.find((p) => p.id === placerResult!.murdererId)?.name}`,
-    );
-  }
+  dlog(
+    `✅ Placed ${theme.people.length} people. Murderer: ${theme.people.find((p) => p.id === placerResult!.murdererId)?.name}`,
+  );
 
   // Build partial puzzle for fact computation
   const puzzle: Puzzle = {
@@ -407,13 +395,9 @@ function generatePuzzleFromTheme(
   };
 
   // Step 4: Compute derivable facts
-  if (debug) {
-    console.log('\n📊 Step 4: Computing derivable facts...');
-  }
+  dlog('\n📊 Step 4: Computing derivable facts...');
   const facts = computeAllFacts(puzzle, placerResult.placements);
-  if (debug) {
-    console.log(`✅ Found ${facts.length} derivable facts`);
-  }
+  dlog(`✅ Found ${facts.length} derivable facts`);
 
   // Verify that every clue is actually satisfied by the known solution
   function auditClues(label: string, cluesToCheck: Clue[]): void {
@@ -422,21 +406,17 @@ function generatePuzzleFromTheme(
     for (const clue of cluesToCheck) {
       const result = evaluateClue(clue, knownAssignment, puzzle);
       if (result !== 'satisfied') {
-        if (debug) {
-          if (!anyViolated) {
-            console.log(`\n🔎 Clue audit [${label}]:`);
-          }
-          console.log(`  ❌ ${result.toUpperCase()}: [${clue.kind}] ${JSON.stringify(clue)}`);
+        if (!anyViolated) {
+          dlog(`\n🔎 Clue audit [${label}]:`);
         }
+        dlog(`  ❌ ${result.toUpperCase()}: [${clue.kind}] ${JSON.stringify(clue)}`);
         anyViolated = true;
       }
     }
     if (anyViolated) {
       throw new Error('Not all facts are satisfied');
     }
-    if (debug) {
-      console.log(`  ✅ All ${cluesToCheck.length} clues satisfy the known solution`);
-    }
+    dlog(`  ✅ All ${cluesToCheck.length} clues satisfy the known solution`);
   }
 
   // Strip facts about the victim — victim has a fixed hardcoded clue in the UI
@@ -454,13 +434,13 @@ function generatePuzzleFromTheme(
   const nonOccupiableSet = new Set(
     puzzle.objects
       .filter((obj) => obj.occupiable === 'non-occupiable')
-      .flatMap((obj) => obj.cells.map((c) => `${c.row},${c.col}`)),
+      .flatMap((obj) => obj.cells.map(coordToKey)),
   );
   const { rows, cols } = puzzle.gridSize;
   const occupiableCells: { row: number; col: number }[] = [];
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
-      if (!nonOccupiableSet.has(`${row},${col}`)) {
+      if (!nonOccupiableSet.has(coordToKey({ row, col }))) {
         occupiableCells.push({ row, col });
       }
     }
@@ -490,9 +470,7 @@ function generatePuzzleFromTheme(
   // (a) De-pin: while the pool is large, greedily remove any clue that pins a suspect
   //     (evaluated in isolation). No uniqueness check here — we have many facts to spare.
   // (b) Minimize: greedily remove redundant clues (uniqueness + coverage only).
-  if (debug) {
-    console.log('\n✂️  Step 5: Minimizing clue set...');
-  }
+  dlog('\n✂️  Step 5: Minimizing clue set...');
 
   let clues: StoredClue[] = nonVictimFacts.map((f) => ({ ...f.clue, text: f.description }));
   const clueCountsPerType = new Map<string, number>();
@@ -513,9 +491,7 @@ function generatePuzzleFromTheme(
     }
   }
 
-  if (debug) {
-    console.log(`  Starting with ${clues.length} candidate clues`);
-  }
+  dlog(`  Starting with ${clues.length} candidate clues`);
   auditClues('all facts', clues);
 
   const suspectIds = new Set(puzzle.people.filter((p) => p.role === 'suspect').map((p) => p.id));
@@ -531,42 +507,32 @@ function generatePuzzleFromTheme(
       const candidate = [...clues.slice(0, i), ...clues.slice(i + 1)];
       const covered = new Set(candidate.map((c) => getCluePersonId(c)).filter(Boolean));
       if ([...suspectIds].some((id) => !covered.has(id))) {
-        if (debug) {
-          console.log(`  📌 Kept (last clue for suspect): ${clues[i]!.text}`);
-        }
+        dlog(`  📌 Kept (last clue for suspect): ${clues[i]!.text}`);
         i++;
         continue;
       }
       const solveClues = victimClueRequired ? [...candidate, victimClue] : candidate;
       const solverResult = solve(puzzle, solveClues, MAX_BACKTRACKS);
       if (solverResult.status === 'none') {
-        if (debug) {
-          console.log(`  📌 Kept (needed for solvability): ${clues[i]!.text}`);
-        }
+        dlog(`  📌 Kept (needed for solvability): ${clues[i]!.text}`);
         i++;
         continue;
       }
       if (solverResult.status === 'multiple' || solverResult.status === 'exceeded') {
-        if (debug) {
-          console.log(`  📌 Kept (needed for uniqueness): ${clues[i]!.text}`);
-        }
+        dlog(`  📌 Kept (needed for uniqueness): ${clues[i]!.text}`);
         i++;
         continue;
       }
-      if (debug) {
-        console.log(
-          `  ✂️  Removed: ${clues[i]!.text}, current: ${candidate.length}/${nonVictimFacts.length}`,
-        );
-      }
+      dlog(
+        `  ✂️  Removed: ${clues[i]!.text}, current: ${candidate.length}/${nonVictimFacts.length}`,
+      );
       clues = candidate;
       puzzle.clues = clues;
       passChanged = true;
       // Don't increment i — the array shifted left, next clue is now at position i
     }
   }
-  if (debug) {
-    console.log(`✅ Minimized to ${clues.length} clues`);
-  }
+  dlog(`✅ Minimized to ${clues.length} clues`);
 
   for (const suspect of puzzle.people.filter((p) => p.role === 'suspect')) {
     if (

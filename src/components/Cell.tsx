@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { CSSProperties } from 'react';
 
 interface CellBorders {
@@ -16,7 +17,7 @@ interface CellProps {
 const ROOM_BORDER = '3px solid rgba(0,0,0,0.6)';
 const CELL_BORDER = '1px solid rgba(0,0,0,0.15)';
 
-export function Cell({ borders, style, onClick }: CellProps) {
+export const Cell = memo(function Cell({ borders, style, onClick }: CellProps) {
   return (
     <div
       onClick={onClick}
@@ -30,4 +31,4 @@ export function Cell({ borders, style, onClick }: CellProps) {
       }}
     />
   );
-}
+});

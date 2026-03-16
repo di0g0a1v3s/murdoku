@@ -1,6 +1,7 @@
 import type { Coord, GridObject, ObjectKind, Room } from '../shared/types.js';
 import { OBJECT_KIND_VALUES, OBJECT_OCCUPIABILITY } from '../shared/types.js';
 import type { PuzzleTheme } from './llm-client.js';
+import { coordToKey } from '../shared/helpers.js';
 
 // ─── Room partitioning via Voronoi BFS ────────────────────────────────────────
 
@@ -102,7 +103,7 @@ export function buildRooms(
   const inFrontierOf: Set<string>[] = Array.from({ length: numRooms }, () => new Set());
 
   const addToFrontier = (roomIdx: number, coord: Coord): void => {
-    const key = `${coord.row},${coord.col}`;
+    const key = coordToKey(coord);
     if (!inFrontierOf[roomIdx].has(key)) {
       inFrontierOf[roomIdx].add(key);
       frontiers[roomIdx].push(coord);
@@ -208,12 +209,12 @@ export function buildRooms(
       return false; // removing the only cell disconnects it
     }
     const start = cells.find((c) => !(c.row === exclude.row && c.col === exclude.col))!;
-    const visited = new Set<string>([`${start.row},${start.col}`]);
+    const visited = new Set<string>([coordToKey(start)]);
     const queue: Coord[] = [start];
     while (queue.length > 0) {
       const cur = queue.shift()!;
       for (const n of neighbors(cur.row, cur.col)) {
-        const key = `${n.row},${n.col}`;
+        const key = coordToKey(n);
         if (visited.has(key) || assignment[n.row][n.col] !== roomIdx) {
           continue;
         }
@@ -436,11 +437,11 @@ function cellsInRoom(cells: Coord[], room: Room): boolean {
 }
 
 function cellsNotOccupied(cells: Coord[], usedCells: Set<string>): boolean {
-  return cells.every((c) => !usedCells.has(`${c.row},${c.col}`));
+  return cells.every((c) => !usedCells.has(coordToKey(c)));
 }
 
 function touchesWall(cells: Coord[], room: Room, gridRows: number, gridCols: number): boolean {
-  const roomKeys = new Set(room.cells.map((c) => `${c.row},${c.col}`));
+  const roomKeys = new Set(room.cells.map(coordToKey));
   for (const cell of cells) {
     for (const n of [
       { row: cell.row - 1, col: cell.col },
@@ -452,7 +453,7 @@ function touchesWall(cells: Coord[], room: Room, gridRows: number, gridCols: num
       if (n.row < 0 || n.row >= gridRows || n.col < 0 || n.col >= gridCols) {
         return true;
       }
-      if (!roomKeys.has(`${n.row},${n.col}`)) {
+      if (!roomKeys.has(coordToKey(n))) {
         return true;
       }
     }
@@ -469,7 +470,7 @@ function hasFreeAdjacent(
   if (minFree === 0) {
     return true;
   }
-  const objectKeys = new Set(cells.map((c) => `${c.row},${c.col}`));
+  const objectKeys = new Set(cells.map(coordToKey));
   const free = new Set<string>();
   for (const cell of cells) {
     for (const n of [
@@ -478,7 +479,7 @@ function hasFreeAdjacent(
       { row: cell.row, col: cell.col - 1 },
       { row: cell.row, col: cell.col + 1 },
     ]) {
-      const key = `${n.row},${n.col}`;
+      const key = coordToKey(n);
       if (objectKeys.has(key)) {
         continue;
       }
@@ -529,7 +530,7 @@ export function buildLayout(
       }
       // Ensure placing this object doesn't block required free adjacent cells of existing room objects.
       const newUsedCells = new Set(usedCells);
-      cells.forEach((c) => newUsedCells.add(`${c.row},${c.col}`));
+      cells.forEach((c) => newUsedCells.add(coordToKey(c)));
       for (const obj of objects) {
         if (!obj.cells.some((c) => room.cells.some((rc) => rc.row === c.row && rc.col === c.col))) {
           continue;
@@ -549,7 +550,7 @@ export function buildLayout(
         occupiable: OBJECT_OCCUPIABILITY[template.kind],
         cells,
       });
-      cells.forEach((c) => usedCells.add(`${c.row},${c.col}`));
+      cells.forEach((c) => usedCells.add(coordToKey(c)));
     };
 
     const unplaceTemplate = (template: ObjectTemplate, anchor: Coord, slotIdx: number): void => {
@@ -559,7 +560,7 @@ export function buildLayout(
         objects.findIndex((o) => o.id === id),
         1,
       );
-      cells.forEach((c) => usedCells.delete(`${c.row},${c.col}`));
+      cells.forEach((c) => usedCells.delete(coordToKey(c)));
     };
 
     // Phase 1: backtracking placement of required objects so ordering never blocks them.
@@ -630,14 +631,14 @@ export function getOccupiableCells(rooms: Room[], objects: GridObject[]): Coord[
   const nonOccupiableCells = new Set<string>();
   for (const obj of objects) {
     if (obj.occupiable === 'non-occupiable') {
-      obj.cells.forEach((c) => nonOccupiableCells.add(`${c.row},${c.col}`));
+      obj.cells.forEach((c) => nonOccupiableCells.add(coordToKey(c)));
     }
   }
 
   const result: Coord[] = [];
   for (const room of rooms) {
     for (const cell of room.cells) {
-      if (!nonOccupiableCells.has(`${cell.row},${cell.col}`)) {
+      if (!nonOccupiableCells.has(coordToKey(cell))) {
         result.push(cell);
       }
     }

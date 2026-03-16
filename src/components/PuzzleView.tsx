@@ -5,6 +5,9 @@ import { makeVictimClue } from '@shared/solver';
 import { GridCanvas } from './GridCanvas';
 import { CluesPanel } from './CluesPanel';
 import { CellPopup } from './CellPopup';
+import { STORAGE_KEYS, DIFFICULTY_COLOR } from '../constants';
+import { useWindowWidth } from '../hooks/useWindowWidth';
+import { coordToKey } from '@shared/helpers';
 
 type UndoEntry = { marks: Map<string, Set<string>>; committed: Map<string, string> };
 
@@ -18,18 +21,8 @@ interface PuzzleViewProps {
   onReset: () => void;
 }
 
-function useWindowWidth() {
-  const [width, setWidth] = useState(window.innerWidth);
-  useEffect(() => {
-    const handler = () => setWidth(window.innerWidth);
-    window.addEventListener('resize', handler);
-    return () => window.removeEventListener('resize', handler);
-  }, []);
-  return width;
-}
-
-const PROGRESS_KEY = (id: string) => `murdoku-progress-${id}`;
-const COMMITTED_KEY = (id: string) => `murdoku-committed-${id}`;
+const PROGRESS_KEY = (id: string) => `${STORAGE_KEYS.progressPrefix}${id}`;
+const COMMITTED_KEY = (id: string) => `${STORAGE_KEYS.committedPrefix}${id}`;
 
 function loadMarks(puzzleId: string): Map<string, Set<string>> {
   try {
@@ -55,6 +48,58 @@ function loadCommitted(puzzleId: string): Map<string, string> {
   } catch {
     return new Map();
   }
+}
+
+// Returns a new marks map with all non-committed occupiable cells in the same
+// row or column as (row, col) crossed out.
+function crossOutRowCol(
+  row: number,
+  col: number,
+  lockedKey: string,
+  marks: Map<string, Set<string>>,
+  committed: Map<string, string>,
+  nonOccupiable: Set<string>,
+  rows: number,
+  cols: number,
+): Map<string, Set<string>> {
+  const next = new Map(marks);
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const k = `${r},${c}`;
+      if (k === lockedKey || (r !== row && c !== col) || committed.has(k) || nonOccupiable.has(k)) {
+        continue;
+      }
+      next.set(k, new Set(['X']));
+    }
+  }
+  return next;
+}
+
+// Scans marks to build a person→cell mapping.
+// Returns hasMultiple=true if any cell has >1 person mark,
+// and duplicates listing any person marked in more than one cell.
+function buildPersonToKey(marks: Map<string, Set<string>>): {
+  personToKey: Map<string, string>;
+  hasMultiple: boolean;
+  duplicates: string[];
+} {
+  let hasMultiple = false;
+  const personToKey = new Map<string, string>();
+  const duplicateIds: string[] = [];
+  for (const [key, cellMarkSet] of marks) {
+    const personIds = [...cellMarkSet].filter((m) => m !== 'X');
+    if (personIds.length > 1) {
+      hasMultiple = true;
+    } else if (personIds.length === 1) {
+      const pid = personIds[0]!;
+      if (personToKey.has(pid)) {
+        duplicateIds.push(pid);
+      } else {
+        personToKey.set(pid, key);
+      }
+    }
+  }
+  return { personToKey, hasMultiple, duplicates: duplicateIds };
 }
 
 export function PuzzleView({
@@ -87,7 +132,7 @@ export function PuzzleView({
     for (const obj of puzzle.objects) {
       if (obj.occupiable === 'non-occupiable') {
         for (const c of obj.cells) {
-          s.add(`${c.row},${c.col}`);
+          s.add(coordToKey(c));
         }
       }
     }
@@ -134,7 +179,7 @@ export function PuzzleView({
     if (!popup) {
       return;
     }
-    const key = `${popup.row},${popup.col}`;
+    const key = coordToKey(popup);
     onUndoStackChange([...undoStack, { marks: cellMarks, committed: committedCells }]);
     setCellMarks((prev) => {
       const next = new Map(prev);
@@ -175,7 +220,7 @@ export function PuzzleView({
   }
 
   function handleUncommit(row: number, col: number) {
-    const key = `${row},${col}`;
+    const key = coordToKey({ row, col });
     onUndoStackChange([...undoStack, { marks: cellMarks, committed: committedCells }]);
     setCommittedCells((prev) => {
       const next = new Map(prev);
@@ -187,7 +232,7 @@ export function PuzzleView({
   }
 
   function handleCommit(row: number, col: number, personId: string) {
-    const key = `${row},${col}`;
+    const key = coordToKey({ row, col });
     onUndoStackChange([...undoStack, { marks: cellMarks, committed: committedCells }]);
 
     // Remove personId from all other cells; set this cell to exactly {personId}
@@ -213,33 +258,25 @@ export function PuzzleView({
     newCommitted.set(key, personId);
 
     // Cross out all other occupiable cells in the same row or column that aren't committed
-    for (let r = 0; r < puzzle.gridSize.rows; r++) {
-      for (let c = 0; c < puzzle.gridSize.cols; c++) {
-        const k = `${r},${c}`;
-        if (k === key) {
-          continue;
-        }
-        if (r !== row && c !== col) {
-          continue;
-        }
-        if (newCommitted.has(k)) {
-          continue;
-        }
-        if (nonOccupiable.has(k)) {
-          continue;
-        }
-        newMarks.set(k, new Set(['X']));
-      }
-    }
+    const crossedMarks = crossOutRowCol(
+      row,
+      col,
+      key,
+      newMarks,
+      newCommitted,
+      nonOccupiable,
+      puzzle.gridSize.rows,
+      puzzle.gridSize.cols,
+    );
 
-    setCellMarks(newMarks);
+    setCellMarks(crossedMarks);
     setCommittedCells(newCommitted);
     setPopup(null);
     setVerifyResult(null);
 
     // Auto-verify when all people are committed
     if (newCommitted.size === puzzle.people.length) {
-      runVerify(newMarks);
+      runVerify(crossedMarks);
     }
   }
 
@@ -250,33 +287,25 @@ export function PuzzleView({
     };
 
     // Build person → cell mapping from marks
-    let hasMultipleMarks = false;
-    const personToKey = new Map<string, string>();
-    const duplicates: string[] = [];
-    for (const [key, cellMarkSet] of marks) {
-      const personIds = [...cellMarkSet].filter((m) => m !== 'X');
-      if (personIds.length > 1) {
-        hasMultipleMarks = true;
-      } else if (personIds.length === 1) {
-        const pid = personIds[0]!;
-        if (personToKey.has(pid)) {
-          duplicates.push(puzzle.people.find((p) => p.id === pid)!.name);
-        } else {
-          personToKey.set(pid, key);
-        }
-      }
-    }
+    const { personToKey, hasMultiple, duplicates } = buildPersonToKey(marks);
 
-    if (hasMultipleMarks) {
+    if (hasMultiple) {
       fail('Some cells have multiple suspects marked.');
       return;
     }
 
     if (duplicates.length > 0) {
-      const names =
-        duplicates.length === 1
-          ? duplicates[0]
-          : `${duplicates.slice(0, -1).join(', ')} and ${duplicates.at(-1)}`;
+      const names = duplicates
+        .map((pid) => puzzle.people.find((p) => p.id === pid)!.name)
+        .reduce(
+          (acc, name, i, arr) =>
+            i === arr.length - 1 && arr.length > 1
+              ? `${acc} and ${name}`
+              : i === 0
+                ? name
+                : `${acc}, ${name}`,
+          '',
+        );
       fail(`${names} ${duplicates.length === 1 ? 'is' : 'are'} marked in more than one cell.`);
       return;
     }
@@ -387,7 +416,7 @@ export function PuzzleView({
   const solutionMarks = useMemo(() => {
     const m = new Map<string, Set<string>>();
     for (const p of puzzle.solution.placements) {
-      m.set(`${p.coord.row},${p.coord.col}`, new Set([p.personId]));
+      m.set(coordToKey(p.coord), new Set([p.personId]));
     }
     return m;
   }, [puzzle.solution.placements]);
@@ -395,7 +424,7 @@ export function PuzzleView({
   const solutionCommitted = useMemo(() => {
     const m = new Map<string, string>();
     for (const p of puzzle.solution.placements) {
-      m.set(`${p.coord.row},${p.coord.col}`, p.personId);
+      m.set(coordToKey(p.coord), p.personId);
     }
     return m;
   }, [puzzle.solution.placements]);
@@ -413,9 +442,9 @@ export function PuzzleView({
   }
 
   const popupMarks = popup
-    ? (cellMarks.get(`${popup.row},${popup.col}`) ?? new Set<string>())
+    ? (cellMarks.get(coordToKey(popup)) ?? new Set<string>())
     : new Set<string>();
-  const popupCommitted = popup ? committedCells.has(`${popup.row},${popup.col}`) : false;
+  const popupCommitted = popup ? committedCells.has(coordToKey(popup)) : false;
 
   return (
     <div
@@ -467,14 +496,7 @@ export function PuzzleView({
               fontWeight: 700,
               letterSpacing: '0.06em',
               textTransform: 'uppercase',
-              color:
-                puzzle.difficulty === 'easy'
-                  ? '#16a34a'
-                  : puzzle.difficulty === 'medium'
-                    ? '#d97706'
-                    : puzzle.difficulty === 'hard'
-                      ? '#dc2626'
-                      : '#7f1d1d',
+              color: DIFFICULTY_COLOR[puzzle.difficulty],
             }}
           >
             {puzzle.difficulty === 'very-hard'

@@ -1,4 +1,5 @@
 import type { FullPuzzle, PuzzleDifficulty } from '@shared/types';
+import { DIFFICULTY_COLOR } from '../constants';
 
 interface PuzzleSelectorProps {
   puzzles: FullPuzzle[];
@@ -19,13 +20,6 @@ const DIFFICULTY_LABEL: Record<PuzzleDifficulty, string> = {
   medium: 'Medium',
   hard: 'Hard',
   'very-hard': 'Very Hard',
-};
-
-const DIFFICULTY_COLOR: Record<PuzzleDifficulty, string> = {
-  easy: '#16a34a',
-  medium: '#d97706',
-  hard: '#dc2626',
-  'very-hard': '#7f1d1d',
 };
 
 export function PuzzleSelector({

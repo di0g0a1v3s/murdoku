@@ -277,6 +277,17 @@ Return exactly ${suspects.length} suspect entries and exactly ${generalClues.len
   trackUsage('Clue texts', usage);
   debugLog('generateAllTexts', prompt, object);
 
+  if (object.suspects.length !== suspects.length) {
+    throw new Error(
+      `generateAllTexts: expected ${suspects.length} suspect entries, got ${object.suspects.length}`,
+    );
+  }
+  if (object.generalClues.length !== generalClues.length) {
+    throw new Error(
+      `generateAllTexts: expected ${generalClues.length} general clue entries, got ${object.generalClues.length}`,
+    );
+  }
+
   return {
     suspectTexts: suspects.map((s, i) => ({
       personId: s.personId,

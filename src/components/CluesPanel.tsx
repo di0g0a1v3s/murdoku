@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { getCluePersonId } from '@shared/types';
 import type { Person, StoredClue } from '@shared/types';
 import { ClueItem } from './ClueItem';
@@ -54,7 +54,7 @@ export function CluesPanel({ clues, people, suspectSummaries, lockedPersonIds }:
 
   const victim = people.find((p) => p.role === 'victim')!;
   const summaryMap = new Map(suspectSummaries.map((s) => [s.personId, s.text]));
-  const generalClues = clues.filter((c) => getCluePersonId(c) === null);
+  const generalClues = useMemo(() => clues.filter((c) => getCluePersonId(c) === null), [clues]);
 
   const suspectSections = people
     .filter((p) => p.role === 'suspect')

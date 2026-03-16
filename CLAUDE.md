@@ -277,6 +277,14 @@ Layout: mobile (<640px) → grid stacked above clues; desktop → side by side.
 - [x] Difficulty shown in puzzle view header (colour-coded; separated from "Daily Puzzle" label by `|`)
 - [x] Random difficulty when no `--difficulty` flag given (20% easy / 45% medium / 30% hard / 5% very-hard), independently per puzzle in a batch
 - [x] Combined cap of 3 on `person-in-row` + `person-in-col` clues before minimization
+- [x] Refactor: `shared/helpers.ts` — `coordToKey`, `keyToCoord`, `isRoomCornerCell` as single source of truth; all callers migrated (CLI + frontend)
+- [x] Refactor: `src/constants.ts` — `STORAGE_KEYS` and `DIFFICULTY_COLOR` centralized
+- [x] Refactor: `computeAllFacts` broken into sub-generators (`generatePersonFacts`, `generatePairwiseFacts`, `generateRoomFacts`, `generateObjectFacts`)
+- [x] Refactor: solver propagation loop extracted into `computeConstraints` + `applyConstraints`
+- [x] Refactor: `CellMark` sub-component extracted from `GridCanvas`; `Cell` wrapped with `React.memo`; `useWindowWidth` moved to `src/hooks/useWindowWidth.ts`
+- [x] Refactor: `crossOutRowCol` and `buildPersonToKey` extracted as pure helpers in `PuzzleView`
+- [x] Refactor: `generalClues` memoized in `CluesPanel`; `output.ts` atomic write via `.tmp` + `renameSync`; `generateAllTexts` length assertions added
+- [x] Refactor: `dlog()` helper replaces all `if (debug) { console.log(...) }` blocks in `generate.ts`
 
 ## Frontend: Daily Puzzle
 

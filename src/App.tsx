@@ -3,6 +3,7 @@ import type { FullPuzzle, PuzzleCollection } from '@shared/types';
 import puzzleData from './puzzles/puzzles.json';
 import { PuzzleView } from './components/PuzzleView';
 import { PuzzleSelector } from './components/PuzzleSelector';
+import { STORAGE_KEYS } from './constants';
 
 const collection = puzzleData as PuzzleCollection;
 
@@ -29,7 +30,7 @@ export function App() {
 
   const [completedIds, setCompletedIds] = useState<Set<string>>(() => {
     try {
-      const stored = localStorage.getItem('murdoku-completed');
+      const stored = localStorage.getItem(STORAGE_KEYS.completed);
       return new Set(stored ? (JSON.parse(stored) as string[]) : []);
     } catch {
       return new Set();
@@ -51,7 +52,7 @@ export function App() {
       const next = new Set(prev);
       next.add(id);
       try {
-        localStorage.setItem('murdoku-completed', JSON.stringify([...next]));
+        localStorage.setItem(STORAGE_KEYS.completed, JSON.stringify([...next]));
       } catch {
         /* ignore */
       }
@@ -76,14 +77,14 @@ export function App() {
       const next = new Set(prev);
       next.delete(id);
       try {
-        localStorage.setItem('murdoku-completed', JSON.stringify([...next]));
+        localStorage.setItem(STORAGE_KEYS.completed, JSON.stringify([...next]));
       } catch {
         /* ignore */
       }
       return next;
     });
     try {
-      localStorage.removeItem(`murdoku-progress-${id}`);
+      localStorage.removeItem(`${STORAGE_KEYS.progressPrefix}${id}`);
     } catch {
       /* ignore */
     }

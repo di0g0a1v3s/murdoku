@@ -1,5 +1,6 @@
 import { assertNever } from './types.js';
 import type { Clue, Coord, Direction, GridObject, ObjectKind, Puzzle } from './types.js';
+import { coordToKey, isRoomCornerCell } from './helpers.js';
 
 type EvalResult = 'satisfied' | 'violated' | 'unknown';
 
@@ -16,6 +17,7 @@ interface PuzzleCaches {
   coordToObjects: Map<string, GridObject[]>; // "r,c" → objects whose cells include this coord
   coordToAdjacentKinds: Map<string, Set<ObjectKind>>; // "r,c" → kinds of objects orthogonally adjacent in same room
   occupiableCoordToObj: Map<string, GridObject>; // "r,c" → occupiable object at coord (for object-occupancy)
+  allPersonIds: string[]; // precomputed once per puzzle
 }
 
 const puzzleCacheMap = new WeakMap<Puzzle, PuzzleCaches>();
@@ -24,7 +26,7 @@ function buildCaches(puzzle: Puzzle): PuzzleCaches {
   const coordToRoomId = new Map<string, string>();
   for (const room of puzzle.rooms) {
     for (const cell of room.cells) {
-      coordToRoomId.set(`${cell.row},${cell.col}`, room.id);
+      coordToRoomId.set(coordToKey(cell), room.id);
     }
   }
 
@@ -32,7 +34,7 @@ function buildCaches(puzzle: Puzzle): PuzzleCaches {
   const occupiableCoordToObj = new Map<string, GridObject>();
   for (const obj of puzzle.objects) {
     for (const cell of obj.cells) {
-      const key = `${cell.row},${cell.col}`;
+      const key = coordToKey(cell);
       const list = coordToObjects.get(key);
       if (list) {
         list.push(obj);
@@ -48,7 +50,7 @@ function buildCaches(puzzle: Puzzle): PuzzleCaches {
   const coordToAdjacentKinds = new Map<string, Set<ObjectKind>>();
   for (const room of puzzle.rooms) {
     for (const cell of room.cells) {
-      const key = `${cell.row},${cell.col}`;
+      const key = coordToKey(cell);
       // Objects that occupy this cell are "on", not "adjacent" — exclude them
       const ownObjIds = new Set((coordToObjects.get(key) ?? []).map((o) => o.id));
       const kinds = new Set<ObjectKind>();
@@ -67,7 +69,15 @@ function buildCaches(puzzle: Puzzle): PuzzleCaches {
     }
   }
 
-  return { coordToRoomId, coordToObjects, coordToAdjacentKinds, occupiableCoordToObj };
+  const allPersonIds = puzzle.people.map((p) => p.id);
+
+  return {
+    coordToRoomId,
+    coordToObjects,
+    coordToAdjacentKinds,
+    occupiableCoordToObj,
+    allPersonIds,
+  };
 }
 
 function getCaches(puzzle: Puzzle): PuzzleCaches {
@@ -82,16 +92,16 @@ function getCaches(puzzle: Puzzle): PuzzleCaches {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getRoomId(coord: Coord, puzzle: Puzzle): string | undefined {
-  return getCaches(puzzle).coordToRoomId.get(`${coord.row},${coord.col}`);
+  return getCaches(puzzle).coordToRoomId.get(coordToKey(coord));
 }
 
 function getObjectsAtCoord(coord: Coord, puzzle: Puzzle): GridObject[] {
-  return getCaches(puzzle).coordToObjects.get(`${coord.row},${coord.col}`) ?? [];
+  return getCaches(puzzle).coordToObjects.get(coordToKey(coord)) ?? [];
 }
 
 function getObjectsAdjacentInRoom(coord: Coord, puzzle: Puzzle): GridObject[] {
   const { coordToRoomId, coordToObjects } = getCaches(puzzle);
-  const key = `${coord.row},${coord.col}`;
+  const key = coordToKey(coord);
   const roomId = coordToRoomId.get(key);
   if (!roomId) {
     return [];
@@ -300,7 +310,7 @@ function evalPersonBesideObject(
   if (!coord) {
     return 'unknown';
   }
-  const kinds = getCaches(puzzle).coordToAdjacentKinds.get(`${coord.row},${coord.col}`);
+  const kinds = getCaches(puzzle).coordToAdjacentKinds.get(coordToKey(coord));
   return kinds?.has(clue.objectKind) ? 'satisfied' : 'violated';
 }
 
@@ -313,7 +323,7 @@ function evalPersonOnObject(
   if (!coord) {
     return 'unknown';
   }
-  const objs = getCaches(puzzle).coordToObjects.get(`${coord.row},${coord.col}`) ?? [];
+  const objs = getCaches(puzzle).coordToObjects.get(coordToKey(coord)) ?? [];
   return objs.some((o) => o.kind === clue.objectKind) ? 'satisfied' : 'violated';
 }
 
@@ -326,7 +336,7 @@ function evalPersonInRoom(
   if (!coord) {
     return 'unknown';
   }
-  return getCaches(puzzle).coordToRoomId.get(`${coord.row},${coord.col}`) === clue.roomId
+  return getCaches(puzzle).coordToRoomId.get(coordToKey(coord)) === clue.roomId
     ? 'satisfied'
     : 'violated';
 }
@@ -342,8 +352,8 @@ function evalPersonsSameRoom(
     return 'unknown';
   }
   const { coordToRoomId } = getCaches(puzzle);
-  const ra = coordToRoomId.get(`${a.row},${a.col}`);
-  const rb = coordToRoomId.get(`${b.row},${b.col}`);
+  const ra = coordToRoomId.get(coordToKey(a));
+  const rb = coordToRoomId.get(coordToKey(b));
   if (!ra || !rb) {
     return 'unknown';
   }
@@ -361,7 +371,7 @@ function evalPersonAloneInRoom(
     if (pid === clue.person) {
       continue;
     }
-    if (coordToRoomId.get(`${c.row},${c.col}`) === clue.roomId) {
+    if (coordToRoomId.get(coordToKey(c)) === clue.roomId) {
       return 'violated';
     }
   }
@@ -369,7 +379,7 @@ function evalPersonAloneInRoom(
   if (!coord) {
     return 'unknown';
   }
-  if (coordToRoomId.get(`${coord.row},${coord.col}`) !== clue.roomId) {
+  if (coordToRoomId.get(coordToKey(coord)) !== clue.roomId) {
     return 'violated';
   }
   if (assignment.size === allPersonIds.length) {
@@ -387,7 +397,7 @@ function evalRoomPopulation(
   const { coordToRoomId } = getCaches(puzzle);
   let countInRoom = 0;
   for (const [, c] of assignment) {
-    if (coordToRoomId.get(`${c.row},${c.col}`) === clue.roomId) {
+    if (coordToRoomId.get(coordToKey(c)) === clue.roomId) {
       countInRoom++;
     }
   }
@@ -409,7 +419,7 @@ function evalObjectOccupancy(
   const { occupiableCoordToObj } = getCaches(puzzle);
   const occupiedObjIds = new Set<string>();
   for (const [, c] of assignment) {
-    const obj = occupiableCoordToObj.get(`${c.row},${c.col}`);
+    const obj = occupiableCoordToObj.get(coordToKey(c));
     if (obj && obj.kind === clue.objectKind) {
       occupiedObjIds.add(obj.id);
     }
@@ -433,7 +443,7 @@ function evalPersonNotInRoom(
   if (!coord) {
     return 'unknown';
   }
-  return getCaches(puzzle).coordToRoomId.get(`${coord.row},${coord.col}`) !== clue.roomId
+  return getCaches(puzzle).coordToRoomId.get(coordToKey(coord)) !== clue.roomId
     ? 'satisfied'
     : 'violated';
 }
@@ -449,8 +459,8 @@ function evalPersonsNotSameRoom(
     return 'unknown';
   }
   const { coordToRoomId } = getCaches(puzzle);
-  const ra = coordToRoomId.get(`${a.row},${a.col}`);
-  const rb = coordToRoomId.get(`${b.row},${b.col}`);
+  const ra = coordToRoomId.get(coordToKey(a));
+  const rb = coordToRoomId.get(coordToKey(b));
   if (!ra || !rb) {
     return 'unknown';
   }
@@ -468,7 +478,7 @@ function evalPersonInRoomWith(
   if (!coord) {
     return 'unknown';
   }
-  const roomId = coordToRoomId.get(`${coord.row},${coord.col}`);
+  const roomId = coordToRoomId.get(coordToKey(coord));
   if (!roomId) {
     return 'unknown';
   }
@@ -477,7 +487,7 @@ function evalPersonInRoomWith(
     if (pid === clue.person) {
       continue;
     }
-    if (coordToRoomId.get(`${c.row},${c.col}`) === roomId) {
+    if (coordToRoomId.get(coordToKey(c)) === roomId) {
       othersInRoom++;
     }
   }
@@ -537,7 +547,7 @@ function evalPersonInRoomCorner(
     return 'unknown';
   }
   const { coordToRoomId } = getCaches(puzzle);
-  const roomId = coordToRoomId.get(`${coord.row},${coord.col}`);
+  const roomId = coordToRoomId.get(coordToKey(coord));
   if (!roomId) {
     return 'violated';
   }
@@ -545,15 +555,9 @@ function evalPersonInRoomCorner(
     return 'violated';
   }
   const { rows, cols } = puzzle.gridSize;
-  const { row: r, col: c } = coord;
   const isWall = (nr: number, nc: number) =>
     nr < 0 || nr >= rows || nc < 0 || nc >= cols || coordToRoomId.get(`${nr},${nc}`) !== roomId;
-  const isCorner =
-    (isWall(r - 1, c) && isWall(r, c - 1)) ||
-    (isWall(r - 1, c) && isWall(r, c + 1)) ||
-    (isWall(r + 1, c) && isWall(r, c - 1)) ||
-    (isWall(r + 1, c) && isWall(r, c + 1));
-  return isCorner ? 'satisfied' : 'violated';
+  return isRoomCornerCell(coord, isWall) ? 'satisfied' : 'violated';
 }
 
 function evalPersonSoleOccupant(
@@ -567,7 +571,7 @@ function evalPersonSoleOccupant(
   if (!coord) {
     return 'unknown';
   }
-  const obj = occupiableCoordToObj.get(`${coord.row},${coord.col}`);
+  const obj = occupiableCoordToObj.get(coordToKey(coord));
   if (!obj || obj.kind !== clue.objectKind) {
     return 'violated';
   }
@@ -575,7 +579,7 @@ function evalPersonSoleOccupant(
     if (pid === clue.person) {
       continue;
     }
-    const otherObj = occupiableCoordToObj.get(`${c.row},${c.col}`);
+    const otherObj = occupiableCoordToObj.get(coordToKey(c));
     if (otherObj && otherObj.kind === clue.objectKind) {
       return 'violated';
     }
@@ -595,7 +599,7 @@ function evalEmptyRooms(
   const { coordToRoomId } = getCaches(puzzle);
   const occupiedRooms = new Set<string>();
   for (const [, c] of assignment) {
-    const roomId = coordToRoomId.get(`${c.row},${c.col}`);
+    const roomId = coordToRoomId.get(coordToKey(c));
     if (roomId) {
       occupiedRooms.add(roomId);
     }
@@ -613,7 +617,7 @@ function evalEmptyRooms(
 // ─── Main Evaluator ───────────────────────────────────────────────────────────
 
 export function evaluateClue(clue: Clue, assignment: Assignment, puzzle: Puzzle): EvalResult {
-  const allPersonIds = puzzle.people.map((p) => p.id);
+  const { allPersonIds } = getCaches(puzzle);
   switch (clue.kind) {
     case 'person-direction':
       return evalPersonDirection(clue, assignment, puzzle);

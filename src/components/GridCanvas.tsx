@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import type { Coord, Puzzle, Room, RoomPattern } from '@shared/types';
+import type { Coord, Person, Puzzle, Room, RoomPattern } from '@shared/types';
+import { coordToKey } from '@shared/helpers';
 import { Cell } from './Cell';
 import { ObjectSprite } from './ObjectSprite';
 
@@ -20,6 +21,74 @@ function getCellBackground(pattern: RoomPattern): string {
     `linear-gradient(to right, ${a} 50%, ${b} 50%) top / 100% 50% no-repeat`,
     `linear-gradient(to right, ${b} 50%, ${a} 50%) bottom / 100% 50% no-repeat`,
   ].join(', ');
+}
+
+interface CellMarkProps {
+  marks: Set<string>;
+  cellKey: string;
+  cellSize: number;
+  people: Person[];
+  committedCells?: Map<string, string>;
+}
+
+function CellMark({ marks, cellKey, cellSize, people, committedCells }: CellMarkProps) {
+  const isX = marks.has('X');
+  const personIds = [...marks].filter((m) => m !== 'X');
+  const count = isX ? 1 : personIds.length;
+  const fontSize = count <= 2 ? cellSize * 0.3 : count <= 4 ? cellSize * 0.23 : cellSize * 0.18;
+
+  return (
+    <div
+      style={{
+        width: cellSize,
+        height: cellSize,
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        alignContent: 'center',
+        justifyContent: 'center',
+        padding: 2,
+        gap: 1,
+      }}
+    >
+      {isX ? (
+        <span
+          style={{ fontSize: cellSize * 0.42, color: '#dc2626', fontWeight: 900, lineHeight: 1 }}
+        >
+          ✕
+        </span>
+      ) : (
+        personIds.map((pid) => {
+          const person = people.find((p) => p.id === pid);
+          if (!person) {
+            return null;
+          }
+          const letter = person.name[0].toUpperCase();
+          const isCommitted = committedCells?.get(cellKey) === pid;
+          const color = isCommitted ? '#15803d' : person.role === 'victim' ? '#dc2626' : '#7c3aed';
+          return (
+            <span
+              key={pid}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                ...(isCommitted && {
+                  border: '2px solid #15803d',
+                  borderRadius: '50%',
+                  width: fontSize * 2.5,
+                  height: fontSize * 2.5,
+                }),
+              }}
+            >
+              <span style={{ fontSize, fontWeight: 700, color, lineHeight: 1 }}>{letter}</span>
+            </span>
+          );
+        })
+      )}
+    </div>
+  );
 }
 
 interface GridCanvasProps {
@@ -49,7 +118,7 @@ export function GridCanvas({
     for (const obj of objects) {
       if (obj.occupiable === 'non-occupiable') {
         for (const c of obj.cells) {
-          s.add(`${c.row},${c.col}`);
+          s.add(coordToKey(c));
         }
       }
     }
@@ -155,7 +224,7 @@ export function GridCanvas({
       {/* Layer 3: Cell borders + click targets */}
       {Array.from({ length: rows }, (_, row) =>
         Array.from({ length: cols }, (_, col) => {
-          const clickable = onCellClick && !nonOccupiable.has(`${row},${col}`);
+          const clickable = onCellClick && !nonOccupiable.has(coordToKey({ row, col }));
           return (
             <Cell
               key={`cell-${row}-${col}`}
@@ -206,76 +275,15 @@ export function GridCanvas({
         >
           {Array.from(cellMarks.entries()).map(([key, marks]) => {
             const [row, col] = key.split(',').map(Number);
-            const isX = marks.has('X');
-            const personIds = [...marks].filter((m) => m !== 'X');
-            const count = isX ? 1 : personIds.length;
-            const fontSize =
-              count <= 2 ? cellSize * 0.3 : count <= 4 ? cellSize * 0.23 : cellSize * 0.18;
             return (
-              <div
-                key={key}
-                style={{
-                  gridColumn: col + 1,
-                  gridRow: row + 1,
-                  width: cellSize,
-                  height: cellSize,
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  alignItems: 'center',
-                  alignContent: 'center',
-                  justifyContent: 'center',
-                  padding: 2,
-                  gap: 1,
-                }}
-              >
-                {isX ? (
-                  <span
-                    style={{
-                      fontSize: cellSize * 0.42,
-                      color: '#dc2626',
-                      fontWeight: 900,
-                      lineHeight: 1,
-                    }}
-                  >
-                    ✕
-                  </span>
-                ) : (
-                  personIds.map((pid) => {
-                    const person = people.find((p) => p.id === pid);
-                    if (!person) {
-                      return null;
-                    }
-                    const letter = person.name[0].toUpperCase();
-                    const isCommitted = committedCells?.get(key) === pid;
-                    const color = isCommitted
-                      ? '#15803d'
-                      : person.role === 'victim'
-                        ? '#dc2626'
-                        : '#7c3aed';
-                    return (
-                      <span
-                        key={pid}
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexShrink: 0,
-                          ...(isCommitted && {
-                            border: '2px solid #15803d',
-                            borderRadius: '50%',
-                            width: fontSize * 2.5,
-                            height: fontSize * 2.5,
-                          }),
-                        }}
-                      >
-                        <span style={{ fontSize, fontWeight: 700, color, lineHeight: 1 }}>
-                          {/* TODO: center */}
-                          {letter}
-                        </span>
-                      </span>
-                    );
-                  })
-                )}
+              <div key={key} style={{ gridColumn: col + 1, gridRow: row + 1 }}>
+                <CellMark
+                  marks={marks}
+                  cellKey={key}
+                  cellSize={cellSize}
+                  people={people}
+                  committedCells={committedCells}
+                />
               </div>
             );
           })}

@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, renameSync, existsSync } from 'fs';
 import type { FullPuzzle, PuzzleCollection } from '../shared/types.js';
 
 const DEFAULT_PATH = 'src/puzzles/puzzles.json';
@@ -11,7 +11,9 @@ export function loadCollection(path = DEFAULT_PATH): PuzzleCollection {
 }
 
 export function saveCollection(collection: PuzzleCollection, path = DEFAULT_PATH): void {
-  writeFileSync(path, JSON.stringify(collection, null, 2), 'utf-8');
+  const tmp = `${path}.tmp`;
+  writeFileSync(tmp, JSON.stringify(collection, null, 2), 'utf-8');
+  renameSync(tmp, path);
 }
 
 export function appendPuzzle(puzzle: FullPuzzle, path = DEFAULT_PATH): void {

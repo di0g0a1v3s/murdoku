@@ -101,7 +101,7 @@ export function CellPopup({
               padding: '7px 14px',
               borderRadius: 8,
               border: '2px solid',
-              borderColor: marks.has('X') ? '#dc2626' : '#dc2626',
+              borderColor: '#dc2626',
               background: marks.has('X') ? '#dc2626' : 'white',
               color: marks.has('X') ? 'white' : '#dc2626',
               fontSize: 14,

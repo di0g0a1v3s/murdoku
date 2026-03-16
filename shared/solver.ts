@@ -1,5 +1,6 @@
 import { assertNever, type Clue, type Coord, type PlacedPerson, type Puzzle } from './types.js';
 import { evaluateClue } from './clue-evaluator.js';
+import { coordToKey } from './helpers.js';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -12,6 +13,122 @@ export type SolveResult =
   | { status: 'multiple'; solutions: PlacedPerson[][] }
   | { status: 'none' }
   | { status: 'exceeded' };
+
+// ─── Constraint propagation helpers ──────────────────────────────────────────
+
+type PropagationConstraints = {
+  lockedRows: Map<number, string>; // row → owner pid
+  lockedCols: Map<number, string>; // col → owner pid
+  crossForbidden: Set<string>; // "r,c" blocked for everyone
+};
+
+// Derives lock/cross-elimination constraints from current domains.
+// Applies three rules:
+//   1. Row/col locking: domain entirely in one row/col → reserve it for that person.
+//   2. 2-cell cross elimination: domain = {(r1,c1),(r2,c2)} → (r1,c2) and (r2,c1) forbidden.
+//   3. Hidden singles: only one person has cells in a row/col → lock it for them.
+// Returns 'contradiction' if two people compete for the same locked row or col.
+function computeConstraints(
+  domains: Map<string, Coord[]>,
+): PropagationConstraints | 'contradiction' {
+  const lockedRows = new Map<number, string>();
+  const lockedCols = new Map<number, string>();
+  const crossForbidden = new Set<string>();
+
+  for (const [pid, domain] of domains) {
+    if (domain.length === 0) {
+      return 'contradiction';
+    }
+    const uniqueRows = new Set(domain.map((c) => c.row));
+    if (uniqueRows.size === 1) {
+      const row = domain[0]!.row;
+      if (lockedRows.has(row) && lockedRows.get(row) !== pid) {
+        return 'contradiction';
+      }
+      lockedRows.set(row, pid);
+    }
+    const uniqueCols = new Set(domain.map((c) => c.col));
+    if (uniqueCols.size === 1) {
+      const col = domain[0]!.col;
+      if (lockedCols.has(col) && lockedCols.get(col) !== pid) {
+        return 'contradiction';
+      }
+      lockedCols.set(col, pid);
+    }
+    if (domain.length === 2) {
+      const [a, b] = domain as [Coord, Coord];
+      if (a.row !== b.row && a.col !== b.col) {
+        crossForbidden.add(coordToKey({ row: a.row, col: b.col }));
+        crossForbidden.add(coordToKey({ row: b.row, col: a.col }));
+      }
+    }
+  }
+
+  // Hidden singles
+  const rowCandidates = new Map<number, string | null>();
+  const colCandidates = new Map<number, string | null>();
+  for (const [pid, domain] of domains) {
+    for (const c of domain) {
+      rowCandidates.set(
+        c.row,
+        rowCandidates.has(c.row) && rowCandidates.get(c.row) !== pid ? null : pid,
+      );
+      colCandidates.set(
+        c.col,
+        colCandidates.has(c.col) && colCandidates.get(c.col) !== pid ? null : pid,
+      );
+    }
+  }
+  for (const [row, pid] of rowCandidates) {
+    if (pid !== null) {
+      if (lockedRows.has(row) && lockedRows.get(row) !== pid) {
+        return 'contradiction';
+      }
+      lockedRows.set(row, pid);
+    }
+  }
+  for (const [col, pid] of colCandidates) {
+    if (pid !== null) {
+      if (lockedCols.has(col) && lockedCols.get(col) !== pid) {
+        return 'contradiction';
+      }
+      lockedCols.set(col, pid);
+    }
+  }
+
+  return { lockedRows, lockedCols, crossForbidden };
+}
+
+// Filters each domain using the computed constraints.
+// Returns true if any domain shrank, false if stable, 'contradiction' if any domain becomes empty.
+function applyConstraints(
+  domains: Map<string, Coord[]>,
+  { lockedRows, lockedCols, crossForbidden }: PropagationConstraints,
+): boolean | 'contradiction' {
+  let changed = false;
+  for (const [pid, domain] of domains) {
+    const filtered = domain.filter((c) => {
+      if (lockedRows.get(c.row) !== undefined && lockedRows.get(c.row) !== pid) {
+        return false;
+      }
+      if (lockedCols.get(c.col) !== undefined && lockedCols.get(c.col) !== pid) {
+        return false;
+      }
+      if (crossForbidden.has(coordToKey(c))) {
+        return false;
+      }
+      return true;
+    });
+    if (filtered.length < domain.length) {
+      if (filtered.length === 0) {
+        return 'contradiction';
+      }
+      domains.set(pid, filtered);
+      changed = true;
+    }
+  }
+  return changed;
+}
 
 // ─── Solver ───────────────────────────────────────────────────────────────────
 
@@ -33,14 +150,14 @@ export function solve(puzzle: Puzzle, clues: Clue[], maxBacktracks?: number): So
   for (const obj of puzzle.objects) {
     if (obj.occupiable === 'non-occupiable') {
       for (const c of obj.cells) {
-        nonOccupiable.add(`${c.row},${c.col}`);
+        nonOccupiable.add(coordToKey(c));
       }
     }
   }
   const allValidCells: Coord[] = [];
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      if (!nonOccupiable.has(`${r},${c}`)) {
+      if (!nonOccupiable.has(coordToKey({ row: r, col: c }))) {
         allValidCells.push({ row: r, col: c });
       }
     }
@@ -163,124 +280,18 @@ export function solve(puzzle: Puzzle, clues: Clue[], maxBacktracks?: number): So
     }
 
     // Step 2: propagate — iterate until stable or contradiction detected.
-    // Three rules:
-    //   Row/col locking (N=1): if a person's entire domain lies in one row (or col),
-    //     that row (col) is reserved for them → remove it from everyone else's domain.
-    //   2-cell cross elimination: if domain = {(r1,c1),(r2,c2)} with r1≠r2, c1≠c2,
-    //     then cells (r1,c2) and (r2,c1) are blocked for ALL people regardless of which
-    //     cell this person takes (proven by Latin-square: both cross-cells are always used).
-    //   Hidden singles: if only one person has domain cells in a given row (or col),
-    //     that row (col) must belong to them → lock it and remove from all others' domains.
+    // See computeConstraints / applyConstraints above for the three rules applied.
     let changed = true;
     while (changed) {
-      changed = false;
-
-      const lockedRows = new Map<number, string>(); // row → owner pid
-      const lockedCols = new Map<number, string>(); // col → owner pid
-      const crossForbidden = new Set<string>(); // "r,c" blocked for everyone
-      let contradiction = false;
-
-      for (const [pid, domain] of domains) {
-        if (domain.length === 0) {
-          contradiction = true;
-          break;
-        }
-
-        const uniqueRows = new Set(domain.map((c) => c.row));
-        if (uniqueRows.size === 1) {
-          const row = domain[0]!.row;
-          if (lockedRows.has(row) && lockedRows.get(row) !== pid) {
-            contradiction = true;
-            break;
-          }
-          lockedRows.set(row, pid);
-        }
-
-        const uniqueCols = new Set(domain.map((c) => c.col));
-        if (uniqueCols.size === 1) {
-          const col = domain[0]!.col;
-          if (lockedCols.has(col) && lockedCols.get(col) !== pid) {
-            contradiction = true;
-            break;
-          }
-          lockedCols.set(col, pid);
-        }
-
-        if (domain.length === 2) {
-          const [a, b] = domain as [Coord, Coord];
-          if (a.row !== b.row && a.col !== b.col) {
-            crossForbidden.add(`${a.row},${b.col}`);
-            crossForbidden.add(`${b.row},${a.col}`);
-          }
-        }
-      }
-
-      // Hidden singles: if only one unplaced person has domain cells in a given
-      // row (or col), that row (col) must belong to them — lock it.
-      if (!contradiction) {
-        const rowCandidates = new Map<number, string | null>(); // row → sole pid, null if contested
-        const colCandidates = new Map<number, string | null>();
-        for (const [pid, domain] of domains) {
-          for (const c of domain) {
-            rowCandidates.set(
-              c.row,
-              rowCandidates.has(c.row) && rowCandidates.get(c.row) !== pid ? null : pid,
-            );
-            colCandidates.set(
-              c.col,
-              colCandidates.has(c.col) && colCandidates.get(c.col) !== pid ? null : pid,
-            );
-          }
-        }
-        for (const [row, pid] of rowCandidates) {
-          if (pid !== null) {
-            if (lockedRows.has(row) && lockedRows.get(row) !== pid) {
-              contradiction = true;
-              break;
-            }
-            lockedRows.set(row, pid);
-          }
-        }
-        if (!contradiction) {
-          for (const [col, pid] of colCandidates) {
-            if (pid !== null) {
-              if (lockedCols.has(col) && lockedCols.get(col) !== pid) {
-                contradiction = true;
-                break;
-              }
-              lockedCols.set(col, pid);
-            }
-          }
-        }
-      }
-
-      if (contradiction) {
+      const constraints = computeConstraints(domains);
+      if (constraints === 'contradiction') {
         return;
       }
-
-      for (const [pid, domain] of domains) {
-        const filtered = domain.filter((c) => {
-          const rOwner = lockedRows.get(c.row);
-          if (rOwner !== undefined && rOwner !== pid) {
-            return false;
-          }
-          const cOwner = lockedCols.get(c.col);
-          if (cOwner !== undefined && cOwner !== pid) {
-            return false;
-          }
-          if (crossForbidden.has(`${c.row},${c.col}`)) {
-            return false;
-          }
-          return true;
-        });
-        if (filtered.length < domain.length) {
-          if (filtered.length === 0) {
-            return;
-          }
-          domains.set(pid, filtered);
-          changed = true;
-        }
+      const result = applyConstraints(domains, constraints);
+      if (result === 'contradiction') {
+        return;
       }
+      changed = result;
     }
 
     // Step 3: MRV — pick the unplaced person with the fewest feasible cells.

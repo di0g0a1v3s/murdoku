@@ -1,5 +1,6 @@
 import type { Coord, GridObject, Person, PlacedPerson } from '../shared/types.js';
 import type { LayoutResult } from './layout-builder.js';
+import { coordToKey, keyToCoord } from '../shared/helpers.js';
 
 // ─── Latin-square backtracking placer ────────────────────────────────────────
 // Finds a valid Latin-square placement for all N people (1/row, 1/col, no
@@ -8,10 +9,9 @@ import type { LayoutResult } from './layout-builder.js';
 // no valid placement exists for this layout.
 
 function isNonOccupiable(coord: Coord, objects: GridObject[]): boolean {
+  const key = coordToKey(coord);
   return objects.some(
-    (obj) =>
-      obj.occupiable === 'non-occupiable' &&
-      obj.cells.some((c) => c.row === coord.row && c.col === coord.col),
+    (obj) => obj.occupiable === 'non-occupiable' && obj.cells.some((c) => coordToKey(c) === key),
   );
 }
 
@@ -49,7 +49,7 @@ export function placePeople(
   const coordToRoomId = new Map<string, string>();
   for (const room of rooms) {
     for (const cell of room.cells) {
-      coordToRoomId.set(`${cell.row},${cell.col}`, room.id);
+      coordToRoomId.set(coordToKey(cell), room.id);
     }
   }
 
@@ -72,24 +72,21 @@ export function placePeople(
   function backtrack(): boolean {
     if (occupiedCells.size === people.length) {
       // Murder condition: victim's room must have exactly 2 people
-      const roomWithTwoPeople = shuffledRooms.find((room) => {
-        const occupiedCellsInRoomCount = [...occupiedCells].filter(
-          (occupiedCell) => coordToRoomId.get(occupiedCell) === room.id,
-        ).length;
-        return occupiedCellsInRoomCount === 2;
-      });
-      return roomWithTwoPeople != null;
+      return shuffledRooms.some(
+        (room) =>
+          [...occupiedCells].filter((cell) => coordToRoomId.get(cell) === room.id).length === 2,
+      );
     }
 
     for (const coord of candidates) {
-      const cellKey = `${coord.row},${coord.col}`;
+      const cellKey = coordToKey(coord);
       if (occupiedCells.has(cellKey)) {
         continue;
       }
       if (usedRows.has(coord.row) || usedCols.has(coord.col)) {
         continue;
       }
-      if (!coordToRoomId.has(`${coord.row},${coord.col}`)) {
+      if (!coordToRoomId.has(cellKey)) {
         continue;
       }
 
@@ -112,12 +109,9 @@ export function placePeople(
     return null;
   }
 
-  const murderRoom = shuffledRooms.find((room) => {
-    const occupiedCellsInRoomCount = [...occupiedCells].filter(
-      (occupiedCell) => coordToRoomId.get(occupiedCell) === room.id,
-    ).length;
-    return occupiedCellsInRoomCount === 2;
-  });
+  const murderRoom = shuffledRooms.find(
+    (room) => [...occupiedCells].filter((cell) => coordToRoomId.get(cell) === room.id).length === 2,
+  );
   const [victimPosition, murderedPosition] = [...occupiedCells].filter(
     (cell) => coordToRoomId.get(cell) === murderRoom!.id,
   );
@@ -132,12 +126,6 @@ export function placePeople(
   const notGuiltySuspectsPositions = [...occupiedCells].filter(
     (c) => c !== victimPosition && c !== murderedPosition,
   );
-  const keyToCoord = (pos: string): { row: number; col: number } => {
-    const [row, col] = pos.split(',').map(Number);
-
-    return { row, col };
-  };
-
   const placements: PlacedPerson[] = notGuiltySuspects.map((p, i) => ({
     personId: p.id,
     coord: keyToCoord(notGuiltySuspectsPositions[i]),
