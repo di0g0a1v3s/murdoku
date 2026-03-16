@@ -6,6 +6,15 @@ import { ObjectSprite } from './ObjectSprite';
 
 const ROOM_ALPHA = '88'; // hex alpha for room tint
 
+// Insert soft hyphens every 5 chars within each word so the browser breaks
+// with a visible '-' when the label is too wide — works in all browsers.
+function softHyphenate(name: string): string {
+  return name
+    .split(' ')
+    .map((word) => (word.length > 5 ? word.match(/.{1,5}/g)!.join('\u00AD') : word))
+    .join(' ');
+}
+
 function getCellBackground(pattern: RoomPattern): string {
   if (pattern.kind === 'solid') {
     return pattern.color + ROOM_ALPHA;
@@ -146,29 +155,68 @@ export function GridCanvas({
     );
   }, [rows, cols, rooms]);
 
-  // Room label positions — leftmost cell of the room's widest row
+  // Room label positions — largest consecutive horizontal span of empty cells
   const roomLabels = useMemo(() => {
+    const objectCells = new Set(objects.flatMap((obj) => obj.cells.map(coordToKey)));
     return rooms.map((room) => {
-      // Group cells by row, find the row with the most room cells
       const byRow = new Map<number, number[]>();
       for (const c of room.cells) {
-        const cols = byRow.get(c.row) ?? [];
-        cols.push(c.col);
-        byRow.set(c.row, cols);
+        const cs = byRow.get(c.row) ?? [];
+        cs.push(c.col);
+        byRow.set(c.row, cs);
       }
+
       let bestRow = room.cells[0]!.row;
-      let bestWidth = 0;
+      let bestCol = room.cells[0]!.col;
+      let bestSpan = 0;
+
       for (const [r, cs] of byRow) {
-        if (cs.length > bestWidth || (cs.length === bestWidth && r < bestRow)) {
-          bestWidth = cs.length;
-          bestRow = r;
+        const sorted = [...cs].sort((a, b) => a - b);
+        let runStart = 0;
+        let runLen = 0;
+
+        const endRun = () => {
+          if (runLen > bestSpan || (runLen === bestSpan && r < bestRow)) {
+            bestSpan = runLen;
+            bestRow = r;
+            bestCol = runStart;
+          }
+          runLen = 0;
+        };
+
+        for (let i = 0; i < sorted.length; i++) {
+          const c = sorted[i]!;
+          const empty = !objectCells.has(coordToKey({ row: r, col: c }));
+          const consecutive = i > 0 && c === sorted[i - 1]! + 1;
+          if (empty && (runLen === 0 || consecutive)) {
+            if (runLen === 0) {
+              runStart = c;
+            }
+            runLen++;
+          } else {
+            endRun();
+            if (empty) {
+              runStart = c;
+              runLen = 1;
+            }
+          }
         }
+        endRun();
       }
-      const col = Math.min(...(byRow.get(bestRow) ?? [0]));
-      const spanInRow = room.cells.filter((c) => c.row === bestRow && c.col >= col).length;
-      return { room, row: bestRow, col, spanInRow };
+
+      // Fall back to any cell if room is fully covered by objects
+      if (bestSpan === 0) {
+        const first = [...byRow.entries()].sort(
+          ([ra, ca], [rb, cb]) => cb.length - ca.length || ra - rb,
+        )[0]!;
+        bestRow = first[0];
+        bestCol = Math.min(...first[1]);
+        bestSpan = 1;
+      }
+
+      return { room, row: bestRow, col: bestCol, span: bestSpan };
     });
-  }, [rooms]);
+  }, [rooms, objects]);
 
   const gridStyle = {
     display: 'grid',
@@ -198,14 +246,15 @@ export function GridCanvas({
       )}
 
       {/* Layer 2: Room labels — position:absolute only (no gridColumn/gridRow to avoid double-offset) */}
-      {roomLabels.map(({ room, row, col, spanInRow }) => (
+      {roomLabels.map(({ room, row, col, span }) => (
         <div
           key={`label-${room.id}`}
+          lang="en"
           style={{
             position: 'absolute' as const,
             left: col * cellSize + 4,
             top: row * cellSize + 3,
-            maxWidth: spanInRow * cellSize - 8,
+            maxWidth: span * cellSize - 8,
             fontSize: cellSize * 0.2,
             fontWeight: 700,
             color: 'rgba(0,0,0,0.45)',
@@ -213,11 +262,10 @@ export function GridCanvas({
             letterSpacing: '0.04em',
             zIndex: 1,
             pointerEvents: 'none',
-            wordBreak: 'break-word',
             lineHeight: 1.2,
           }}
         >
-          {room.name}
+          {softHyphenate(room.name)}
         </div>
       ))}
 
